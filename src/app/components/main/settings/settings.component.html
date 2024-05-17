@@ -1,0 +1,52 @@
+<app-log-panel [errorLogs]="errorLogs" [warningLogs]="warningLogs" [successLogs]="successLogs">
+</app-log-panel>
+
+<div class="save-btn-container">
+    <button mat-raised-button color="primary" type="button" class="btn-sm" (click)="onSubmit()">
+        <mat-icon aria-hidden="false" aria-label="save" fontIcon="save"></mat-icon> 
+        Save
+    </button>
+</div>
+
+<form [formGroup]="eskomSePushApiForm" class="eskomForm">
+
+    <app-card class="settings-card">
+        <div class="settings-card-header">
+            <h1>Eskom Se Push</h1>
+        </div>
+        <mat-form-field>
+            <mat-label>API Key</mat-label>
+            <input matInput formControlName="apiKey">
+        </mat-form-field>
+    </app-card>
+
+    <app-card class="settings-card">
+        <div class="settings-card-header">
+            <h1>Caching</h1>
+            <button mat-raised-button (click)="clearCache()" color="primary" class="btn-md">
+                <mat-icon aria-hidden="false" aria-label="delete" fontIcon="delete"></mat-icon> 
+                Clear Cache
+            </button>
+        </div>
+        <mat-form-field>
+            <mat-label>Sync Interval</mat-label>
+            <input matInput formControlName="syncInterval">
+        </mat-form-field>
+    </app-card>
+
+    <app-card class="settings-card">
+        <div class="settings-card-header">
+            <h1>Pages</h1>
+        </div>
+       <div class="pages-container">
+        <mat-slide-toggle formControlName="pagesSetup" class="example-margin">
+            Setup
+        </mat-slide-toggle>
+
+        <mat-slide-toggle formControlName="pagesAllowance" class="example-margin">
+            Allowance
+        </mat-slide-toggle>
+       </div>
+    </app-card>
+
+</form>

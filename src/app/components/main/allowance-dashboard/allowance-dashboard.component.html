@@ -1,0 +1,85 @@
+<div class="container">
+    <ng-container [ngTemplateOutlet]="allowanceDetails">
+    </ng-container>
+    <div class="allowance-details-container">
+        <ng-container 
+            [ngTemplateOutlet]="allowanceItem" 
+            [ngTemplateOutletContext]="{
+                name: 'Area API', 
+                count: allowance?.apiUtilizationBreakdown?.getArea,
+                desc: 'Used by the eara search feature to get areas based on the area phrase you provide.'
+                }">
+        </ng-container>
+        <ng-container 
+            [ngTemplateOutlet]="allowanceItem" 
+            [ngTemplateOutletContext]="{
+                name: 'Area Information API',
+                 count: allowance?.apiUtilizationBreakdown?.getAreaInformation,
+                 desc: 'Used when a area is saved to get loadshedding schedule details.'
+                 }">
+        </ng-container>
+        <ng-container 
+            [ngTemplateOutlet]="allowanceItem" 
+            [ngTemplateOutletContext]="{
+                name: 'Areas Nearby API', 
+                count: allowance?.apiUtilizationBreakdown?.getAreasNearby,
+                desc: 'Discovers Areas near your current location in the manage areas page.'
+                }">
+        </ng-container>
+        <ng-container 
+            [ngTemplateOutlet]="allowanceItem" 
+            [ngTemplateOutletContext]="{
+                name: 'Status API', count:
+                 allowance?.apiUtilizationBreakdown?.getStatus,
+                 desc: 'Used to get the current load shedding status found on several pages.'
+                 }">
+        </ng-container>
+        <ng-container 
+            [ngTemplateOutlet]="allowanceItem" 
+            [ngTemplateOutletContext]="{
+                name: 'Topics Nearby API', 
+                count: allowance?.apiUtilizationBreakdown?.getTopicsNearby,
+                desc: 'Used to get topics near your current location.'
+                }">
+        </ng-container>
+    </div>
+</div>
+
+<ng-template #allowanceItem let-name='name' let-count="count" let-desc="desc">
+    <app-card class="allowance-item-card">
+        <div class="card-heading-container">
+            <h1>
+                {{name}}
+            </h1>
+        </div>
+        <p>
+            {{desc}}
+        </p>
+        <div class="card-count-container">
+            <h3>
+                Current Count : {{count}}
+            </h3>
+        </div>
+    </app-card>
+</ng-template>
+
+<ng-template #allowanceDetails>
+    <app-card class="allowance-item-card">
+        <div class="card-heading-container">
+            <h1>
+                Eskom Se Push Allowance Details
+            </h1>
+        </div>
+        <div class="allowance-details-section">
+            <h3>
+                Current Call Count : {{allowance?.allowance?.count}}
+            </h3>
+            <h3>
+                Call Count Limit : {{allowance?.allowance?.limit}}
+            </h3>
+            <h3>
+                Allowance Type : {{allowance?.allowance?.type}}
+            </h3>
+        </div>
+    </app-card>
+</ng-template>

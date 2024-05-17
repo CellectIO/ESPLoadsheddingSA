@@ -1,0 +1,9 @@
+<div class="time-line">
+    <div *ngFor="let segment of timeFragments; let index = index" 
+        class="segment"
+        [ngClass]="[segment.segmentColor, segment.currentTime ? 'segment-active' : '']">
+        <div *ngIf="segment.currentTime">
+            |
+        </div>
+    </div>
+</div>

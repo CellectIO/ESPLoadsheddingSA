@@ -1,0 +1,28 @@
+{
+    "areas": [
+        {
+            "count": -1,
+            "id": "eskde-10-magaliessigext17cityofjohannesburggauteng",
+            "name": "Magaliessig Ext 17 (10)",
+            "region": "Eskom Direct, City of Johannesburg, Gauteng"
+        },
+        {
+            "count": -1,
+            "id": "eskde-10-magaliessigext1cityofjohannesburggauteng",
+            "name": "Magaliessig Ext 1 (10)",
+            "region": "Eskom Direct, City of Johannesburg, Gauteng"
+        },
+        {
+            "count": -1,
+            "id": "eskde-10-magaliessigext24cityofjohannesburggauteng",
+            "name": "Magaliessig Ext 24 (10)",
+            "region": "Eskom Direct, City of Johannesburg, Gauteng"
+        },
+        {
+            "count": -1,
+            "id": "eskde-10-magaliessigext28cityofjohannesburggauteng",
+            "name": "Magaliessig Ext 28 (10)",
+            "region": "Eskom Direct, City of Johannesburg, Gauteng"
+        }
+    ]
+}

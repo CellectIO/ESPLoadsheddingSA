@@ -1,0 +1,62 @@
+<div class="container">
+    <app-log-panel [errorLogs]="errorLogs" [warningLogs]="warningLogs" [successLogs]="successLogs" />
+
+    <mat-form-field class="area-filter-input" (keyup.enter)="getAreaSearchResult()">
+        <mat-label>Area Name</mat-label>
+        <input matInput [formControl]="areaName">
+    </mat-form-field>
+
+    <div class="area-segment">
+        <h1 *ngIf="areaSearchDataSet.length > 0">
+            <mat-icon aria-hidden="false" aria-label="search" fontIcon="search"></mat-icon>
+            Searched Areas
+        </h1>
+    
+        <app-card class="area-card" *ngFor="let area of areaSearchDataSet; index as i; first as isFirst">
+            <div class="area-card-heading">
+                <h3>{{area.name}}</h3>
+                <button mat-raised-button color="primary" type="button" (click)="addArea(area)" class="btn-md">
+                    <mat-icon aria-hidden="false" aria-label="add" fontIcon="add"></mat-icon>
+                    Add Area
+                </button>
+            </div>
+            <p>{{area.region}}</p>
+        </app-card>
+    </div>
+
+    <div class="area-segment">
+        <h1>
+            <mat-icon aria-hidden="false" aria-label="explore_nearby" fontIcon="explore_nearby"></mat-icon>
+            Recommended Nearby
+        </h1>
+    
+        <app-card class="area-card" *ngFor="let area of areasNearbyDataSet; index as i; first as isFirst">
+            <div class="area-card-heading">
+                <h3>{{area.name}}</h3>
+                <button mat-raised-button color="primary" type="button" (click)="addArea(area)" class="btn-md">
+                    <mat-icon aria-hidden="false" aria-label="add" fontIcon="add"></mat-icon>
+                    Add Area
+                </button>
+            </div>
+            <p>{{area.region}}</p>
+        </app-card>
+    </div>
+
+    <div class="area-segment">
+        <h1>
+            <mat-icon aria-hidden="false" aria-label="bookmarks" fontIcon="bookmarks"></mat-icon>
+            Saved Areas
+        </h1>
+    
+        <app-card class="area-card" *ngFor="let area of savedAreas; index as i; first as isFirst">
+            <div class="area-card-heading">
+                <h3>{{area.name}}</h3>
+                <button mat-raised-button color="primary" type="button" (click)="removeArea(area)" class="btn-md">
+                    <mat-icon aria-hidden="false" aria-label="remove" fontIcon="remove"></mat-icon>
+                    Remove Area
+                </button>
+            </div>
+            <p>{{area.region}}</p>
+        </app-card>
+    </div>
+</div>
