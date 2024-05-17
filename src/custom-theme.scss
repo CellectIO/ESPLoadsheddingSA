@@ -1,0 +1,138 @@
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@use '@angular/material' as mat;
+
+@import "styles";
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat.core();
+
+$eskom-primary: (
+ 50: $eskom-stage-1-color,
+ 100: $eskom-stage-1-color,
+ 200: $eskom-stage-1-color,
+ 300: $eskom-stage-1-color,
+ 400: $eskom-stage-1-color,
+ 500: $eskom-stage-1-color,
+ 600: $eskom-stage-1-color,
+ 700: $eskom-stage-1-color,
+ 800: $eskom-stage-1-color,
+ 900: $eskom-stage-1-color,
+ contrast: (
+   50: $eskom-card-bg-color,
+   100: $eskom-card-bg-color,
+   200: $eskom-card-bg-color,
+   300: $eskom-card-bg-color,
+   400: $eskom-card-bg-color,
+   500: $eskom-card-bg-color,
+   600: $eskom-card-bg-color,
+   700: $eskom-card-bg-color,
+   800: $eskom-card-bg-color,
+   900: $eskom-card-bg-color,
+ )
+);
+
+$eskom-accent: (
+ 50: $eskom-stage-2-color,
+ 100: $eskom-stage-2-color,
+ 200: $eskom-stage-2-color,
+ 300: $eskom-stage-2-color,
+ 400: $eskom-stage-2-color,
+ 500: $eskom-stage-2-color,
+ 600: $eskom-stage-2-color,
+ 700: $eskom-stage-2-color,
+ 800: $eskom-stage-2-color,
+ 900: $eskom-stage-2-color,
+ contrast: (
+   50: $eskom-card-bg-color,
+   100: $eskom-card-bg-color,
+   200: $eskom-card-bg-color,
+   300: $eskom-card-bg-color,
+   400: $eskom-card-bg-color,
+   500: $eskom-card-bg-color,
+   600: $eskom-card-bg-color,
+   700: $eskom-card-bg-color,
+   800: $eskom-card-bg-color,
+   900: $eskom-card-bg-color,
+ )
+);
+
+$eskom-warn: (
+ 50: $eskom-stage-3-color,
+ 100: $eskom-stage-3-color,
+ 200: $eskom-stage-3-color,
+ 300: $eskom-stage-3-color,
+ 400: $eskom-stage-3-color,
+ 500: $eskom-stage-3-color,
+ 600: $eskom-stage-3-color,
+ 700: $eskom-stage-3-color,
+ 800: $eskom-stage-3-color,
+ 900: $eskom-stage-3-color,
+ contrast: (
+   50: $eskom-card-bg-color,
+   100: $eskom-card-bg-color,
+   200: $eskom-card-bg-color,
+   300: $eskom-card-bg-color,
+   400: $eskom-card-bg-color,
+   500: $eskom-card-bg-color,
+   600: $eskom-card-bg-color,
+   700: $eskom-card-bg-color,
+   800: $eskom-card-bg-color,
+   900: $eskom-card-bg-color,
+ )
+);
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+$eskom-primary-palette: mat.define-palette($eskom-primary);
+$eskom-accent-palette: mat.define-palette($eskom-accent);
+$eskom-warn-palette: mat.define-palette($eskom-warn);
+
+// Define a dark theme
+$eskom-dark-theme: mat.define-dark-theme((
+ color: (
+   primary: $eskom-primary-palette,
+   accent: $eskom-accent-palette,
+   warn: $eskom-warn-palette,
+ ),
+  // Only include `typography` and `density` in the default dark theme.
+  typography: mat.define-typography-config(),
+  density: 0,
+));
+
+// Apply the dark theme by default
+@include mat.core-theme($eskom-dark-theme);
+@include mat.button-theme($eskom-dark-theme);
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include mat.all-component-themes($eskom-dark-theme);
+
+body { 
+  margin: 0; 
+  font-family: Roboto, "Helvetica Neue", sans-serif; 
+  color: $eskom-title-color
+}
+
+::-webkit-scrollbar {
+  width: 3px
+}
+
+::-webkit-scrollbar-track {
+  background: $eskom-bg-color 
+}
+
+::-webkit-scrollbar-thumb {
+  background: $eskom-stage-1-color
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: $eskom-bg-color
+}
+
+.mat-mdc-tab-header{
+  background-color: $eskom-bg-color 
+}

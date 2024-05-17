@@ -1,0 +1,52 @@
+<div class="area-schedule-filter-container">
+    <mat-form-field class="area-schedule-filter">
+        <mat-label>Schedule Date Filter</mat-label>
+        <mat-select [formControl]="scheduleDateFilterControl" multiple (selectionChange)="applyAreaScheduleFilters()">
+            <mat-select-trigger>
+                {{scheduleDateFilterControl.value?.[0] || ''}}
+                @if ((scheduleDateFilterControl.value?.length || 0) > 1) {
+                <span class="example-additional-selection">
+                    (+{{(scheduleDateFilterControl.value?.length || 0) - 1}} {{scheduleDateFilterControl.value?.length
+                    === 2 ? 'other' : 'others'}})
+                </span>
+                }
+            </mat-select-trigger>
+            @for (date of scheduleDateFilters; track date) {
+            <mat-option [value]="date">{{date}}</mat-option>
+            }
+        </mat-select>
+    </mat-form-field>
+    <mat-form-field class="area-schedule-filter">
+        <mat-label>Stage Filter</mat-label>
+        <mat-select [formControl]="scheduleStageFilterControl" multiple (selectionChange)="applyAreaScheduleFilters()">
+            <mat-select-trigger>
+                {{scheduleStageFilterControl.value?.[0] || ''}}
+                @if ((scheduleStageFilterControl.value?.length || 0) > 1) {
+                <span class="example-additional-selection">
+                    (+{{(scheduleStageFilterControl.value?.length || 0) - 1}} {{scheduleStageFilterControl.value?.length
+                    === 2 ? 'other' : 'others'}})
+                </span>
+                }
+            </mat-select-trigger>
+            @for (stage of scheduleStageFilters; track stage) {
+            <mat-option [value]="stage">{{stage}}</mat-option>
+            }
+        </mat-select>
+    </mat-form-field>
+</div>
+
+<div *ngFor="let schedule of areaSchedules; index as i; first as isFirst" class="area-schedules-container">
+    <h1>{{schedule.name}} - {{schedule.date}}</h1>
+    <div class="area-schedule-card-container">
+        <app-card *ngFor="let stage of schedule._stages; index as i; first as isFirst">
+            <div class="area-schedule-card">
+                <h3 [ngClass]="ngStyleService.getStageColor(stage.stage)">
+                    {{stage.name}}
+                </h3>
+                <p *ngFor="let timeSlot of stage.timeSlots; index as i; first as isFirst">
+                    {{timeSlot}}
+                </p>
+            </div>
+        </app-card>
+    </div>
+</div>

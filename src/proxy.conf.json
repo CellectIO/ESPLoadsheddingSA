@@ -1,0 +1,10 @@
+{
+  "/eskomAPI": {
+    "target": "https://developer.sepush.co.za/business/2.0",
+    "secure": true,
+    "pathRewrite": {
+      "^/eskomAPI": ""
+    },
+    "changeOrigin": true
+  }
+}

@@ -1,0 +1,36 @@
+<app-log-panel [errorLogs]="errorLogs" [warningLogs]="warningLogs" [successLogs]="successLogs" />
+
+<div class="container">
+    <h1>
+        <mat-icon aria-hidden="false" aria-label="bolt" fontIcon="bolt"></mat-icon>
+        Loadshedding Status
+    </h1>
+    <app-load-shedding-status [loadSheddingStatus]="loadSheddingStatus" />
+
+    <div class="my-areas-container-heading">
+        <h1>
+            <mat-icon aria-hidden="false" aria-label="bookmarks" fontIcon="bookmarks"></mat-icon>
+            My Areas
+        </h1>
+        <div class="my-areas-container-heading-btn">
+            <button mat-raised-button (click)="goToManageAreas()" color="primary" class="btn-md">
+                <mat-icon aria-hidden="false" aria-label="edit" fontIcon="edit"></mat-icon>
+                Manage Areas
+            </button>
+        </div>
+    </div>
+
+    <div class="my-areas-container">
+        <app-card class="area-card" *ngFor="let area of savedAreas?.areas; index as i; first as isFirst">
+            <div class="area-card-heading">
+                <h3>{{area.name}}</h3>
+                <mat-icon aria-hidden="false" aria-label="close" fontIcon="navigate_next"
+                    (click)="goToAreaInfo(area.id)"></mat-icon>
+            </div>
+    
+            <p>{{area.region}}</p>
+    
+            <app-time-slot-chart [infoDay]="getAreaInfo(area.id)"></app-time-slot-chart>
+        </app-card>
+    </div>
+</div>

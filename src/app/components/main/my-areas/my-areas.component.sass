@@ -1,0 +1,48 @@
+@import "../../../../styles"
+
+.container
+    display: flex
+    flex-direction: column
+
+    h1
+        color: $eskom-card-content-text-color
+
+        p
+            color: $eskom-card-content-text-color
+
+    .my-areas-container-heading
+        display: flex
+        flex-direction: row
+        align-items: center
+
+        h1
+            width: 60%
+
+        .my-areas-container-heading-btn
+            width: 40%
+            display: flex
+            flex-direction: column
+            align-items: end
+
+    .my-areas-container
+        display: flex
+        flex-direction: column
+        flex-wrap: nowrap
+        gap: 1rem
+
+    .area-card
+        width: 100%
+        height: fit-content
+
+        .area-card-heading
+            display: flex
+            flex-direction: row
+            align-content: center
+
+            h3
+                margin-top: 0px
+                width: 90%
+
+            .mat-icon
+                width: 10%
+                margin-top: 5px

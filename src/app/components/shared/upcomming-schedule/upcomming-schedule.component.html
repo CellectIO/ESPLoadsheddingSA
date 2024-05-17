@@ -1,0 +1,18 @@
+<app-card class="upcomming-schedule-card">
+    <div *ngFor="let schedule of areaSchedulesUpcomming; index as i; first as isFirst">
+        <p>{{schedule.name}}, {{schedule.date | date : 'MMM dd'}}</p>
+
+        <app-time-slot-chart [infoDay]="schedule"></app-time-slot-chart>
+
+        @for (stage of schedule._stages; track stage) {
+            @for (slot of stage.timeSlots; track slot) {
+                <li [ngClass]="ngStyleService.getStageColor(stage.stage)">
+                    {{slot}} - {{stage.name}} - {{stage.stage}}
+                </li>
+            }
+        }
+    </div>
+    <div *ngIf="areaSchedulesUpcomming.length == 0">
+        <p>No Loadshedding</p>
+    </div>
+</app-card>

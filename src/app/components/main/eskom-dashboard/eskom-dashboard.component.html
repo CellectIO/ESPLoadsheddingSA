@@ -1,0 +1,26 @@
+<app-log-panel [errorLogs]="errorLogs" [warningLogs]="warningLogs" [successLogs]="successLogs" />
+
+<div>
+    <h1>
+        <mat-icon aria-hidden="false" aria-label="bolt" fontIcon="bolt"></mat-icon>
+        Loadshedding Status
+    </h1>
+    <app-load-shedding-status [loadSheddingStatus]="loadSheddingStatus" />
+
+    <h1>
+        <mat-icon aria-hidden="false" aria-label="location_on" fontIcon="location_on"></mat-icon>
+        Area
+    </h1>
+    <p>{{areaInfoDataSet?.info?.region}} | {{areaInfoDataSet?.info?.name}}</p>
+
+    <h1>
+        <mat-icon aria-hidden="false" aria-label="event_upcomming" fontIcon="event_upcomming"></mat-icon>
+        Upcomming
+    </h1>
+    <app-upcomming-schedule [areaSchedulesUpcomming]="areaInfoDataSet?.schedule?.days ?? []"
+        [loadSheddingStatus]="loadSheddingStatus" [areaInfoDataSet]="areaInfoDataSet" />
+
+    <h1>Area Schedule</h1>
+    <app-area-schedule [areaInfoDataSet]="areaInfoDataSet" [areaInfoDataSet]="areaInfoDataSet" />
+
+</div>
