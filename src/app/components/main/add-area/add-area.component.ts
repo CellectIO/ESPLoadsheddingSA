@@ -116,36 +116,16 @@ export class AddAreaComponent implements OnInit, OnDestroy {
 
   getAreasNearbyDbResult(): Observable<void>
   {
-    return this.locationService.getCurrentPosition()
+    return this.db.getAreasNearby
       .pipe(
-        switchMap((geo) => {
-          if(!geo.isSuccess){
-            this.errorLogs = geo.errors!;
-            return of();
+        map((value) => {
+          if (value.isLoaded) {
+            let savedAreas = this.savedAreas.map(_ => _.id);
+            let unSavedAreas = value.data!.areas.filter(_ => !savedAreas.includes(_.id));
+            this.areasNearbyDataSet = unSavedAreas;
+          } else {
+            this.errorLogs = value.errors!;
           }
-
-          return this.db.getAreasNearby
-              .pipe(
-                exhaustMap((getResult) => {
-                  return this.db.updateAreasNearby(geo.data!.coords.latitude, geo.data!.coords.longitude, !getResult.isLoaded);
-                }),
-                switchMap((syncResult) => {
-                  if(syncResult){
-                    return this.db.getAreasNearby;
-                  }
-
-                  return of(new DbResult<AreasNearbyEntity>(null, ['Something went wrong while trying to get areas nearby']));
-                }),
-                map((value) => {
-                  if (value.isLoaded) {
-                    let savedAreas = this.savedAreas.map(_ => _.id);
-                    let unSavedAreas = value.data!.areas.filter(_ => !savedAreas.includes(_.id));
-                    this.areasNearbyDataSet = unSavedAreas;
-                  } else {
-                    this.errorLogs = value.errors!;
-                  }
-                })
-              );
         })
       );
   }

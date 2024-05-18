@@ -8,6 +8,10 @@ import { AllowanceDashboardComponent } from './components/main/allowance-dashboa
 
 export const routes: Routes = [
     {
+        path: '', //DEFAULT LANDING PAGE
+        component: SettingsComponent
+    },
+    {
         path: 'settings',
         component: SettingsComponent
     },

@@ -81,10 +81,21 @@ export class SessionStorageService {
   }
 
   /**
-   * Removes all key/value pairs, if there are any.
+   * Removes all key/value pairs that are requested by the cacheKeys param
    */
-  clear(){
-    this.storage.clear();
+  clear(cachekeys: string[]): ResultBase
+  {
+    var failedKeys: string[] = [];
+    cachekeys.forEach(key => {
+      let deleteResult = this.deleteData(key);
+      if(!deleteResult.isSuccess){
+        failedKeys.push(key);
+      }
+    });
+
+    return failedKeys.length > 0 ?
+      new ResultBase([`The Following Cache Keys failed to save: [${cachekeys}]`]) :
+      new ResultBase(null);
   }
 
 }
