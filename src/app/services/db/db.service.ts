@@ -17,7 +17,8 @@ import { environment } from "../../../environments/environment";
 import { StorageServiceKeyConstants } from "../../core/constants/storage-service-key.constants";
 import { EskomSePushConfig } from "../../core/models/common/Settings/user-app-settings";
 import { IteratableDbResult } from "../../core/models/response-types/iteratable-db-results";
-import { ApiUtilizationBreakdown } from "../../core/models/common/allowance/api-utilization-breakdown";
+import { Result } from "../../core/models/response-types/result";
+import { LocationService } from "../location/location.service";
 
 export type dbSetOpperation = 'set' | 'update' | 'delete' | 'append';
 
@@ -56,7 +57,8 @@ export class DbService {
     private mockApiService: EskomSePushMockApiService,
     private storageService: SessionStorageService,
     private mapper: EskomSePushEntityMapperService,
-    private logger: NGXLogger
+    private logger: NGXLogger,
+    private location: LocationService
   ) {
     this._apiService = environment.useMockData ? mockApiService : apiService;
     this.logger.info(`Using Mock Http Service : ${environment.useMockData}`);
@@ -122,7 +124,7 @@ export class DbService {
     )
   }
 
-  public updateAllowance(util: AllowanceEntity | null): Observable<boolean> {
+  public updateAllowance(allowance: AllowanceEntity | null): Observable<boolean> {
     let operation: dbSetOpperation = 'set';
 
     //WE ARE NOT CHECKING CACHE HERE SINCE THE ALLOWANCE API DOES NOT COUNT TOWARDS API CALLS.
@@ -133,14 +135,14 @@ export class DbService {
           return of(false);
         }
 
-        if (!util) {
+        if (allowance == null) {
           var cachedResponse = this.storageService.getData<AllowanceEntity>(StorageServiceKeyConstants.USER_DATA_ALLOWANCE);
           if (cachedResponse.isSuccess) {
-            util = cachedResponse.data;
+            allowance = cachedResponse.data;
           }
         }
 
-        let entityData = this.mapper.toAllowanceEntity(value.data!, util);
+        let entityData = this.mapper.toAllowanceEntity(value.data!, allowance);
 
         return this._addOrUpdateDbSetCacheValue(operation,
           this._allowance,
@@ -409,55 +411,101 @@ export class DbService {
 
   //#region "MANAGE DB STATE"
 
-  public reset() {
-    this._useCache.next(true);
+  /**
+   * Clears the DB service entities
+   * @param hard if true the user settings entity would also be cleared.
+   */
+  public reset(hard: boolean = false) {
     this._savedAreas.next(null);
     this._status.next(null);
     this._areasInformation.next([]);
     this._areasNearby.next(null);
     this._areas.next([]);
     this._topicsNearby.next(null);
-    this._allowance.next(null);
-    this._userSettings.next(null);
+    
+    if(hard){
+      this._useCache.next(true);
+      this._allowance.next(null);
+      this._userSettings.next(null);
+    }
 
     this.logger.info(`${typeof (DbService)}: Entities have been clear to default values.`);
   }
 
-  public sync(): Observable<boolean> {
-    return this.syncAllowance()
+  public init(): Observable<boolean> {
+    return this.location.getCurrentPosition()
       .pipe(
-        //STEP: SYNC STATUS, IF NOT FOUND, THEN LOAD IN
-        switchMap((result) => {
-          return this.syncStatus();
-        }),
-        switchMap((result) => {
-          if (!result) {
-            return this.updateStatus();
-          }
+        switchMap(result => {
+          this.logger.warn(`getCurrentPosition() has returned a succesfull response: ${result.isSuccess}`);
 
+          if(result.isSuccess){
+            return this.updateAreasNearby(result.data!.coords.latitude, result.data!.coords.longitude, true);
+          }
+          return of(result.isSuccess);
+        }),
+        switchMap(result => {
+          this.logger.warn(`updateAreasNearby() has returned a succesfull response: ${result}`);
+
+          if(result){
+            return this.updateStatus(true);
+          }
           return of(result);
         }),
-        //STEP: SYNC USER RELATED DATA
+        map(result => {
+          this.logger.warn(`updateStatus() has returned a succesfull response: ${result}`);
+          return result;
+        })
+      );
+  }
+
+  public sync(): Observable<Result<string>> {
+    let response: Result<string> = new Result<string>('Sync completed succesfully.', null);
+
+    const updateResponse = (funcName: string): Observable<boolean> => {
+      //DON"T OVERRIDE THE INITIAL FAILURE
+      if(response.isSuccess == false){
+        return of(false);
+      }
+      let error = `Syncing [${funcName}] did not succeeed, stopping all further attempts to sync remaining entities.`;
+      this.logger.warn(error);
+      response = new Result<string>(null, [error]);
+      return of(false);
+    };
+
+    return this.syncAllowance()
+      .pipe(
         switchMap((result) => {
+          if(result == false) return updateResponse('syncAllowance()');
           return this.syncSavedAreas();
         }),
         switchMap((result) => {
+          if(result == false) return updateResponse('syncSavedAreas()');
           return this.syncUserSettings();
         }),
-        //STEP: SYNC DATA, IF NULL, SOMETHING ELSE WILL NEED TO LOAD IT IN.
         switchMap((result) => {
+          if(result == false) return updateResponse('syncUserSettings()');
+          return this.syncStatus();
+        }),
+        switchMap((result) => {
+          if(result == false) return updateResponse('syncStatus()');
           return this.syncAreas();
         }),
         switchMap((result) => {
+          if(result == false) return updateResponse('syncAreas()');
           return this.syncAreaInformation();
         }),
         switchMap((result) => {
+          if(result == false) return updateResponse('syncAreaInformation()');
           return this.syncAreasNearby();
         }),
         switchMap((result) => {
+          if(result == false) return updateResponse('syncAreasNearby()');
           return this.syncTopicsNearby();
+        }),
+        switchMap((result) => {
+          if(result == false) updateResponse('syncTopicsNearby()');
+          return of(response);
         })
-
       );
   }
 
@@ -473,6 +521,7 @@ export class DbService {
     ).pipe(
       switchMap((result) => {
         if (!result) {
+          //IF NO SAVED AREAS WERE FOUND, WE ARE GOING TO INITILIZE IT.
           return this._addOrUpdateDbSetCacheValue(
             'set',
             this._savedAreas,
@@ -493,6 +542,25 @@ export class DbService {
       'set',
       this._userSettings,
       StorageServiceKeyConstants.USER_DATA_SETTINGS
+    ).pipe(
+      switchMap((result) => {
+        if (!result) {
+          //IF NO SAVED SETTINGS WERE FOUND, WE ARE GOING TO INITILIZE IT.
+          return this._addOrUpdateDbSetCacheValue(
+            'set',
+            this._userSettings,
+            {
+              eskomSePushApiKey : null,
+              apiSyncInterval : 15,
+              pagesSetup : false,
+              pagesAllowance : true
+            },
+            StorageServiceKeyConstants.USER_DATA_SETTINGS
+          )
+        }
+
+        return of(result);
+      })
     );
   }
 
@@ -508,11 +576,27 @@ export class DbService {
     );
   }
 
-  public syncTopicsNearby(): Observable<boolean> {
+  public syncTopicsNearby(): Observable<boolean> { 
     return this._attemptLoadDbSetFromCache(
       'set',
       this._topicsNearby,
       StorageServiceKeyConstants.API_RESPONSE_GETTOPICNEARBY
+    ).pipe(
+      switchMap((result) => {
+        if (!result) {
+          //IF NO SAVED TOPICS WERE FOUND, WE ARE GOING TO INITILIZE IT.
+          return this._addOrUpdateDbSetCacheValue(
+            'set',
+            this._topicsNearby,
+            {
+              topics: []
+            },
+            StorageServiceKeyConstants.API_RESPONSE_GETTOPICNEARBY
+          )
+        }
+
+        return of(result);
+      })
     );
   }
 
@@ -521,6 +605,22 @@ export class DbService {
       'set',
       this._areasNearby,
       StorageServiceKeyConstants.API_RESPONSE_GETAREASNEARBY
+    ).pipe(
+      switchMap((result) => {
+        if (!result) {
+          //IF NO SAVED AREAS WERE FOUND, WE ARE GOING TO INITILIZE IT.
+          return this._addOrUpdateDbSetCacheValue(
+            'set',
+            this._areasNearby,
+            {
+              areas: []
+            },
+            StorageServiceKeyConstants.API_RESPONSE_GETAREASNEARBY
+          )
+        }
+
+        return of(result);
+      })
     );
   }
 
@@ -529,6 +629,20 @@ export class DbService {
       'set',
       this._areasInformation,
       StorageServiceKeyConstants.API_RESPONSE_GETAREAINFO
+    ).pipe(
+      switchMap((result) => {
+        if (!result) {
+          //IF NO SAVED AREAS WERE FOUND, WE ARE GOING TO INITILIZE IT.
+          return this._addOrUpdateDbSetCacheValue(
+            'set',
+            this._areasInformation,
+            [],
+            StorageServiceKeyConstants.API_RESPONSE_GETAREAINFO
+          )
+        }
+
+        return of(result);
+      })
     );
   }
 
@@ -537,6 +651,20 @@ export class DbService {
       'set',
       this._areas,
       StorageServiceKeyConstants.API_RESPONSE_GETAREA
+    ).pipe(
+      switchMap((result) => {
+        if (!result) {
+          //IF NO SAVED AREAS WERE FOUND, WE ARE GOING TO INITILIZE IT.
+          return this._addOrUpdateDbSetCacheValue(
+            'set',
+            this._areas,
+            [],
+            StorageServiceKeyConstants.API_RESPONSE_GETAREA
+          )
+        }
+
+        return of(result);
+      })
     );
   }
 

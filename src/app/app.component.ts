@@ -5,7 +5,8 @@ import { HomeComponent } from './components/main/home/home.component';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { DbService } from './services/db/db.service';
-import { Subscription, map, switchMap } from 'rxjs';
+import { Subscription, exhaustMap, of, switchMap } from 'rxjs';
+import { NGXLogger } from 'ngx-logger';
 
 export interface ComponentNavItem{
   path: string
@@ -32,40 +33,48 @@ export class AppComponent implements OnInit ,OnDestroy{
 
   subscriptions: Subscription[] = [];
 
-  constructor(private db: DbService) { }
+  constructor(private db: DbService, private logger: NGXLogger) { }
 
   ngOnInit(): void {
+    //SYNC SETTINGS FIRST TO CONFIRM IF ITS A FIRST TIME USER, THEN DETERMINE IF A FULL SYNC SHOULD RUN.
     let getKeySub = this.db.sync()
       .pipe(
-        switchMap((result) => {
+        switchMap(result => {
           return this.db.getUserSettings;
         }),
-        map((dbSetResult) => {
-          if(dbSetResult.isLoaded && dbSetResult.data!.eskomSePushApiKey){
+        exhaustMap(result => {
+          if(result.isLoaded == false || result.data?.eskomSePushApiKey == null || result.data?.eskomSePushApiKey == ''){
+            this.logger.warn('Eskom Se Push API Key has not been saved yet. Loading Initial Setup Pages.');
+
+            this.navigation = [
+              { path: 'page_setup', icon: 'key' },
+              { path: 'settings', icon: 'settings' }
+            ];
+
+            return of(false);
+          }else{
+            this.logger.info('Eskom Se Push API Key has been saved. Loading Default Pages based on user settings.');
 
             let navItems = [
               { path: 'areas/my', icon: 'home' },
               { path: 'areas/add', icon: 'manage_search' }
             ];
 
-            if(dbSetResult.data?.pagesAllowance){
+            if(result.data?.pagesAllowance){
               navItems.push({ path: 'allowance', icon: 'wallet' });
             }
 
-            if(dbSetResult.data?.pagesSetup){
+            if(result.data?.pagesSetup){
               navItems.push({ path: 'page_setup', icon: 'key' });
             }
 
             navItems.push({ path: 'settings', icon: 'settings' });
 
             this.navigation = navItems;
-          }else{
-            this.navigation = [
-              { path: 'page_setup', icon: 'key' },
-              { path: 'settings', icon: 'settings' }
-            ];
+
+            return of(true);
           }
-        })
+        }),
       ).subscribe();
 
     this.subscriptions.push(getKeySub);
