@@ -1,8 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DbService } from '../../../services/db/db.service';
-import { Observable, Subscription, exhaustMap, map, of, switchMap, tap } from 'rxjs';
+import { Observable, Subscription, map, of, switchMap } from 'rxjs';
 import { NGXLogger } from 'ngx-logger';
-import { AreasNearbyEntity } from '../../../core/models/entities/areas-nearby-entity';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -11,10 +10,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { EskomSearchArea } from '../../../core/models/common/areas/eskom-search-area';
 import { LocationService } from '../../../services/location/location.service';
 import { MatIconModule } from '@angular/material/icon';
-import { LogPanelComponent } from '../../shared/log-panel/log-panel.component';
 import { EskomAreaNearby } from '../../../core/models/common/areas/eskom-area-nearby';
-import { DbResult } from '../../../core/models/response-types/db-result';
 import { CardComponent } from '../../shared/card/card.component';
+import { LogPanelService } from '../../../services/log-panel/log-panel.service';
 
 @Component({
   selector: 'app-add-area',
@@ -27,17 +25,12 @@ import { CardComponent } from '../../shared/card/card.component';
     MatFormFieldModule,
     MatButtonModule,
     MatIconModule,
-    LogPanelComponent,
     CardComponent
   ],
   templateUrl: './add-area.component.html',
   styleUrl: './add-area.component.sass'
 })
 export class AddAreaComponent implements OnInit, OnDestroy {
-
-  errorLogs: string[] = [];
-  successLogs: string[] = [];
-  warningLogs: string[] = [];
 
   areasNearbyDataSet: EskomAreaNearby[] = [];
   areaSearchDataSet: EskomSearchArea[] = [];
@@ -50,7 +43,8 @@ export class AddAreaComponent implements OnInit, OnDestroy {
   constructor(
     private db: DbService, 
     private logger: NGXLogger,
-    private locationService: LocationService
+    private locationService: LocationService,
+    private logPanel: LogPanelService
   ) {
   }
 
@@ -92,7 +86,7 @@ export class AddAreaComponent implements OnInit, OnDestroy {
             let unSavedAreas = value.data![0].areas.filter(_ => !savedAreas.includes(_.id)); //TODO: don't always use the first results
             this.areaSearchDataSet = unSavedAreas;
           } else {
-            this.errorLogs = value.errors!;
+            this.logPanel.setErrorLogs(value.errors!);
           }
         })
       ).subscribe();
@@ -108,7 +102,7 @@ export class AddAreaComponent implements OnInit, OnDestroy {
           if(result.isLoaded){
             this.savedAreas = result.data!.areas;
           }else{
-            this.errorLogs = result.errors!;
+            this.logPanel.setErrorLogs(result.errors!);
           }
         })
       );
@@ -124,7 +118,7 @@ export class AddAreaComponent implements OnInit, OnDestroy {
             let unSavedAreas = value.data!.areas.filter(_ => !savedAreas.includes(_.id));
             this.areasNearbyDataSet = unSavedAreas;
           } else {
-            this.errorLogs = value.errors!;
+            this.logPanel.setErrorLogs(value.errors!);
           }
         })
       );
@@ -134,7 +128,7 @@ export class AddAreaComponent implements OnInit, OnDestroy {
     //ONLY SAVE IF AREA IS NOT SAVED ALREADY
     let exsists = this.savedAreas.includes(area);
     if(exsists){
-      this.warningLogs = ['Area is already saved.'];
+      this.logPanel.setWarningLogs(['Area is already saved.']);
       return
     }
 
@@ -146,7 +140,7 @@ export class AddAreaComponent implements OnInit, OnDestroy {
     //ONLY REMOVE IF AREA IS ALREADY SAVED
     let exsists = this.savedAreas.includes(area);
     if(!exsists){
-      this.warningLogs = ['Area Does not exists in saved Areas.'];
+      this.logPanel.setWarningLogs(['Area Does not exists in saved Areas.']);
       return
     }
 
@@ -193,7 +187,7 @@ export class AddAreaComponent implements OnInit, OnDestroy {
                   .pipe(
                     map((saveResult) => {
                       if(!saveResult){
-                        this.errorLogs = [`failed to save area with name: ${area.name}`];
+                        this.logPanel.setErrorLogs([`failed to save area with name: ${area.name}`]);
                       }
                     })
                   )

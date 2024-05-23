@@ -1,5 +1,4 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
-import { LogPanelComponent } from "../../shared/log-panel/log-panel.component";
 import { CommonModule } from "@angular/common";
 import { MatIconModule } from "@angular/material/icon";
 import { TimeSlotChartComponent } from "../../shared/time-slot-chart/time-slot-chart.component";
@@ -14,12 +13,12 @@ import { Subscription, map, switchMap } from "rxjs";
 import { AreaInfoEntity } from "../../../core/models/entities/area-info-entity";
 import { EskomStatusLocation } from "../../../core/models/common/status/eskom-status-location";
 import { ActivatedRoute } from "@angular/router";
+import { LogPanelService } from "../../../services/log-panel/log-panel.service";
 
 @Component({
   selector: 'app-eskom-dashboard',
   standalone: true,
   imports: [
-    LogPanelComponent,
     CommonModule,
     MatIconModule,
     TimeSlotChartComponent,
@@ -33,12 +32,7 @@ import { ActivatedRoute } from "@angular/router";
 })
 export class EskomDashboardComponent implements OnInit, OnDestroy {
 
-  errorLogs: string[] = [];
-  successLogs: string[] = [];
-  warningLogs: string[] = [];
-
   areaId: string = '';
-
   areaInfoDataSet: AreaInfoEntity | null = null;
   loadSheddingStatus: EskomStatusLocation[] = [];
 
@@ -48,7 +42,8 @@ export class EskomDashboardComponent implements OnInit, OnDestroy {
     private db: DbService,
     private storageService: SessionStorageService,
     private logger: NGXLogger,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private logPanel: LogPanelService
   ) {
 
   }
@@ -69,7 +64,7 @@ export class EskomDashboardComponent implements OnInit, OnDestroy {
           this.areaId = routeId;
           this.loadEskomDataSets();
         }else{
-          this.errorLogs.push('no settings have been saved yet.');
+          this.logPanel.setErrorLogs(['no settings have been saved yet.']);
         }
       })
     ).subscribe();
@@ -86,10 +81,10 @@ export class EskomDashboardComponent implements OnInit, OnDestroy {
             if(targetArea.length > 0){
               this.areaInfoDataSet = targetArea[0];
             }else{
-              this.errorLogs = ['Area Information has not been loaded for this target area.']
+              this.logPanel.setErrorLogs(['Area Information has not been loaded for this target area.']);
             }
           } else {
-            this.errorLogs = value.errors!;
+            this.logPanel.setErrorLogs(value.errors!);
           }
         }),
         switchMap((value) => {
@@ -99,7 +94,7 @@ export class EskomDashboardComponent implements OnInit, OnDestroy {
           if (value.isLoaded) {
             this.loadSheddingStatus = value.data?.status._all!
           } else {
-            this.errorLogs = value.errors!;
+            this.logPanel.setErrorLogs(value.errors!);
           }
         })
       ).subscribe();

@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { LoadSheddingStatusComponent } from '../../shared/load-shedding-status/load-shedding-status.component';
 import { MatIconModule } from '@angular/material/icon';
 import { DbService } from '../../../services/db/db.service';
-import { LogPanelComponent } from '../../shared/log-panel/log-panel.component';
 import { Subscription, map, switchMap } from 'rxjs';
 import { AreaSearchEntity } from '../../../core/models/entities/area-search-entity';
 import { EskomStatusLocation } from '../../../core/models/common/status/eskom-status-location';
@@ -10,8 +9,9 @@ import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { Router } from '@angular/router';
 import { TimeSlotChartComponent } from '../../shared/time-slot-chart/time-slot-chart.component';
-import { AreaInfoDayEntity, AreaInfoEntity } from '../../../core/models/entities/area-info-entity';
+import { AreaInfoEntity } from '../../../core/models/entities/area-info-entity';
 import { CardComponent } from '../../shared/card/card.component';
+import { LogPanelService } from '../../../services/log-panel/log-panel.service';
 
 @Component({
   selector: 'app-my-areas',
@@ -19,7 +19,6 @@ import { CardComponent } from '../../shared/card/card.component';
   imports: [
     LoadSheddingStatusComponent,
     MatIconModule,
-    LogPanelComponent,
     CommonModule,
     MatButtonModule,
     TimeSlotChartComponent,
@@ -30,20 +29,15 @@ import { CardComponent } from '../../shared/card/card.component';
 })
 export class MyAreasComponent implements OnInit, OnDestroy {
 
-  errorLogs: string[] = [];
-  successLogs: string[] = [];
-  warningLogs: string[] = [];
-
   loadSheddingStatus: EskomStatusLocation[] = [];
-
   savedAreas: AreaSearchEntity | null = null;
   savedAreasInfo: AreaInfoEntity[] = [];
-
   subscriptions: Subscription[] = [];
 
   constructor(
     private db: DbService, 
-    private router: Router
+    private router: Router,
+    private logPanel: LogPanelService
   ) {
   }
 
@@ -66,7 +60,7 @@ export class MyAreasComponent implements OnInit, OnDestroy {
         if (value.isLoaded) {
           this.loadSheddingStatus = value.data?.status._all!
         } else {
-          this.errorLogs = value.errors!;
+          this.logPanel.setErrorLogs(value.errors!);
         }
       }),
       switchMap((response) => {
@@ -76,7 +70,7 @@ export class MyAreasComponent implements OnInit, OnDestroy {
         if (value.isLoaded) {
           this.savedAreas = value.data;
         } else {
-          this.errorLogs = value.errors!;
+          this.logPanel.setErrorLogs(value.errors!);
         }
       }),
       switchMap(() => {

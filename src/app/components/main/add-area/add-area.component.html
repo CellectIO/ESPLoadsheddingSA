@@ -1,6 +1,4 @@
 <div class="container">
-    <app-log-panel [errorLogs]="errorLogs" [warningLogs]="warningLogs" [successLogs]="successLogs" />
-
     <mat-form-field class="area-filter-input" (keyup.enter)="getAreaSearchResult()">
         <mat-label>Area Name</mat-label>
         <input matInput [formControl]="areaName">
