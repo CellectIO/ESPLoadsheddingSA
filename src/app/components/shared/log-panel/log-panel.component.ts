@@ -1,86 +1,109 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { LogPanelService } from '../../../services/log-panel/log-panel.service';
+import { Subscription, tap } from 'rxjs';
+import { v4 as uuidv4 } from 'uuid';
 
-interface LogPanel{
-  title: string
-  logs: string[]
-  cssClass: string
-  titleIcon: string
+interface LogPanel {
+  id: string;
+  title: string;
+  logs: string[];
+  cssClass: string;
+  titleIcon: string;
+  timestamp: number;
 }
 
 @Component({
   selector: 'app-log-panel',
   standalone: true,
-  imports: [ 
-    CommonModule, 
+  imports: [
+    CommonModule,
     MatButtonModule,
     MatIconModule
   ],
   templateUrl: './log-panel.component.html',
   styleUrl: './log-panel.component.sass'
 })
-export class LogPanelComponent implements OnInit, OnChanges {
+export class LogPanelComponent implements OnInit, OnDestroy {
 
-  @Input() errorLogs: string[] = [];
-  @Input() successLogs: string[] = [];
-  @Input() warningLogs: string[] = [];
+  syncEvery: number = 2000;
+  logStayAlive: number = 4000;
 
   panels: LogPanel[] = [];
+  subscriptions: Subscription[] = [];
+  interval = setInterval(() => this.syncLogs(), this.syncEvery);
+
+  constructor(private logPanelService: LogPanelService) {
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+    clearInterval(this.interval);
+  }
 
   ngOnInit(): void {
-    this.syncLogs();
+    let successSub = this.logPanelService.successLogs
+      .pipe(
+        tap(logs => {
+          if (logs.length > 0) {
+            this.panels.push({
+              id: uuidv4(),
+              title: 'Success',
+              logs: logs,
+              cssClass: 'success-bar',
+              titleIcon: 'check',
+              timestamp: Date.now()
+            });
+          }
+        })
+      ).subscribe();
+
+    let warningSub = this.logPanelService.warningLogs
+      .pipe(
+        tap(logs => {
+          if (logs.length > 0) {
+            this.panels.push({
+              id: uuidv4(),
+              title: 'Warning',
+              logs: logs,
+              cssClass: 'warning-bar',
+              titleIcon: 'warning',
+              timestamp: Date.now()
+            });
+          }
+        })
+      ).subscribe();
+
+    let errorSub = this.logPanelService.errorLogs
+      .pipe(
+        tap(logs => {
+          if (logs.length > 0) {
+            this.panels.push({
+              id: uuidv4(),
+              title: 'Error',
+              logs: logs,
+              cssClass: 'error-bar',
+              titleIcon: 'error',
+              timestamp: Date.now()
+            });
+          }
+        })
+      ).subscribe();
+
+    this.subscriptions.push(successSub);
+    this.subscriptions.push(warningSub);
+    this.subscriptions.push(errorSub);
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    this.syncLogs();
+  dismisPanel(id: string) {
+    this.panels = this.panels.filter(x => x.id != id);
   }
 
-  private syncLogs(){
-    this.panels = [];
-
-    if(this.successLogs.length > 0){
-      this.panels.push({
-        title: 'Success',
-        logs: this.successLogs,
-        cssClass: 'success-bar',
-        titleIcon: 'check'
-      });
-    }
-
-    if(this.warningLogs.length > 0){
-      this.panels.push({
-        title: 'Warning',
-        logs: this.warningLogs,
-        cssClass: 'warning-bar',
-        titleIcon: 'warning'
-      });
-    }
-
-    if(this.errorLogs.length > 0){
-      this.panels.push({
-        title: 'Error',
-        logs: this.errorLogs,
-        cssClass: 'error-bar',
-        titleIcon: 'error'
-      });
-    }
+  syncLogs() {
+    const now = Date.now();
+    this.panels = this.panels.filter(item => now - item.timestamp < this.logStayAlive);
   }
 
-  dismisPanel(panelTitle: string) {
-    this.panels = this.panels.filter(x => x.title != panelTitle);
-
-    switch(panelTitle){
-      case 'Success':
-        this.successLogs = [];
-        break;
-      case 'Warning':
-        this.warningLogs = [];
-        break;
-      case 'Error':
-        this.errorLogs = [];
-        break;
-    }
-  }
 }

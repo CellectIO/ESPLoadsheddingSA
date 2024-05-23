@@ -1,12 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { RouterModule, RouterOutlet } from '@angular/router';
 import { MatTabsModule } from '@angular/material/tabs';
-import { HomeComponent } from './components/main/home/home.component';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { DbService } from './services/db/db.service';
 import { Subscription, exhaustMap, of, switchMap } from 'rxjs';
 import { NGXLogger } from 'ngx-logger';
+import { LogPanelComponent } from './components/shared/log-panel/log-panel.component';
 
 export interface ComponentNavItem{
   path: string
@@ -18,11 +18,11 @@ export interface ComponentNavItem{
   standalone: true,
   imports: [
     CommonModule,
-    RouterOutlet, 
-    HomeComponent,
+    RouterOutlet,
     MatTabsModule,
     RouterModule,
-    MatIconModule
+    MatIconModule,
+    LogPanelComponent
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.sass'

@@ -7,13 +7,13 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SessionStorageService } from '../../../services/storage/session-storage.service';
 import { EskomSePushConfig } from '../../../core/models/common/Settings/user-app-settings';
 import { MatDividerModule } from '@angular/material/divider';
-import { LogPanelComponent } from '../../shared/log-panel/log-panel.component';
 import { DbService } from '../../../services/db/db.service';
 import { Subscription, map, of, pairwise, switchMap } from 'rxjs';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { CardComponent } from '../../shared/card/card.component';
 import { MatIconModule } from '@angular/material/icon';
 import { StorageServiceKeyConstants } from '../../../core/constants/storage-service-key.constants';
+import { LogPanelService } from '../../../services/log-panel/log-panel.service';
 
 @Component({
   selector: 'app-settings',
@@ -25,7 +25,6 @@ import { StorageServiceKeyConstants } from '../../../core/constants/storage-serv
     FormsModule,
     ReactiveFormsModule,
     MatDividerModule,
-    LogPanelComponent,
     MatSlideToggleModule,
     MatIconModule,
     CardComponent
@@ -34,10 +33,6 @@ import { StorageServiceKeyConstants } from '../../../core/constants/storage-serv
   styleUrl: './settings.component.sass'
 })
 export class SettingsComponent implements OnInit, OnDestroy {
-
-  errorLogs: string[] = [];
-  successLogs: string[] = [];
-  warningLogs: string[] = [];
 
   eskomSePushApiForm = new FormGroup({
     apiKey: new FormControl(''),
@@ -52,7 +47,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   constructor(
     private db: DbService,
-    private storageService: SessionStorageService
+    private storageService: SessionStorageService,
+    private logPanel: LogPanelService
   ) { }
 
   ngOnDestroy(): void {
@@ -98,9 +94,9 @@ export class SettingsComponent implements OnInit, OnDestroy {
         }),
         map((saveResult) => {
           if (saveResult) {
-            this.successLogs = ['EskomSePush Settings have been saved succesfully.'];
+            this.logPanel.setSuccessLogs(['EskomSePush Settings have been saved succesfully.']);
           } else {
-            this.errorLogs = ['Something went wrong while trying to save settings.'];
+            this.logPanel.setErrorLogs(['Something went wrong while trying to save settings.']);
           }
         })
       )
@@ -152,9 +148,9 @@ export class SettingsComponent implements OnInit, OnDestroy {
         }),
         map(result => {
           if (result) {
-            this.successLogs = ['Cache Has been Cleared and Settings Have Succesfully reloaded.'];
+            this.logPanel.setSuccessLogs(['Cache Has been Cleared and Settings Have Succesfully reloaded.']);
           } else {
-            this.errorLogs = ['Something went wrong while trying to reload.'];
+            this.logPanel.setErrorLogs(['Something went wrong while trying to reload.']);
           }
         })
       ).subscribe();

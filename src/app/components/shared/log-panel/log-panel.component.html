@@ -1,11 +1,11 @@
-<div *ngFor="let panel of panels; index as i; first as isFirst">
+<div *ngFor="let panel of panels; index as i; first as isFirst" class="logs-panel">
     <div class="panel" [ngClass]="panel.cssClass">
         <div class="panel-heading">
             <mat-icon aria-hidden="false" aria-label="panel.titleIcon" [fontIcon]="panel.titleIcon" class="title-icon"></mat-icon>
             <h1>
                 {{panel.title}}
             </h1>
-            <button mat-raised-button (click)="dismisPanel(panel.title)" color="primary">
+            <button mat-raised-button (click)="dismisPanel(panel.id)" color="primary">
                 <mat-icon aria-hidden="false" aria-label="close" fontIcon="close"></mat-icon>
                 Dismiss
             </button>
