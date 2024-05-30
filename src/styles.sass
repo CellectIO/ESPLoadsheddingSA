@@ -1,9 +1,12 @@
-//COLORS
+/*#region COLORS*/
+
 $eskom-bg-fade-color: linear-gradient(180deg, #444, #292828)
 $eskom-bg-color: #444444
+
 $eskom-card-bg-color: #3b3b3b
 $eskom-title-color: white
 $eskom-card-content-text-color: white
+
 $eskom-stage-0-color: #3e8141
 $eskom-stage-1-color: #dbb23f
 $eskom-stage-2-color: #e37f39
@@ -12,7 +15,18 @@ $eskom-stage-4-color: #f14133
 $eskom-stage-5-color: #e56d64
 $eskom-stage-6-color: #f29d98
 
-//WIDTH
+$box-shadow-dark: 5px 5px 10px #00000073
+
+/*#endregion COLORS*/
+
+/*#region WIDTH*/
+
+$extension-width: 750px
+$extension-height: 600px
+
+//REMOVE HEIGHT TO ONLY ALLOW SCROLL FOR TAB CONTENT AND NOT TAB HEADERS
+$extension-tab-width: 720px
+$extension-tab-height: 507px
 
 $width-btn-sm: 120px
 $width-btn-m: 150px
@@ -20,12 +34,80 @@ $width-btn-md: 170px
 $width-btn-l: 200px
 $width-btn-xl: 250px
 
-//PADDING
+/*#endregion WIDTH*/
+
+/*#region SPACERS*/
 
 $padding-md: 15px
 $padding-l: 30px
 
-//CLASSES THAT USER VARS
+$spacer-none: 0px
+$spacers-05: 5px
+$spacers-1: 10px
+$spacers-15: 15px
+$spacers-m: 1rem
+$spacers-md: 2rem
+
+$spacer-perc-0: 0%
+$spacer-perc-10: 10%
+$spacer-perc-20: 20%
+$spacer-perc-40: 40%
+$spacer-perc-50: 50%
+$spacer-perc-60: 60%
+$spacer-perc-80: 80%
+$spacer-perc-90: 90%
+$spacer-perc-100: 100%
+
+/*#endregion SPACERS*/
+
+/*#region RADIUS*/
+
+$radius-sm: 10px
+$radius-m: 15px
+$radius-md: 20px
+
+/*#endregion SPACERS*/
+
+/*#region FONTS*/
+
+$font-size-m: 15px
+$font-size-md: 20px
+$font-size-l: 25px
+
+$font-weight-m: 500
+
+/*#endregion FONTS*/
+
+/*#region OTHER*/
+
+body
+  margin: 0
+  font-family: Roboto, "Helvetica Neue", sans-serif
+  color: $eskom-title-color
+
+h1
+    color: $eskom-card-content-text-color
+
+h3
+    color: $eskom-card-content-text-color
+
+p
+    color: $eskom-card-content-text-color
+
+::-webkit-scrollbar
+  width: 3px
+
+::-webkit-scrollbar-track
+  background: $eskom-bg-color 
+
+::-webkit-scrollbar-thumb
+  background: $eskom-stage-1-color
+
+::-webkit-scrollbar-thumb:hover
+  background: $eskom-bg-color
+
+.mat-mdc-tab-header
+  background-color: $eskom-bg-color 
 
 .eskom-bg-color
     background-color: $eskom-bg-color !important
@@ -86,3 +168,5 @@ $padding-l: 30px
 
 .btn-xl
     width: $width-btn-xl
+
+/*#endregion OTHER*/

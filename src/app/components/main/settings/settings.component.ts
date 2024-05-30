@@ -36,7 +36,10 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   eskomSePushApiForm = new FormGroup({
     apiKey: new FormControl(''),
-    syncInterval: new FormControl(15),
+    syncInterval: new FormControl({
+      value: 15,
+      disabled: true
+    }),
     pagesSetup: new FormControl(false),
     pagesAllowance: new FormControl(true),
   });

@@ -10,11 +10,8 @@
     <p>
         This guide is designed to assist you in navigating through the initial setup process necessary for the
         functionality
-        of this extension.
-    </p>
-
-    <p>
-        Whether you're a seasoned user or just getting started, we're here to ensure your experience is as smooth as
+        of this extension. Whether you're a seasoned user or just getting started, we're here to ensure your experience
+        is as smooth as
         possible.
     </p>
 
@@ -29,10 +26,22 @@
     </h1>
 
     <p>
-        Go to the Eskom Se Push Gumroad Dashboard with the link below to sign up for a ESP api Key.
+        Go to the Eskom Se Push Gumroad Dashboard with the link below to sign up for a ESP API Key.
     </p>
 
-    <span>https://eskomsepush.gumroad.com/l/api</span>
+    <div class="copy-input-container">
+        <mat-form-field appearance="outline">
+            <mat-label>Copy Gumroad API Link</mat-label>
+            <input matInput [(ngModel)]="gumroadLink" disabled>
+            <button mat-icon-button matSuffix (click)="copyText()" aria-label="Copy Gumroad API Link">
+                <mat-icon aria-hidden="false" aria-label="edit" fontIcon="content_copy"></mat-icon>
+            </button>
+        </mat-form-field>
+    </div>
+
+    <div class="link-box">
+        <span>https://eskomsepush.gumroad.com/l/api</span>
+    </div>
 
     <p>
         Once on the page click on the Subscribe button on the right that will navigate you to the next page.
@@ -74,6 +83,6 @@
 
 <div class="section-container">
     <h1>
-        Step 4: Enjoy loadshedding (not really)
+        Congratulations, You are all set
     </h1>
 </div>

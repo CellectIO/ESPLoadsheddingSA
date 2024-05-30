@@ -4,13 +4,15 @@
 
         <app-time-slot-chart [infoDay]="schedule"></app-time-slot-chart>
 
-        @for (stage of schedule._stages; track stage) {
-            @for (slot of stage.timeSlots; track slot) {
-                <li [ngClass]="ngStyleService.getStageColor(stage.stage)">
-                    {{slot}} - {{stage.name}} - {{stage.stage}}
-                </li>
+        <ul>
+            @for (stage of schedule._stages; track stage) {
+                @for (slot of stage.timeSlots; track slot) {
+                    <li [ngClass]="ngStyleService.getStageColor(stage.stage)">
+                        {{slot}} - {{stage.name}} - {{stage.stage}}
+                    </li>
+                }
             }
-        }
+        </ul>
     </div>
     <div *ngIf="areaSchedulesUpcomming.length == 0">
         <p>No Loadshedding</p>
