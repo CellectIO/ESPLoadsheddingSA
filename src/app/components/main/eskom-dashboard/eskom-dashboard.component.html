@@ -15,10 +15,11 @@
         <mat-icon aria-hidden="false" aria-label="event_upcomming" fontIcon="event_upcomming"></mat-icon>
         Upcomming
     </h1>
-    <app-upcomming-schedule [areaSchedulesUpcomming]="areaInfoDataSet?.schedule?.days ?? []"
-        [loadSheddingStatus]="loadSheddingStatus" [areaInfoDataSet]="areaInfoDataSet" />
+    <app-upcomming-schedule 
+        [areaSchedulesUpcomming]="areaInfoDataSet?.schedule?.days ?? []"
+        [loadSheddingStatus]="loadSheddingStatus" 
+        [areaInfoDataSet]="areaInfoDataSet" />
 
     <h1>Area Schedule</h1>
     <app-area-schedule [areaInfoDataSet]="areaInfoDataSet" />
-
 </div>

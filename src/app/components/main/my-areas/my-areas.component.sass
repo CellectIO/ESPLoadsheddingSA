@@ -4,22 +4,16 @@
     display: flex
     flex-direction: column
 
-    h1
-        color: $eskom-card-content-text-color
-
-        p
-            color: $eskom-card-content-text-color
-
     .my-areas-container-heading
         display: flex
         flex-direction: row
         align-items: center
 
         h1
-            width: 60%
+            width: $spacer-perc-60
 
         .my-areas-container-heading-btn
-            width: 40%
+            width: $spacer-perc-40
             display: flex
             flex-direction: column
             align-items: end
@@ -28,10 +22,10 @@
         display: flex
         flex-direction: column
         flex-wrap: nowrap
-        gap: 1rem
+        gap: $spacers-m
 
     .area-card
-        width: 100%
+        width: $spacer-perc-100
         height: fit-content
 
         .area-card-heading
@@ -40,9 +34,9 @@
             align-content: center
 
             h3
-                margin-top: 0px
-                width: 90%
+                margin-top: $spacer-none
+                width: $spacer-perc-90
 
             .mat-icon
-                width: 10%
-                margin-top: 5px
+                width: $spacer-perc-10
+                margin-top: $spacers-05

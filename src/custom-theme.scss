@@ -110,29 +110,3 @@ $eskom-dark-theme: mat.define-dark-theme((
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
 @include mat.all-component-themes($eskom-dark-theme);
-
-body { 
-  margin: 0; 
-  font-family: Roboto, "Helvetica Neue", sans-serif; 
-  color: $eskom-title-color
-}
-
-::-webkit-scrollbar {
-  width: 3px
-}
-
-::-webkit-scrollbar-track {
-  background: $eskom-bg-color 
-}
-
-::-webkit-scrollbar-thumb {
-  background: $eskom-stage-1-color
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: $eskom-bg-color
-}
-
-.mat-mdc-tab-header{
-  background-color: $eskom-bg-color 
-}
