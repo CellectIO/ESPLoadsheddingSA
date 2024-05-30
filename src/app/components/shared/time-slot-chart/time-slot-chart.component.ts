@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { NgStyleService } from '../../../services/ng-style/ng-style.service';
 import { AreaInfoDayEntity } from '../../../core/models/entities/area-info-entity';
+import { ScheduleService } from '../../../services/schedule/schedule.service';
 
 export interface timeSegment{
   active: boolean;
@@ -23,7 +24,9 @@ export class TimeSlotChartComponent implements OnInit, OnChanges{
   @Input() infoDay: AreaInfoDayEntity | null = null;
   timeFragments: timeSegment[] = [];
 
-  constructor(public ngStyleService: NgStyleService) {
+  constructor(public ngStyleService: NgStyleService,
+    private scheduleService: ScheduleService
+  ) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -38,7 +41,7 @@ export class TimeSlotChartComponent implements OnInit, OnChanges{
     
     this.timeFragments = [];
 
-    let userDateTime = new Date();
+    let userDateTime = this.scheduleService.currentDate;
     let userTotalMinuts = (userDateTime.getHours() * 60) + userDateTime.getMinutes();
 
     //LOAD EMPTY CHART DATA

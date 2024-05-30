@@ -2,11 +2,11 @@ import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/cor
 import { TimeSlotChartComponent } from '../time-slot-chart/time-slot-chart.component';
 import { NgStyleService } from '../../../services/ng-style/ng-style.service';
 import { CommonModule } from '@angular/common';
-import { NGXLogger } from 'ngx-logger';
 import { EskomAreaInfoStage } from '../../../core/models/common/areas/eskom-area-info-stage';
 import { AreaInfoDayEntity, AreaInfoEntity } from '../../../core/models/entities/area-info-entity';
 import { EskomStatusLocation } from '../../../core/models/common/status/eskom-status-location';
 import { CardComponent } from '../card/card.component';
+import { ScheduleService } from '../../../services/schedule/schedule.service';
 
 @Component({
   selector: 'app-upcomming-schedule',
@@ -27,7 +27,7 @@ export class UpcommingScheduleComponent implements OnInit, OnChanges {
 
   constructor(
     public ngStyleService: NgStyleService,
-    private logger: NGXLogger
+    private scheduleService: ScheduleService
   ) {
     
   }
@@ -45,7 +45,7 @@ export class UpcommingScheduleComponent implements OnInit, OnChanges {
   }
 
   syncUpComming() {
-    let currentUserDate = new Date();
+    let currentUserDate = this.scheduleService.currentDate;
 
     //TODO: we are relying on the EKSOM status for.
     // "next_stages": [

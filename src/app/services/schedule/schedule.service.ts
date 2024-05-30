@@ -9,6 +9,14 @@ export class ScheduleService {
     return new Date().toLocaleDateString('en-US', { weekday: 'long' });
   }
 
+  public get now(): number{
+    return Date.now();
+  }
+
+  public get currentDate(): Date{
+    return new Date();
+  }
+
   constructor() { }
 
 }

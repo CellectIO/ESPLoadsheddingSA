@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { NgStyleService } from '../../../services/ng-style/ng-style.service';
 import { CardComponent } from '../../shared/card/card.component';
+import { LogPanelService } from '../../../services/log-panel/log-panel.service';
 
 @Component({
   selector: 'app-allowance-dashboard',
@@ -21,11 +22,11 @@ import { CardComponent } from '../../shared/card/card.component';
 export class AllowanceDashboardComponent implements OnInit, OnDestroy {
 
   allowance: AllowanceEntity | null = null;
-
   subscriptions: Subscription[] = [];
 
-  constructor(private db: DbService, public ngStyleService: NgStyleService) {
-
+  constructor(private db: DbService,
+    public ngStyleService: NgStyleService,
+    private logPanel: LogPanelService) {
   }
 
   ngOnDestroy(): void {
@@ -41,6 +42,8 @@ export class AllowanceDashboardComponent implements OnInit, OnDestroy {
         map(result => {
           if (result.isLoaded) {
             this.allowance = result.data;
+          } else {
+            this.logPanel.setErrorLogs(['Failed to sync Allowance']);
           }
         })
       ).subscribe();

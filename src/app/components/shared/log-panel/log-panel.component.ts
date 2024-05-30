@@ -5,6 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { LogPanelService } from '../../../services/log-panel/log-panel.service';
 import { Subscription, tap } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
+import { ScheduleService } from '../../../services/schedule/schedule.service';
 
 interface LogPanel {
   id: string;
@@ -35,7 +36,8 @@ export class LogPanelComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
   interval = setInterval(() => this.syncLogs(), this.syncEvery);
 
-  constructor(private logPanelService: LogPanelService) {
+  constructor(private logPanelService: LogPanelService, 
+    private scheduleService: ScheduleService) {
   }
 
   ngOnDestroy(): void {
@@ -54,7 +56,7 @@ export class LogPanelComponent implements OnInit, OnDestroy {
               logs: logs,
               cssClass: 'success-bar',
               titleIcon: 'check',
-              timestamp: Date.now()
+              timestamp: this.scheduleService.now
             });
           }
         })
@@ -70,7 +72,7 @@ export class LogPanelComponent implements OnInit, OnDestroy {
               logs: logs,
               cssClass: 'warning-bar',
               titleIcon: 'warning',
-              timestamp: Date.now()
+              timestamp: this.scheduleService.now
             });
           }
         })
@@ -86,7 +88,7 @@ export class LogPanelComponent implements OnInit, OnDestroy {
               logs: logs,
               cssClass: 'error-bar',
               titleIcon: 'error',
-              timestamp: Date.now()
+              timestamp: this.scheduleService.now
             });
           }
         })
@@ -102,7 +104,7 @@ export class LogPanelComponent implements OnInit, OnDestroy {
   }
 
   syncLogs() {
-    const now = Date.now();
+    const now = this.scheduleService.now;
     this.panels = this.panels.filter(item => now - item.timestamp < this.logStayAlive);
   }
 

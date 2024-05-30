@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { IEskomSePushApiService } from "../../core/contracts/services/eskom-se-push-api.service";
-import { BehaviorSubject, Observable, map, of, switchMap, tap } from "rxjs";
+import { BehaviorSubject, Observable, map, of, switchMap } from "rxjs";
 import { AreaSearchEntity } from "../../core/models/entities/area-search-entity";
 import { DbResult } from "../../core/models/response-types/db-result";
 import { StatusEntity } from "../../core/models/entities/status-entity";
@@ -467,7 +467,7 @@ export class DbService {
         return of(false);
       }
       let error = `Syncing [${funcName}] did not succeeed, stopping all further attempts to sync remaining entities.`;
-      this.logger.warn(error);
+      this.logger.error(error);
       response = new Result<string>(null, [error]);
       return of(false);
     };
