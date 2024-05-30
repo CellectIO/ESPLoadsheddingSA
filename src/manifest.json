@@ -2,7 +2,7 @@
     "manifest_version":3,
     "name":"ESP Loadshedding",
     "description":"A chrome extension that utilizes Eskom Se Push API's",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "permissions": ["geolocation", "storage"],
     "action":{
       "default_popup":"index.html",
@@ -16,8 +16,6 @@
       "128": "assets/images/eskom-se-push.png"
     },
     "host_permissions":[
-      "http://*/*",
-      "https://*/*",
-      "*://*/*"
+      "https://developer.sepush.co.za/business/2.0/*"
     ]
   }
