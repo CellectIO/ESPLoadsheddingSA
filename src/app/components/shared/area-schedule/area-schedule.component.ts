@@ -1,8 +1,7 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { NgStyleService } from '../../../services/ng-style/ng-style.service';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AreaInfoDayEntity, AreaInfoEntity } from '../../../core/models/entities/area-info-entity';
 import { CardComponent } from '../card/card.component';
@@ -12,9 +11,7 @@ import { ScheduleService } from '../../../services/schedule/schedule.service';
   selector: 'app-area-schedule',
   standalone: true,
   imports: [
-    MatFormFieldModule,
     MatSelectModule,
-    FormsModule,
     ReactiveFormsModule,
     CommonModule,
     CardComponent

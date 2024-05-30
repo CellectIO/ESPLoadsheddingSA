@@ -1,15 +1,18 @@
 import { Injectable } from '@angular/core';
+import { NGXLogger } from 'ngx-logger';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NgStyleService {
 
-  constructor() { }
+  constructor(private logger: NGXLogger) { }
 
   getStageColor(stage: number | string): string {
-    stage = parseInt(stage.toString());
-    switch (stage) {
+    let parsedInt = parseInt(stage.toString());
+    this._validateStage(parsedInt);
+    
+    switch (parsedInt) {
       case 0:
         return 'stage0-color';
       case 1:
@@ -28,8 +31,10 @@ export class NgStyleService {
   }
 
   getStageBgColor(stage: number | string): string {
-    stage = parseInt(stage.toString());
-    switch (stage) {
+    let parsedInt = parseInt(stage.toString());
+    this._validateStage(parsedInt);
+
+    switch (parsedInt) {
       case 0:
         return 'stage0-bg-color';
       case 1:
@@ -44,6 +49,12 @@ export class NgStyleService {
         return 'stage5-bg-color';
       default:
         return 'stage6-bg-color';
+    }
+  }
+
+  _validateStage(stage: number){
+    if(!([0,1,2,3,4,5,6,7,8].indexOf(stage) >= -1)){
+      this.logger.error(`Provided Stage [${stage}] is not a valid stage`);
     }
   }
 

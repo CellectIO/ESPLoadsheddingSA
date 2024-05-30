@@ -1,12 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { FormGroup, FormControl } from '@angular/forms';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { SessionStorageService } from '../../../services/storage/session-storage.service';
 import { EskomSePushConfig } from '../../../core/models/common/Settings/user-app-settings';
-import { MatDividerModule } from '@angular/material/divider';
 import { DbService } from '../../../services/db/db.service';
 import { Subscription, map, of, pairwise, switchMap } from 'rxjs';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
@@ -14,17 +12,16 @@ import { CardComponent } from '../../shared/card/card.component';
 import { MatIconModule } from '@angular/material/icon';
 import { StorageServiceKeyConstants } from '../../../core/constants/storage-service-key.constants';
 import { LogPanelService } from '../../../services/log-panel/log-panel.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-settings',
   standalone: true,
   imports: [
-    MatFormFieldModule,
+    CommonModule,
     MatInputModule,
     MatButtonModule,
-    FormsModule,
     ReactiveFormsModule,
-    MatDividerModule,
     MatSlideToggleModule,
     MatIconModule,
     CardComponent
@@ -45,7 +42,6 @@ export class SettingsComponent implements OnInit, OnDestroy {
   });
 
   subscriptions: Subscription[] = [];
-
   _initialApiKey: string | null = null;
 
   constructor(
@@ -83,6 +79,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     var updatedData = this.MapResult(null);
 
     //TODO: VALIDATION HERE TO CONFIRM IF THE API KEY IS VALID
+    //NOTE: its not a UUID will need to get clever?
 
     let refreshRequired = (this._initialApiKey != updatedData!.eskomSePushApiKey) && this._initialApiKey != null;
 

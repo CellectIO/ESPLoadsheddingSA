@@ -11,7 +11,6 @@ import { ESPAllowanceApiResponse } from '../../core/models/api-responses/eskom-s
 import { AllowanceEntity } from '../../core/models/entities/allowance-entity';
 import { ESPAreaSearchApiResponse } from '../../core/models/api-responses/eskom-se-push/esp-area-search-api-response';
 import { AreaInfoDayEntity, AreaInfoEntity } from '../../core/models/entities/area-info-entity';
-import { ApiUtilizationBreakdown } from '../../core/models/common/allowance/api-utilization-breakdown';
 
 @Injectable({
   providedIn: 'root'
