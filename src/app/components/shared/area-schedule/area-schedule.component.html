@@ -11,9 +11,7 @@
                 </span>
                 }
             </mat-select-trigger>
-            @for (date of scheduleDateFilters; track date) {
-            <mat-option [value]="date">{{date}}</mat-option>
-            }
+            <mat-option *ngFor="let date of scheduleDateFilters" [value]="date">{{date}}</mat-option>
         </mat-select>
     </mat-form-field>
     <mat-form-field class="area-schedule-filter">
@@ -28,9 +26,7 @@
                 </span>
                 }
             </mat-select-trigger>
-            @for (stage of scheduleStageFilters; track stage) {
-            <mat-option [value]="stage">{{stage}}</mat-option>
-            }
+            <mat-option *ngFor="let stage of scheduleStageFilters" [value]="stage">{{stage}}</mat-option>
         </mat-select>
     </mat-form-field>
 </div>

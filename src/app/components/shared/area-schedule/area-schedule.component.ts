@@ -4,9 +4,9 @@ import { MatSelectModule } from '@angular/material/select';
 import { NgStyleService } from '../../../services/ng-style/ng-style.service';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { EskomAreaInfoStage } from '../../../core/models/common/areas/eskom-area-info-stage';
 import { AreaInfoDayEntity, AreaInfoEntity } from '../../../core/models/entities/area-info-entity';
 import { CardComponent } from '../card/card.component';
+import { ScheduleService } from '../../../services/schedule/schedule.service';
 
 @Component({
   selector: 'app-area-schedule',
@@ -25,63 +25,63 @@ import { CardComponent } from '../card/card.component';
 export class AreaScheduleComponent implements OnInit, OnChanges {
 
   @Input() areaInfoDataSet: AreaInfoEntity | null = null;
-  @Input() areaSchedules: AreaInfoDayEntity[] = [];
 
-  scheduleDateFilterControl = new FormControl(['']);
+  areaSchedules: AreaInfoDayEntity[] = [];
   scheduleDateFilters: string[] = [];
-  scheduleStageFilterControl = new FormControl(['']);
   scheduleStageFilters: string[] = [];
 
-  constructor(public ngStyleService: NgStyleService) {
+  scheduleDateFilterControl = new FormControl(['']);
+  scheduleStageFilterControl = new FormControl(['']);
+
+  constructor(public ngStyleService: NgStyleService,
+    private scheduleService: ScheduleService
+  ) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (this.areaInfoDataSet && this.areaSchedules) {
-      this.syncAreaShceduleFilter();
+    if (this.areaInfoDataSet) {
       this.applyAreaScheduleFilters();
     }
   }
 
   ngOnInit(): void {
-    if (this.areaInfoDataSet && this.areaSchedules) {
-      this.syncAreaShceduleFilter();
+    if (this.areaInfoDataSet) {
+      this.syncFilters();
       this.applyAreaScheduleFilters();
     }
   }
 
-  syncAreaShceduleFilter() {
-    //SET THE AVAILABLE DAYS TO FILTER ON
-    this.scheduleDateFilters = this.areaInfoDataSet?.schedule.days!.map(x => x.name)!;
-    this.scheduleStageFilters = this.areaInfoDataSet?.schedule.days[0]._stages.map(x => x.name)!;
+  syncFilters() {
+    let currentDate = this.scheduleService.localeDateString;
 
-    //DEFAULT THE FILTER TO TODAYS DATE
-    let currentDate = new Date().toLocaleDateString('en-US', { weekday: 'long' });
+    //SET AVAILABLE STAGE FILTER
+    this.scheduleStageFilters = this.areaInfoDataSet!.schedule.days[0]._stages.map(x => x.name)!;
+    this.scheduleStageFilterControl.setValue(this.scheduleStageFilters);
+
+    //SET AVAILABLE DAYS FILTER + SET CURRENT DATE AS ACTIVE FILTER.
+    this.scheduleDateFilters = this.areaInfoDataSet!.schedule.days!.map(x => x.name)!;
     let dsCurrentDate = this.scheduleDateFilters.filter(x => x == currentDate);
     this.scheduleDateFilterControl.setValue(dsCurrentDate);
-    this.scheduleStageFilterControl.setValue(this.scheduleStageFilters);
   }
 
   applyAreaScheduleFilters() {
-    let controlValues = this.scheduleDateFilterControl.value!;
-    let stageValues = this.scheduleStageFilterControl.value!;
-    const tempds = this.areaInfoDataSet?.schedule.days.map(day => day)!;
+    let daysFilter = this.scheduleDateFilterControl.value!;
+    let stageFilter = this.scheduleStageFilterControl.value!;
 
-    //TODO: FIX _stages not binding correctly
-    this.areaSchedules = tempds
-      .filter(x => {
-        return controlValues!.some(y => y == x.name)
-      })
-      .map(x => {
-        let validChildren: EskomAreaInfoStage[] = [];
-        x._stages.forEach(stage => {
-          if (stageValues.some(x => x == stage.name)) {
-            validChildren.push(stage);
-          }
-        });
+    //IF THIS LOOKS DUMB, ITS BECAUSE IT IS
+    //DUE TO ARRAY's BEING REFERENCE TYPES, IF I MODIFY THE ARRAY CONTENT LIKE I DO BELOW IT WILL RESULT IN THE ORIGINAL ARRAY TO BE MODIFIED ASWELL.
+    //SO I AM PARSING IT TO JSON AND BACK INTO THE ORIGINAL TYPE
+    //TO MAKE THE COMPILER THINK ITS A BRAND NEW ARRAY AND BREAKING THE REFERENCE ISSUE.
+    let schedules = JSON.parse(JSON.stringify(this.areaInfoDataSet!.schedule.days!)) as AreaInfoDayEntity[];
 
-        x._stages = validChildren;
-        return x;
-      })!;
+    let validDays = schedules
+      .filter(x => daysFilter.some(y => y == x.name))
+      .map(day => {
+        day._stages = day._stages.filter(_ => stageFilter.some(x => x == _.name));
+        return day;
+      });
+
+    this.areaSchedules = validDays;
   }
 
 }
