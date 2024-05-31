@@ -1,35 +1,45 @@
 @import "../../../../styles"
 
-.logs-panel
-  margin-bottom: $spacers-15
+::-webkit-scrollbar
+  display: none !important
 
-  .panel
-    color: $eskom-card-content-text-color
-    padding: $spacers-1
-    margin-bottom: $spacers-15
-    border-radius: $radius-sm
+.logs-panel-container
+  display: flex
+  flex-direction: column
+  height: fit-content
+  max-height: 230px //ONLY ALLOWING 2 PANELS TO RENDER AT A TIME, REST YOU NEED TO SCROLL FOR
+  overflow-y: scroll
+  gap: $spacers-05
 
-    .panel-heading
-      display: flex
-      flex-direction: row
+  .logs-panel
 
-      h1
-        margin-top: $spacers-05
-        margin-bottom: $spacers-05
-        width: 75%
+    .panel
+      color: $eskom-card-content-text-color
+      padding: $spacers-1
+      margin-bottom: $spacers-15
+      border-radius: $radius-sm
 
-      button
-        margin-top: $spacers-1
-        width: $spacer-perc-20
+      .panel-heading
+        display: flex
+        flex-direction: row
 
-      .title-icon
-        font-size: $font-size-l
-        width: 5%
-        height: $spacer-perc-100
-        margin-top: $spacers-1
+        h1
+          margin-top: $spacers-05
+          margin-bottom: $spacers-05
+          width: 75%
 
-    ul
-      margin: $spacers-05
+        button
+          margin-top: $spacers-1
+          width: $spacer-perc-20
+
+        .title-icon
+          font-size: $font-size-l
+          width: 5%
+          height: $spacer-perc-100
+          margin-top: $spacers-1
+
+      ul
+        margin: $spacers-05
 
 .success-bar
   background-color: $eskom-stage-0-color
