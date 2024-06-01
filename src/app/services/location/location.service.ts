@@ -14,7 +14,6 @@ export class LocationService {
     return new Observable<Result<GeolocationPosition>>((observer) => {
       navigator.geolocation.getCurrentPosition((resp) => {
         observer.next(new Result<GeolocationPosition>(resp, null));
-        observer.complete();
         },
         err => {
          observer.error(err);

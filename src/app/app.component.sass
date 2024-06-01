@@ -4,12 +4,27 @@
     width: $extension-width
     height: $extension-height
 
-.tab-content
-    width: $extension-tab-width
-    height: $extension-tab-height
-    overflow: overlay
-    display: flex
-    flex-direction: column
-    background-image: $eskom-bg-fade-color
-    padding: $padding-md
-    padding-bottom: $padding-l
+    .loading-container
+        position: fixed
+        width: $extension-width
+        height: $extension-height
+        background-color: $eskom-bg-color
+        z-index: 2
+        text-align: -webkit-center
+        align-content: center
+
+        .loader-content
+            display: flex
+            flex-direction: row
+            width: fit-content
+            gap: $spacers-m
+
+    .tab-content
+        width: $extension-tab-width
+        height: $extension-tab-height
+        overflow: overlay
+        display: flex
+        flex-direction: column
+        background-image: $eskom-bg-fade-color
+        padding: $padding-md
+        padding-bottom: $padding-l

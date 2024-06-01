@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { RouterModule, RouterOutlet } from '@angular/router';
+import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
@@ -7,6 +7,8 @@ import { DbService } from './services/db/db.service';
 import { Subscription, exhaustMap, of, switchMap } from 'rxjs';
 import { NGXLogger } from 'ngx-logger';
 import { LogPanelComponent } from './components/shared/log-panel/log-panel.component';
+import { LoaderComponent } from './components/shared/loader/loader.component';
+import { LoaderService } from './services/loader/loader.service';
 
 export interface ComponentNavItem{
   path: string
@@ -22,6 +24,7 @@ export interface ComponentNavItem{
     MatTabsModule,
     RouterModule,
     MatIconModule,
+    LoaderComponent,
     LogPanelComponent
   ],
   templateUrl: './app.component.html',
@@ -30,13 +33,16 @@ export interface ComponentNavItem{
 export class AppComponent implements OnInit ,OnDestroy{
 
   navigation: ComponentNavItem[] = [];
-
   subscriptions: Subscription[] = [];
 
-  constructor(private db: DbService, private logger: NGXLogger) { }
+  constructor(
+    private db: DbService, 
+    private logger: NGXLogger,
+    public loader: LoaderService,
+    public router: Router
+  ) { }
 
   ngOnInit(): void {
-    //SYNC SETTINGS FIRST TO CONFIRM IF ITS A FIRST TIME USER, THEN DETERMINE IF A FULL SYNC SHOULD RUN.
     let getKeySub = this.db.sync()
       .pipe(
         switchMap(result => {
