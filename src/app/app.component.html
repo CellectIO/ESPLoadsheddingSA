@@ -1,19 +1,38 @@
 <main class="main">
-  <nav mat-tab-nav-bar [tabPanel]="tabPanel">
-    <a
-      mat-tab-link
-      *ngFor="let link of navigation"
-      routerLink="{{ link.path }}"
-      routerLinkActive
-      #rla="routerLinkActive"
-      [active]="rla.isActive"
-    >
-      <mat-icon>{{ link.icon }}</mat-icon>
-    </a>
-  </nav>
-  <mat-tab-nav-panel #tabPanel class="tab-content">
-    <app-log-panel></app-log-panel>
-    <router-outlet></router-outlet>
-  </mat-tab-nav-panel>
-
+  <div class="loading-container" *ngIf="loader.appLoading | async">
+    <div class="loader-content">
+      <app-loader [loader]="'hourglass'"></app-loader>
+      <h1>Loading</h1>
+    </div>
+  </div>
+  <div>
+    <nav mat-tab-nav-bar [tabPanel]="tabPanel">
+      <a
+        mat-tab-link
+        *ngFor="let link of navigation"
+        routerLink="{{ link.path }}"
+        routerLinkActive
+        #rla="routerLinkActive"
+        [active]="rla.isActive"
+      >
+        <mat-icon>{{ link.icon }}</mat-icon>
+      </a>
+    </nav>
+    <mat-tab-nav-panel #tabPanel class="tab-content">
+      <app-log-panel></app-log-panel>
+      <!-- 
+        WHY DO WE DO THIS URL CHECK?
+        THE SETTINGS PAGE CAN RESET OR SYNC THE DB SERIVCE TO GET ALL THE REQUIRED ENTITIES LOADED
+        SO IF WE DESTORY THE SETTINGS PAGE, IT COULD RESULT IN THE SYNC NOT COMPLETING.
+        SO IF ITS ANY OTHER PAGE, THE LOADER CAN SHOW (COMPONENTS CAN BE DESTROYED) WITHOUT DISRUPTIONS IN THE SYNC OPERATION
+        
+        WHY DO WE DESTROY COMPONENTS?
+        BECUASE MOST COMPONENTS JUST CONSUME RESULTS FROM THE DB SERVICE, SOMETHING NEEDS TO SET THE DB SERVICE ENTITIES.
+        THE 2 POSSIBLE COMPONENTS ARE:
+        - THIS COMPONENT: SO WE NEED THE SYNC TO FINISH BEFORE ITS CHILDREN RENDERS
+        - THE SETTINGS COMPONENT: WHICH IS DESCRIBED ABOVE.
+       -->
+      <router-outlet *ngIf="(router.url == '/settings' ? true : !(loader.appLoading | async))"></router-outlet>
+    </mat-tab-nav-panel>
+  </div>
 </main>

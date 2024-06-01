@@ -19,6 +19,7 @@ import { EskomSePushConfig } from "../../core/models/common/Settings/user-app-se
 import { IteratableDbResult } from "../../core/models/response-types/iteratable-db-results";
 import { Result } from "../../core/models/response-types/result";
 import { LocationService } from "../location/location.service";
+import { LoaderService } from "../loader/loader.service";
 
 export type dbSetOpperation = 'set' | 'update' | 'delete' | 'append';
 
@@ -58,20 +59,21 @@ export class DbService {
     private storageService: SessionStorageService,
     private mapper: EskomSePushEntityMapperService,
     private logger: NGXLogger,
-    private location: LocationService
+    private location: LocationService,
+    private loader: LoaderService
   ) {
-    this._apiService = environment.useMockData ? mockApiService : apiService;
-    this.logger.info(`Using Mock Http Service : ${environment.useMockData}`);
+    this._apiService = environment.mocking.useMock ? mockApiService : apiService;
+    this.logger.info(`Using Mock Http Service : ${environment.mocking.useMock}`);
   }
 
   //#region "GET ENTITIES"
 
   public get getSavedAreas(): Observable<DbResult<AreaSearchEntity>> {
-    return this._returnDbSet(this._savedAreas);
+    return this._returnDbSet(this._savedAreas, '_savedAreas');
   }
 
   public get getStatus(): Observable<DbResult<StatusEntity>> {
-    return this._returnDbSet(this._status);
+    return this._returnDbSet(this._status, '_status');
   }
 
   public get getAreasInformation(): Observable<IteratableDbResult<AreaInfoEntity>> {
@@ -79,7 +81,7 @@ export class DbService {
   }
 
   public get getAreasNearby(): Observable<DbResult<AreasNearbyEntity>> {
-    return this._returnDbSet(this._areasNearby);
+    return this._returnDbSet(this._areasNearby, '_areasNearby');
   }
 
   public get getArea(): Observable<IteratableDbResult<AreaSearchEntity>> {
@@ -87,11 +89,11 @@ export class DbService {
   }
 
   public get getTopicsNearby(): Observable<DbResult<TopicsNearbyEntity>> {
-    return this._returnDbSet(this._topicsNearby);
+    return this._returnDbSet(this._topicsNearby, '_topicsNearby');
   }
 
   public get getAllowance(): Observable<DbResult<AllowanceEntity>> {
-    return this._returnDbSet(this._allowance);
+    return this._returnDbSet(this._allowance, '_allowance');
   }
 
   public get getCacheState(): Observable<boolean> {
@@ -99,7 +101,7 @@ export class DbService {
   }
 
   public get getUserSettings(): Observable<DbResult<EskomSePushConfig>> {
-    return this._returnDbSet(this._userSettings);
+    return this._returnDbSet(this._userSettings, '_userSettings');
   }
 
   //#endregion "GET ENTITIES"
@@ -433,10 +435,11 @@ export class DbService {
   }
 
   public init(): Observable<boolean> {
+    this.loader.setAppLoading(true);
     return this.location.getCurrentPosition()
       .pipe(
         switchMap(result => {
-          this.logger.warn(`getCurrentPosition() has returned a succesfull response: ${result.isSuccess}`);
+          this.logger.info(`getCurrentPosition() has returned a succesfull response: ${result.isSuccess}`);
 
           if(result.isSuccess){
             return this.updateAreasNearby(result.data!.coords.latitude, result.data!.coords.longitude, true);
@@ -444,7 +447,7 @@ export class DbService {
           return of(result.isSuccess);
         }),
         switchMap(result => {
-          this.logger.warn(`updateAreasNearby() has returned a succesfull response: ${result}`);
+          this.logger.info(`updateAreasNearby() has returned a succesfull response: ${result}`);
 
           if(result){
             return this.updateStatus(true);
@@ -452,7 +455,8 @@ export class DbService {
           return of(result);
         }),
         map(result => {
-          this.logger.warn(`updateStatus() has returned a succesfull response: ${result}`);
+          this.loader.setAppLoading(false);
+          this.logger.info(`updateStatus() has returned a succesfull response: ${result}`);
           return result;
         })
       );
@@ -472,6 +476,7 @@ export class DbService {
       return of(false);
     };
 
+    this.loader.setAppLoading(true);
     return this.syncAllowance()
       .pipe(
         switchMap((result) => {
@@ -504,6 +509,7 @@ export class DbService {
         }),
         switchMap((result) => {
           if(result == false) updateResponse('syncTopicsNearby()');
+          this.loader.setAppLoading(false);
           return of(response);
         })
       );
@@ -692,13 +698,13 @@ export class DbService {
    * @param entity Internal Entity Subject that will be returned.
    * @returns The internal Entity Subect Value.  
   */
-  private _returnDbSet<TEntity>(entity: BehaviorSubject<TEntity | null>): Observable<DbResult<TEntity>> {
+  private _returnDbSet<TEntity>(entity: BehaviorSubject<TEntity | null>, entityName: string): Observable<DbResult<TEntity>> {
     return entity.asObservable()
       .pipe(
         map(entity => {
           let errors: string[] = [];
           if (entity == null) {
-            let errorMsg = `Entity has not been initiallized yet.`;
+            let errorMsg = `Entity [${entityName}] has not been initiallized yet.`;
             this.logger.warn(errorMsg);
             errors.push(errorMsg);
           }

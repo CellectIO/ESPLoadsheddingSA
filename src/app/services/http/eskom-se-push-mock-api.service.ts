@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { delay, Observable, of } from 'rxjs';
 import { ESPAllowanceApiResponse } from '../../core/models/api-responses/eskom-se-push/esp-allowance-api-response';
 import { ESPAreaInfoApiResponse } from '../../core/models/api-responses/eskom-se-push/esp-area-info-api-response';
 import { ESPAreasNearbyApiResponse } from '../../core/models/api-responses/eskom-se-push/esp-areas-nearby-api-response';
@@ -15,6 +15,7 @@ import { IEskomSePushApiService } from '../../core/contracts/services/eskom-se-p
 import { ESPAreaSearchApiResponse } from '../../core/models/api-responses/eskom-se-push/esp-area-search-api-response';
 import { Result } from '../../core/models/response-types/result';
 import { NGXLogger } from 'ngx-logger';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -61,7 +62,7 @@ export class EskomSePushMockApiService implements IEskomSePushApiService {
 
   private returnJson<TResponse>(data: TResponse): Observable<Result<TResponse>>
   {
-    return of(new Result<TResponse>(data, null));
+    return of(new Result<TResponse>(data, null)).pipe(delay(environment.mocking.mockDelay));
   }
 
   private _log(functionName: string, params: any[]){

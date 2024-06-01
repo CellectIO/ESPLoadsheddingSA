@@ -10,6 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { EskomAreaNearby } from '../../../core/models/common/areas/eskom-area-nearby';
 import { CardComponent } from '../../shared/card/card.component';
 import { LogPanelService } from '../../../services/log-panel/log-panel.service';
+import { AreaInfoEntity } from '../../../core/models/entities/area-info-entity';
 
 @Component({
   selector: 'app-add-area',
@@ -27,12 +28,35 @@ import { LogPanelService } from '../../../services/log-panel/log-panel.service';
 })
 export class AddAreaComponent implements OnInit, OnDestroy {
 
-  areasNearbyDataSet: EskomAreaNearby[] = [];
-  areaSearchDataSet: EskomSearchArea[] = [];
-  savedAreas: EskomSearchArea[] = [];
+  /**
+   * Form Control used to enter area name.
+   */
+  areaNameFormControl: FormControl = new FormControl('');
+  /**
+   * Subscriptions created throughout the component life cycle
+   */
   subscriptions: Subscription[] = [];
-
-  areaName: FormControl = new FormControl('');
+  /**
+   * Area Search Results that are gathered when a user searches for a area.
+   */
+  areaSearchResults: EskomSearchArea[] = [];
+  /**
+   * User saved Areas.
+   */
+  savedAreas: EskomSearchArea[] = [];
+  /**
+   * Saved Area Entities for Saved Areas.
+   */
+  savedAreaInfoEntities: AreaInfoEntity[] = [];
+  /**
+   * Areas Nearby based on GEO location.
+   */
+  areasNearbyDataSet: EskomAreaNearby[] = [];
+  /**
+   * To prevent the user from manipulating results before the previous area action completes.
+   * This will Lock the buttons and let the initial action finish first.
+   */
+  syncingSavedAreas: boolean = false;
 
   constructor(
     private db: DbService,
@@ -53,6 +77,9 @@ export class AddAreaComponent implements OnInit, OnDestroy {
       .pipe(
         switchMap((result) => {
           return this.getAreasNearbyDbResult();
+        }),
+        switchMap((result) => {
+          return this.getSavedAreaInformation();
         })
       ).subscribe();
 
@@ -60,14 +87,14 @@ export class AddAreaComponent implements OnInit, OnDestroy {
   }
 
   getAreaSearchResult(): void {
-    let areaName = this.areaName.value!;
-    if (areaName == '') {
+    let areaNameFormControl = this.areaNameFormControl.value!;
+    if (areaNameFormControl == '') {
       this.logPanel.setWarningLogs(['Please Provide a Valid Area Name']);
-      this.areaSearchDataSet = [];
+      this.areaSearchResults = [];
       return
     }
 
-    let syncSub = this.db.addArea(areaName, true)
+    let syncSub = this.db.addArea(areaNameFormControl, true)
       .pipe(
         switchMap((result) => {
           return this.db.getArea;
@@ -76,7 +103,7 @@ export class AddAreaComponent implements OnInit, OnDestroy {
           if (value.isLoaded) {
             let savedAreas = this.savedAreas.map(_ => _.id);
             let unSavedAreas = value.data![0].areas.filter(_ => !savedAreas.includes(_.id)); //TODO: don't always use the first result
-            this.areaSearchDataSet = unSavedAreas;
+            this.areaSearchResults = unSavedAreas;
           } else {
             this.logPanel.setErrorLogs(value.errors!);
           }
@@ -84,6 +111,19 @@ export class AddAreaComponent implements OnInit, OnDestroy {
       ).subscribe();
 
     this.subscriptions.push(syncSub);
+  }
+
+  getSavedAreaInformation(): Observable<void> {
+    return this.db.getAreasInformation
+      .pipe(
+        map((result) => {
+          if (result.isLoaded) {
+            this.savedAreaInfoEntities = result.data!;
+          } else {
+            this.logPanel.setErrorLogs(result.errors!);
+          }
+        })
+      );
   }
 
   getSavedAreasDbResult(): Observable<void> {
@@ -115,83 +155,80 @@ export class AddAreaComponent implements OnInit, OnDestroy {
   }
 
   addArea(area: EskomSearchArea) {
-    //ONLY SAVE IF AREA IS NOT SAVED ALREADY
     let exsists = this.savedAreas.includes(area);
     if (exsists) {
       this.logPanel.setWarningLogs(['Area is already saved.']);
       return
     }
 
-    this.savedAreas.push(area);
-    this._updateSavedAreas();
+    this._updateSavedAreas(area, 'add');
   }
 
   removeArea(area: EskomSearchArea) {
-    //ONLY REMOVE IF AREA IS ALREADY SAVED
     let exsists = this.savedAreas.includes(area);
     if (!exsists) {
       this.logPanel.setWarningLogs(['Area Does not exists in saved Areas.']);
       return
     }
 
-    this.savedAreas = this.savedAreas.filter(_ => _ != area);
-    this._updateSavedAreas();
+    this._updateSavedAreas(area, 'remove');
   }
 
-  private _updateSavedAreas() {
-    let updateSub = this.db.updateSavedAreas({
-      areas: this.savedAreas
-    }).pipe(
-      map((saveResult) => {
-        if (saveResult) {
-          let savedAreas = this.savedAreas.map(_ => _.id);
-          this.areaSearchDataSet = this.areaSearchDataSet.filter(_ => !savedAreas.includes(_.id));
-          this.areasNearbyDataSet = this.areasNearbyDataSet.filter(_ => !savedAreas.includes(_.id));
-        }
+  private _updateSavedAreas(area: EskomSearchArea, state: 'add' | 'remove') {
+    this.syncingSavedAreas = true;
 
-        return saveResult;
-      }),
-      switchMap((saveResult) => {
-        if (saveResult) {
-          this._setAreaInfoForSavedAreas();
-        }
+    let currentAreas = JSON.parse(JSON.stringify(this.savedAreas)) as EskomSearchArea[];
+    let currentAreaInfos = JSON.parse(JSON.stringify(this.savedAreaInfoEntities)) as AreaInfoEntity[];
 
-        return of(true);
-      })
-    ).subscribe();
+    if(state == 'add'){
+      currentAreas.push(area);
+    }else{
+      currentAreas = currentAreas.filter(_ => _.id != area.id);
+    }
 
-    this.subscriptions.push(updateSub);
-  }
+    let isNewAreaInfo = !currentAreaInfos.map(_ => _.areaInfoId).includes(area.id);
 
-  private _setAreaInfoForSavedAreas() {
-    let getSub = this.db.getAreasInformation
+    let updateSub = of(true)
       .pipe(
-        map((savedAreaInfoResult) => {
-          if (savedAreaInfoResult.isLoaded) {
+        switchMap(() => {
+          if(isNewAreaInfo){
+            return this.db.addAreaInformation(area.id, true)
+              .pipe(
+                map((saveResult) => {
+                  if (!saveResult) {
+                    this.logPanel.setErrorLogs([`failed to save area with name: ${area.name}`]);
+                  }
 
-            let newAreas = this.savedAreas.filter(_ => !savedAreaInfoResult.data.map(_ => _.areaInfoId).includes(_.id));
-
-            newAreas.forEach(area => {
-              let addSub = this.db.addAreaInformation(area.id, true)
-                .pipe(
-                  map((saveResult) => {
-                    if (!saveResult) {
-                      this.logPanel.setErrorLogs([`failed to save area with name: ${area.name}`]);
-                    }else{
-                      this.logPanel.setSuccessLogs(['Saved Areas have been updated.']);
-                    }
-                  })
-                )
-                .subscribe();
-
-              this.subscriptions.push(addSub);
-            });
-
+                  return saveResult;
+                })
+              );
           }
+          return of(true);
+        }),
+        switchMap((areaSaved) => {
+          if(areaSaved){
+            return this.db.updateSavedAreas({
+              areas: currentAreas
+            });
+          }
+
+          return of(areaSaved);
+        }),
+        map(result => {
+          if(result){
+            let savedAreas = currentAreas.map(_ => _.id);
+
+            this.savedAreas = currentAreas;
+            this.areaSearchResults = this.areaSearchResults.filter(_ => !savedAreas.includes(_.id));
+            this.areasNearbyDataSet = this.areasNearbyDataSet.filter(_ => !savedAreas.includes(_.id));
+            this.logPanel.setSuccessLogs(['Saved Areas have been updated.']);
+          }
+
+          this.syncingSavedAreas = false;
         })
       ).subscribe();
 
-    this.subscriptions.push(getSub);
+    this.subscriptions.push(updateSub);
   }
 
 }
