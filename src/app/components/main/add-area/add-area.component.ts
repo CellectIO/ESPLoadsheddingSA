@@ -11,6 +11,7 @@ import { EskomAreaNearby } from '../../../core/models/common/areas/eskom-area-ne
 import { CardComponent } from '../../shared/card/card.component';
 import { LogPanelService } from '../../../services/log-panel/log-panel.service';
 import { AreaInfoEntity } from '../../../core/models/entities/area-info-entity';
+import { UtilityService } from '../../../services/utility/utility.service';
 
 @Component({
   selector: 'app-add-area',
@@ -60,7 +61,8 @@ export class AddAreaComponent implements OnInit, OnDestroy {
 
   constructor(
     private db: DbService,
-    private logPanel: LogPanelService
+    private logPanel: LogPanelService,
+    private utility: UtilityService
   ) {
   }
 
@@ -177,8 +179,8 @@ export class AddAreaComponent implements OnInit, OnDestroy {
   private _updateSavedAreas(area: EskomSearchArea, state: 'add' | 'remove') {
     this.syncingSavedAreas = true;
 
-    let currentAreas = JSON.parse(JSON.stringify(this.savedAreas)) as EskomSearchArea[];
-    let currentAreaInfos = JSON.parse(JSON.stringify(this.savedAreaInfoEntities)) as AreaInfoEntity[];
+    let currentAreas = this.utility.newArray(this.savedAreas);
+    let currentAreaInfos = this.utility.newArray(this.savedAreaInfoEntities);
 
     if(state == 'add'){
       currentAreas.push(area);

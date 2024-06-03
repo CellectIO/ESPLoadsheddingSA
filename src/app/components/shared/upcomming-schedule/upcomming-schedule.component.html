@@ -1,9 +1,7 @@
 <app-card class="upcomming-schedule-card">
     <div *ngFor="let schedule of areaSchedulesUpcomming; index as i; first as isFirst">
         <p>{{schedule.name}}, {{schedule.date | date : 'MMM dd'}}</p>
-
-        <app-time-slot-chart [infoDay]="schedule"></app-time-slot-chart>
-
+        <app-time-slot-chart [areaDayInfo]="schedule" [areaEvents]="areaInfoDataSet!.events!" />
         <ul>
             @for (stage of schedule._stages; track stage) {
                 @for (slot of stage.timeSlots; track slot) {

@@ -9,9 +9,11 @@ import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { Router } from '@angular/router';
 import { TimeSlotChartComponent } from '../../shared/time-slot-chart/time-slot-chart.component';
-import { AreaInfoEntity } from '../../../core/models/entities/area-info-entity';
+import { AreaInfoDayEntity, AreaInfoEntity } from '../../../core/models/entities/area-info-entity';
 import { CardComponent } from '../../shared/card/card.component';
 import { LogPanelService } from '../../../services/log-panel/log-panel.service';
+import { EskomAreaInfoEvent } from '../../../core/models/common/areas/eskom-area-info-event';
+import { ScheduleService } from '../../../services/schedule/schedule.service';
 
 @Component({
   selector: 'app-my-areas',
@@ -37,7 +39,8 @@ export class MyAreasComponent implements OnInit, OnDestroy {
   constructor(
     private db: DbService, 
     private router: Router,
-    private logPanel: LogPanelService
+    private logPanel: LogPanelService,
+    private scheduleService: ScheduleService
   ) {
   }
 
@@ -86,9 +89,27 @@ export class MyAreasComponent implements OnInit, OnDestroy {
     this.subscriptions.push(syncSub);
   }
 
-  getAreaInfo(areaId: string){
+  getAreaInfo(areaId: string): AreaInfoDayEntity | null
+  {
     var targetArea = this.savedAreasInfo.filter(_ => _.areaInfoId == areaId);
-    return targetArea.length > 0 ? targetArea[0].schedule.days[0] : null;
+    if(targetArea.length <= 0){
+      return null;
+    }
+
+    var localDate = this.scheduleService.localeDateString;
+    var currentDateAreaDetails = targetArea[0].schedule.days.filter(_ => _.name == localDate);
+
+    if(currentDateAreaDetails.length <= 0){
+      return null;
+    }
+
+    return currentDateAreaDetails[0];
+  }
+
+  getAreaEvents(areaId: string): EskomAreaInfoEvent[]
+  {
+    var targetArea = this.savedAreasInfo.filter(_ => _.areaInfoId == areaId);
+    return targetArea.length > 0 ? targetArea[0].events : [];
   }
 
   goToAreaInfo(areaId: string){
