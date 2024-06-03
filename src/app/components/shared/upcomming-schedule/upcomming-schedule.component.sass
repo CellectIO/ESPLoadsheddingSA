@@ -9,7 +9,29 @@
         font-size: $font-size-md
 
     li
-        color: $eskom-card-content-text-color !important
+        color: $eskom-card-content-text-color
 
-    li::marker
-        font-size: $font-size-md
+        &::marker
+            font-size: $font-size-xl
+
+        &.stage0-color::marker
+            color: $eskom-stage-0-color
+
+        &.stage1-color::marker
+            color: $eskom-stage-1-color
+
+        &.stage2-color::marker
+            color: $eskom-stage-2-color
+
+        &.stage3-color::marker
+            color: $eskom-stage-3-color
+
+        &.stage4-color::marker
+            color: $eskom-stage-4-color
+
+        &.stage5-color::marker
+            color: $eskom-stage-5-color
+
+        &.stage6-color::marker
+            color: $eskom-stage-6-color
+  

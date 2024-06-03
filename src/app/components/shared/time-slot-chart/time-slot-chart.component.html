@@ -1,9 +1,20 @@
 <div class="time-line">
     <div *ngFor="let segment of timeFragments; let index = index" 
         class="segment"
-        [ngClass]="[segment.segmentColor, segment.currentTime ? 'segment-active' : '']">
-        <div *ngIf="segment.currentTime">
+        [ngClass]="[segment.stageColor, segment.containsCurrentTime ? 'segment-active' : '']">
+        <div *ngIf="segment.containsCurrentTime">
             |
         </div>
+    </div>
+</div>
+<!-- 
+    WE RENDER A SECOND TIME LINE TO ALLOW TIME TEXT TO BE RENDERED SEPERATE FROM THE SEGMENTS.
+    THIS IS BECAUSE THE TEXT SIZE ALTERS THE SEGMENT SIZE TO MUCH.
+ -->
+<div class="time-line">
+    <div *ngFor="let segment of timeFragments; let index = index" class="segment">
+        <span *ngIf="segment.containsCurrentTime || segment.shouldRenderStartingTime" class="time-details">
+            {{scheduleService.parseSegmentTime(segment.fromTime)}}
+        </span>
     </div>
 </div>

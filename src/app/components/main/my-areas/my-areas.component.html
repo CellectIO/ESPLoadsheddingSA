@@ -28,7 +28,7 @@
     
             <p>{{area.region}}</p>
     
-            <app-time-slot-chart [infoDay]="getAreaInfo(area.id)"></app-time-slot-chart>
+            <app-time-slot-chart [areaDayInfo]="getAreaInfo(area.id)" [areaEvents]="getAreaEvents(area.id)"/>
         </app-card>
     </div>
 </div>

@@ -2,16 +2,27 @@
 
 .time-line
   display: flex
-  height: 10px
+  height: 15px
   width: $spacer-perc-100
 
-.segment
-  flex: 1
-  border: 1px solid $eskom-bg-color
+  .segment
+    flex: 1
+    border: 1px solid $eskom-bg-color
 
-.segment-active
-      display: flex
-      flex-direction: column
-      align-items: center
-      margin-top: -6px
-      min-height: 20px
+  .segment:last-child
+    border-radius: 0px 5px 5px 0px
+
+  .segment:first-child
+    border-radius: 5px 0px 0px 5px
+
+  .segment-active
+    display: flex
+    flex-direction: column
+    align-items: center
+    margin-top: -8px
+    min-height: 20px
+
+  .time-details
+    text-wrap: nowrap
+    font-size: 14px
+    color: $eskom-title-color

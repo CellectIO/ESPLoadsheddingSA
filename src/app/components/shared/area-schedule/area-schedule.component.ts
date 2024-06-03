@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { AreaInfoDayEntity, AreaInfoEntity } from '../../../core/models/entities/area-info-entity';
 import { CardComponent } from '../card/card.component';
 import { ScheduleService } from '../../../services/schedule/schedule.service';
+import { UtilityService } from '../../../services/utility/utility.service';
 
 @Component({
   selector: 'app-area-schedule',
@@ -31,7 +32,8 @@ export class AreaScheduleComponent implements OnInit, OnChanges {
   scheduleStageFilterControl = new FormControl(['']);
 
   constructor(public ngStyleService: NgStyleService,
-    private scheduleService: ScheduleService
+    private scheduleService: ScheduleService,
+    private utility: UtilityService
   ) {
   }
 
@@ -65,12 +67,7 @@ export class AreaScheduleComponent implements OnInit, OnChanges {
     let daysFilter = this.scheduleDateFilterControl.value!;
     let stageFilter = this.scheduleStageFilterControl.value!;
 
-    //IF THIS LOOKS DUMB, ITS BECAUSE IT IS
-    //DUE TO ARRAY's BEING REFERENCE TYPES, IF I MODIFY THE ARRAY CONTENT LIKE I DO BELOW IT WILL RESULT IN THE ORIGINAL ARRAY TO BE MODIFIED ASWELL.
-    //SO I AM PARSING IT TO JSON AND BACK INTO THE ORIGINAL TYPE
-    //TO MAKE THE COMPILER THINK ITS A BRAND NEW ARRAY AND BREAKING THE REFERENCE ISSUE.
-    let schedules = JSON.parse(JSON.stringify(this.areaInfoDataSet!.schedule.days!)) as AreaInfoDayEntity[];
-
+    let schedules = this.utility.newArray(this.areaInfoDataSet!.schedule.days!);
     let validDays = schedules
       .filter(x => daysFilter.some(y => y == x.name))
       .map(day => {
