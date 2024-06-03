@@ -6,13 +6,14 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { SessionStorageService } from '../../../services/storage/session-storage.service';
 import { EskomSePushConfig } from '../../../core/models/common/Settings/user-app-settings';
 import { DbService } from '../../../services/db/db.service';
-import { Subscription, map, of, pairwise, switchMap } from 'rxjs';
+import { Observable, Subscription, map, of, pairwise, switchMap, tap } from 'rxjs';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { CardComponent } from '../../shared/card/card.component';
 import { MatIconModule } from '@angular/material/icon';
 import { StorageServiceKeyConstants } from '../../../core/constants/storage-service-key.constants';
 import { LogPanelService } from '../../../services/log-panel/log-panel.service';
 import { CommonModule } from '@angular/common';
+import { Result } from '../../../core/models/response-types/result';
 
 @Component({
   selector: 'app-settings',
@@ -82,21 +83,29 @@ export class SettingsComponent implements OnInit, OnDestroy {
     //NOTE: its not a UUID will need to get clever?
 
     let refreshRequired = (this._initialApiKey != updatedData!.eskomSePushApiKey) && this._initialApiKey != null;
-
+    let errorMsg = 'Something went wrong while trying to save settings.';
+    
     let saveSub = this.db.updateUserSettings(updatedData!)
       .pipe(
         switchMap(result => {
           if(result && refreshRequired){
-            return this.db.init();
+            return this.initApp(
+              'EskomSePush Settings have been saved succesfully.',
+              errorMsg
+            );
+          }
+
+          if(result){
+            return this.db.sync();
           }
 
           return of(result);
         }),
-        map((saveResult) => {
-          if (saveResult) {
-            this.logPanel.setSuccessLogs(['EskomSePush Settings have been saved succesfully.']);
-          } else {
-            this.logPanel.setErrorLogs(['Something went wrong while trying to save settings.']);
+        tap(result => {
+          if(typeof result == 'boolean' && result == false){
+            this.logPanel.setErrorLogs([errorMsg])
+          }else if((result as Result<string>).isSuccess == false){
+            this.logPanel.setErrorLogs([errorMsg])
           }
         })
       )
@@ -129,6 +138,15 @@ export class SettingsComponent implements OnInit, OnDestroy {
   }
 
   clearCache() {
+    let syncSub = this.initApp(
+      'Cache Has been Cleared and Settings Have Succesfully reloaded.',
+      'Something went wrong while trying to reload.'
+    ).subscribe();
+
+    this.subscriptions.push(syncSub);
+  }
+
+  initApp(succesLog: string, errorLog: string): Observable<boolean> {
     //SINCE WE ARE NOT DOING A HARD RESET, WE ONLY DELETE API DATA.
     this.storageService.clear([
       StorageServiceKeyConstants.USER_DATA_SAVED_AREAS,
@@ -141,21 +159,25 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
     this.db.reset();
 
-    let syncSub = this.db.init()
+    return this.db.init()
       .pipe(
         switchMap(result => {
-          return this.db.sync();
+          if(result){
+            return this.db.sync();
+          }
+
+          return of(result);
         }),
         map(result => {
           if (result) {
-            this.logPanel.setSuccessLogs(['Cache Has been Cleared and Settings Have Succesfully reloaded.']);
+            this.logPanel.setSuccessLogs([succesLog]);
+            return true;
           } else {
-            this.logPanel.setErrorLogs(['Something went wrong while trying to reload.']);
+            this.logPanel.setErrorLogs([errorLog]);
+            return false
           }
         })
-      ).subscribe();
-
-    this.subscriptions.push(syncSub);
+      );
   }
 
 }
