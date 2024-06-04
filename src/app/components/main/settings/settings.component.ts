@@ -14,6 +14,7 @@ import { StorageServiceKeyConstants } from '../../../core/constants/storage-serv
 import { LogPanelService } from '../../../services/log-panel/log-panel.service';
 import { CommonModule } from '@angular/common';
 import { Result } from '../../../core/models/response-types/result';
+import { EskomSePushApiService } from '../../../services/http/eskom-se-push-api.service';
 
 @Component({
   selector: 'app-settings',
@@ -48,8 +49,10 @@ export class SettingsComponent implements OnInit, OnDestroy {
   constructor(
     private db: DbService,
     private storageService: SessionStorageService,
-    private logPanel: LogPanelService
-  ) { }
+    private logPanel: LogPanelService,
+    private apiService: EskomSePushApiService
+  ) { 
+  }
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());
@@ -79,39 +82,55 @@ export class SettingsComponent implements OnInit, OnDestroy {
   onSubmit() {
     var updatedData = this.MapResult(null);
 
-    //TODO: VALIDATION HERE TO CONFIRM IF THE API KEY IS VALID
-    //NOTE: its not a UUID will need to get clever?
+    if(!updatedData!.eskomSePushApiKey && !this._initialApiKey){
+      this.logPanel.setWarningLogs(['Please provide a valid Eskom Se Push API Key']);
+      return;
+    }
 
-    let refreshRequired = (this._initialApiKey != updatedData!.eskomSePushApiKey) && this._initialApiKey != null;
-    let errorMsg = 'Something went wrong while trying to save settings.';
-    
-    let saveSub = this.db.updateUserSettings(updatedData!)
+    let saveSub = this.apiService.validateApiKey(updatedData!.eskomSePushApiKey)
       .pipe(
         switchMap(result => {
-          if(result && refreshRequired){
-            return this.initApp(
-              'EskomSePush Settings have been saved succesfully.',
-              errorMsg
-            );
+          if(!result.isSuccess){
+            this.logPanel.setErrorLogs([result.data?.error!]);
+          }else{
+            return this._updateSettings(updatedData!);
           }
-
-          if(result){
-            return this.db.sync();
-          }
-
-          return of(result);
-        }),
-        tap(result => {
-          if(typeof result == 'boolean' && result == false){
-            this.logPanel.setErrorLogs([errorMsg])
-          }else if((result as Result<string>).isSuccess == false){
-            this.logPanel.setErrorLogs([errorMsg])
-          }
+          return of(true);
         })
       )
       .subscribe();
 
     this.subscriptions.push(saveSub);
+  }
+
+  _updateSettings(updatedData: EskomSePushConfig){
+    let refreshRequired = (this._initialApiKey != updatedData!.eskomSePushApiKey) && this._initialApiKey != null;
+    let errorMsg = 'Something went wrong while trying to save settings.';
+
+    return this.db.updateUserSettings(updatedData)
+    .pipe(
+      switchMap(result => {
+        if(result && refreshRequired){
+          return this.initApp(
+            'EskomSePush Settings have been saved succesfully.',
+            errorMsg
+          );
+        }
+
+        if(result){
+          return this.db.sync();
+        }
+
+        return of(result);
+      }),
+      tap(result => {
+        if(typeof result == 'boolean' && result == false){
+          this.logPanel.setErrorLogs([errorMsg])
+        }else if((result as Result<string>).isSuccess == false){
+          this.logPanel.setErrorLogs([errorMsg])
+        }
+      })
+    )
   }
 
   /**

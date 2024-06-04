@@ -16,6 +16,7 @@ import { ESPAreaSearchApiResponse } from '../../core/models/api-responses/eskom-
 import { Result } from '../../core/models/response-types/result';
 import { NGXLogger } from 'ngx-logger';
 import { environment } from '../../../environments/environment';
+import { ESPError } from '../../core/models/api-responses/eskom-se-push/esp-error';
 
 @Injectable({
   providedIn: 'root'
@@ -58,6 +59,12 @@ export class EskomSePushMockApiService implements IEskomSePushApiService {
     this._log('getAllowance', []);
     let rawData = getAllowance as ESPAllowanceApiResponse;
     return this.returnJson<ESPAllowanceApiResponse>(rawData);
+  }
+
+  validateApiKey(apiKey: string): Observable<Result<ESPError>>
+  {
+    this._log('validateApiKey', [apiKey]);
+    return of(new Result<ESPError>({}, null));
   }
 
   private returnJson<TResponse>(data: TResponse): Observable<Result<TResponse>>

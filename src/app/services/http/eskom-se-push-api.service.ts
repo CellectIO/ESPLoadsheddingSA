@@ -14,18 +14,27 @@ import { ESPAreaSearchApiResponse } from '../../core/models/api-responses/eskom-
 import { StorageServiceKeyConstants } from '../../core/constants/storage-service-key.constants';
 import { Result } from '../../core/models/response-types/result';
 import { NGXLogger } from 'ngx-logger';
-import { DbService } from '../db/db.service';
+import { ESPError } from '../../core/models/api-responses/eskom-se-push/esp-error';
 
 @Injectable({
   providedIn: 'root'
 })
-export class EskomSePushApiService implements IEskomSePushApiService{
+export class EskomSePushApiService implements IEskomSePushApiService {
+
+  private get headers(): HttpHeaders {
+    return new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Request-Method': 'GET',
+      'Access-Control-Allow-Origin': '*',
+      'Token': ''
+    });
+  }
 
   constructor(
-    private http: HttpClient, 
+    private http: HttpClient,
     private storageService: SessionStorageService,
     private logger: NGXLogger
-    ) {}
+  ) { }
 
   getStatus(): Observable<Result<ESPStatusApiResponse>> {
     this._log('getStatus', []);
@@ -37,7 +46,7 @@ export class EskomSePushApiService implements IEskomSePushApiService{
     return this.handleHttpRequest<ESPAreaInfoApiResponse>(`${environment.api_eskom}/area?id=${areaId}`);
   }
 
-  getAreasNearby(lat: number, long:number): Observable<Result<ESPAreasNearbyApiResponse>> {
+  getAreasNearby(lat: number, long: number): Observable<Result<ESPAreasNearbyApiResponse>> {
     this._log('getAreasNearby', [lat, long]);
     return this.handleHttpRequest<ESPAreasNearbyApiResponse>(`${environment.api_eskom}/areas_nearby?lat=${lat}8&lon=${long}`);
   }
@@ -47,7 +56,7 @@ export class EskomSePushApiService implements IEskomSePushApiService{
     return this.handleHttpRequest<ESPAreaSearchApiResponse>(`${environment.api_eskom}/areas_search?text=${areaName}`);
   }
 
-  getTopicsNearby(lat: number, long:number): Observable<Result<ESPTopicsNearbyApiResponse>> {
+  getTopicsNearby(lat: number, long: number): Observable<Result<ESPTopicsNearbyApiResponse>> {
     this._log('getTopicsNearby', [lat, long]);
     return this.handleHttpRequest<ESPTopicsNearbyApiResponse>(`${environment.api_eskom}/topics_nearby?lat=${lat}8&lon=${long}`);
   }
@@ -57,34 +66,48 @@ export class EskomSePushApiService implements IEskomSePushApiService{
     return this.handleHttpRequest<ESPAllowanceApiResponse>(`${environment.api_eskom}/api_allowance`);
   }
 
-  private handleHttpRequest<T>(url: string): Observable<Result<T>> {
-    let headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Request-Method': 'GET',
-      'Access-Control-Allow-Origin': '*',
-      'Token': ''
-    });
+  validateApiKey(apiKey: string): Observable<Result<ESPError>> {
+    let _headers = this.headers;
+    _headers = _headers.set('Token', apiKey);
 
+    return this.http
+      .get<ESPError>(`${environment.api_eskom}/api_allowance`, {
+        headers: _headers,
+        withCredentials: true
+      })
+      .pipe(
+        map((data: any) => {
+          //WE DON'T CARE ABOUT THE ALLOWANCE RESULT, SO JUST RETURN SUCCESS RESULT.
+          return new Result<ESPError>({}, null);
+        }),
+        catchError(error => {
+          return of(new Result<ESPError>(error.error, [error.message]));
+        })
+      );
+  }
+
+  private handleHttpRequest<T>(url: string): Observable<Result<T>> {
+    let _headers = this.headers;
     let configExists = this.storageService.keyExists(StorageServiceKeyConstants.USER_DATA_SETTINGS);
-    if(configExists){
+    if (configExists) {
       let configResult = this.storageService.getData<EskomSePushConfig>(StorageServiceKeyConstants.USER_DATA_SETTINGS);
-      if(configResult.isSuccess){
-        headers = headers.set('Token', configResult.data!.eskomSePushApiKey!);
-      }else{
+      if (configResult.isSuccess) {
+        _headers = _headers.set('Token', configResult.data!.eskomSePushApiKey!);
+      } else {
         let error = 'API KEY : Eskom Se Push API KEY has been set but no data was found.';
         this.logger.warn(error);
         return of(new Result<T>(null, [error]));
       }
-    }else{
+    } else {
       let error = 'API KEY : Eskom Se Push API KEY has not been set yet.';
       this.logger.warn(error);
       return of(new Result<T>(null, [error]));
     }
 
     return this.http
-      .get<T>(url, { 
-        headers: headers, 
-        withCredentials: true 
+      .get<T>(url, {
+        headers: _headers,
+        withCredentials: true
       })
       .pipe(
         map((data: T) => {
@@ -98,7 +121,7 @@ export class EskomSePushApiService implements IEskomSePushApiService{
       );
   }
 
-  private _log(functionName: string, params: any[]){
+  private _log(functionName: string, params: any[]) {
     this.logger.info(`invoking ${functionName}() with params ${params}`);
   }
 
