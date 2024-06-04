@@ -45,4 +45,11 @@ export interface IEskomSePushApiService{
    */
   getAllowance(): Observable<Result<ESPAllowanceApiResponse>>;
 
+  /**
+   * Since the Allowance API does not count towards your Allowance Count, we are using it to determine if the API Key is valid.
+   * This same API can be used to determine if users are abusing the free acounts policy
+   * @param apiKey 
+   */
+  validateApiKey(apiKey: string): Observable<Result<ESPError>>;
+
 }
