@@ -36,6 +36,8 @@ export class DbService {
 
   //#region "STORE ENTITIES"
 
+  private _isRegistered: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
+
   //USER MANAGED - SINGLE ENTITIES
   private _useCache: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
   private _savedAreas: BehaviorSubject<AreaSearchEntity | null> = new BehaviorSubject<AreaSearchEntity | null>(null);
@@ -102,6 +104,10 @@ export class DbService {
 
   public get getUserSettings(): Observable<DbResult<EskomSePushConfig>> {
     return this._returnDbSet(this._userSettings, '_userSettings');
+  }
+
+  public get getIsRegistered(): Observable<boolean> {
+    return this._isRegistered.asObservable();
   }
 
   //#endregion "GET ENTITIES"
@@ -426,6 +432,7 @@ export class DbService {
     this._topicsNearby.next(null);
     
     if(hard){
+      this._isRegistered.next(false);
       this._useCache.next(true);
       this._allowance.next(null);
       this._userSettings.next(null);
@@ -489,6 +496,10 @@ export class DbService {
         }),
         switchMap((result) => {
           if(result == false) return updateResponse('syncUserSettings()');
+          return this.syncIsRegistered();
+        }),
+        switchMap((result) => {
+          if(result == false) return updateResponse('syncIsRegistered()');
           return this.syncStatus();
         }),
         switchMap((result) => {
@@ -672,6 +683,19 @@ export class DbService {
         return of(result);
       })
     );
+  }
+
+  public syncIsRegistered(): Observable<boolean> {
+    let cacheKey = StorageServiceKeyConstants.USER_DATA_SETTINGS
+
+    let settingsExists = this.storageService.keyExists(cacheKey);
+    if(!settingsExists.isSuccess){
+      return this._setDbSetValue('set', this._isRegistered, false);
+    }
+
+    let cacheSettings = this.storageService.getData<EskomSePushConfig>(cacheKey)!;
+    let apiKeyExists = (cacheSettings.data!.eskomSePushApiKey) ? true : false;
+    return this._setDbSetValue('set', this._isRegistered, apiKeyExists);
   }
 
   //#endregion "SYNC ENTITIES"
