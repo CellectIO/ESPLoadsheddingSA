@@ -33,6 +33,8 @@ import { EskomSePushApiService } from '../../../services/http/eskom-se-push-api.
 })
 export class SettingsComponent implements OnInit, OnDestroy {
 
+  isRegistered: boolean = false;
+
   eskomSePushApiForm = new FormGroup({
     apiKey: new FormControl(''),
     syncInterval: new FormControl({
@@ -51,7 +53,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     private storageService: SessionStorageService,
     private logPanel: LogPanelService,
     private apiService: EskomSePushApiService
-  ) { 
+  ) {
   }
 
   ngOnDestroy(): void {
@@ -75,14 +77,22 @@ export class SettingsComponent implements OnInit, OnDestroy {
         })
       ).subscribe();
 
+    let registeredSub = this.db.getIsRegistered
+      .pipe(
+        map((result) => {
+          this.isRegistered = result;
+        })
+      ).subscribe();
+
     this.subscriptions.push(keyChangeSub);
     this.subscriptions.push(getSub);
+    this.subscriptions.push(registeredSub);
   }
 
   onSubmit() {
     var updatedData = this.MapResult(null);
 
-    if(!updatedData!.eskomSePushApiKey && !this._initialApiKey){
+    if (!updatedData!.eskomSePushApiKey && !(this._initialApiKey)) {
       this.logPanel.setWarningLogs(['Please provide a valid Eskom Se Push API Key']);
       return;
     }
@@ -90,12 +100,12 @@ export class SettingsComponent implements OnInit, OnDestroy {
     let saveSub = this.apiService.validateApiKey(updatedData!.eskomSePushApiKey)
       .pipe(
         switchMap(result => {
-          if(!result.isSuccess){
+          if (!result.isSuccess) {
             this.logPanel.setErrorLogs([result.data?.error!]);
-          }else{
-            return this._updateSettings(updatedData!);
+            return of(false);
           }
-          return of(true);
+
+          return this._updateSettings(updatedData!);
         })
       )
       .subscribe();
@@ -103,34 +113,34 @@ export class SettingsComponent implements OnInit, OnDestroy {
     this.subscriptions.push(saveSub);
   }
 
-  _updateSettings(updatedData: EskomSePushConfig){
-    let refreshRequired = (this._initialApiKey != updatedData!.eskomSePushApiKey) && this._initialApiKey != null;
+  _updateSettings(updatedData: EskomSePushConfig) {
+    let refreshRequired = (this._initialApiKey != updatedData!.eskomSePushApiKey);
     let errorMsg = 'Something went wrong while trying to save settings.';
 
     return this.db.updateUserSettings(updatedData)
-    .pipe(
-      switchMap(result => {
-        if(result && refreshRequired){
-          return this.initApp(
-            'EskomSePush Settings have been saved succesfully.',
-            errorMsg
-          );
-        }
+      .pipe(
+        switchMap(result => {
+          if (result && refreshRequired) {
+            return this.initApp(
+              'EskomSePush Settings have been saved succesfully.',
+              errorMsg
+            );
+          }
 
-        if(result){
-          return this.db.sync();
-        }
+          if (result) {
+            return this.db.sync();
+          }
 
-        return of(result);
-      }),
-      tap(result => {
-        if(typeof result == 'boolean' && result == false){
-          this.logPanel.setErrorLogs([errorMsg])
-        }else if((result as Result<string>).isSuccess == false){
-          this.logPanel.setErrorLogs([errorMsg])
-        }
-      })
-    )
+          return of(result);
+        }),
+        tap(result => {
+          if (typeof result == 'boolean' && result == false) {
+            this.logPanel.setErrorLogs([errorMsg])
+          } else if ((result as Result<string>).isSuccess == false) {
+            this.logPanel.setErrorLogs([errorMsg])
+          }
+        })
+      )
   }
 
   /**
@@ -152,6 +162,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
     this.eskomSePushApiForm.controls["syncInterval"].setValue(config.apiSyncInterval);
     this.eskomSePushApiForm.controls["pagesSetup"].setValue(config.pagesSetup);
     this.eskomSePushApiForm.controls["pagesAllowance"].setValue(config.pagesAllowance);
+
+    this._initialApiKey = config.eskomSePushApiKey;
 
     return null;
   }
@@ -181,7 +193,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     return this.db.init()
       .pipe(
         switchMap(result => {
-          if(result){
+          if (result) {
             return this.db.sync();
           }
 

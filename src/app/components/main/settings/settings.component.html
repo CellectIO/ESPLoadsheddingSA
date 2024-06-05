@@ -17,7 +17,7 @@
         </mat-form-field>
     </app-card>
 
-    <app-card class="settings-card">
+    <app-card class="settings-card" *ngIf="isRegistered">
         <div class="settings-card-header">
             <h1>Caching</h1>
             <button mat-raised-button (click)="clearCache()" color="primary" class="btn-md" type="button">
@@ -31,7 +31,7 @@
         </mat-form-field>
     </app-card>
 
-    <app-card class="settings-card">
+    <app-card class="settings-card" *ngIf="isRegistered">
         <div class="settings-card-header">
             <h1>Pages</h1>
         </div>
