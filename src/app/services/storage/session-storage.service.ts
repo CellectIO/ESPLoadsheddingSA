@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { ResultBase } from '../../core/models/response-types/result-base';
 import { Result } from '../../core/models/response-types/result';
+import { ScheduleService } from '../schedule/schedule.service';
+import { CacheResult } from '../../core/models/response-types/cache-result';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +11,9 @@ export class SessionStorageService {
 
   private readonly storage: Storage = window.localStorage;
 
-  constructor() { }
+  constructor(
+    private scheduleService: ScheduleService
+  ) { }
 
   /**
    * Save data to session storage
@@ -17,13 +21,17 @@ export class SessionStorageService {
    * @param value target value to be saved associated with the key.
    * @returns ResultBase with details about the save process.
    */
-  saveData<T>(key: string, value: T): ResultBase {
+  saveData<T>(key: string, value: T, canExpire: boolean): ResultBase {
     let stringyData = JSON.stringify(value);
     if(!stringyData){
       return new ResultBase([`Parsing value for key [${key}] resulted in empty content.`]);
     }
 
-    this.storage.setItem(key, stringyData);
+    let cacheDate = this.scheduleService.currentDate;
+    let cacheResult = new CacheResult(value, cacheDate, canExpire);
+    let stringyCacheResult = JSON.stringify(cacheResult);
+
+    this.storage.setItem(key, stringyCacheResult);
     return new ResultBase(null);
   }
 
@@ -38,7 +46,12 @@ export class SessionStorageService {
       return new Result<T>(null, [`No data found for specified key [${key}]`]);
     }
 
-    return new Result<T>(JSON.parse(data), null);
+    let cacheResult = JSON.parse(data) as CacheResult<T>;
+    if(this.isEpiredCache(cacheResult, key)){
+      return new Result<T>(null, [`Cached Data for specified key [${key}] has expired`]);
+    }
+
+    return new Result<T>(cacheResult.data, null);
   }
 
   /**
@@ -72,12 +85,18 @@ export class SessionStorageService {
    * @param key target key used to idientify data saved.
    * @returns 
    */
-  keyExists(key: string): Result<boolean> {
+  keyExists(key: string): ResultBase {
     const data = this.storage.getItem(key);
+    if(!data){
+      return new ResultBase(['Cached Data does not exists']);
+    }
 
-    return !data?
-      new Result<boolean>(false, null):
-      new Result<boolean>(true, null);
+    let cacheResult = JSON.parse(data) as CacheResult<any>;
+    if(this.isEpiredCache(cacheResult, key)){
+      return new ResultBase([`Cached Data for specified key [${key}] has expired`]);
+    }
+
+    return new ResultBase(null);
   }
 
   /**
@@ -96,6 +115,26 @@ export class SessionStorageService {
     return failedKeys.length > 0 ?
       new ResultBase([`The Following Cache Keys failed to save: [${cachekeys}]`]) :
       new ResultBase(null);
+  }
+
+  private isEpiredCache<T>(cache: CacheResult<T>, cacheKey: string): boolean {
+    if(cache.validateCache == false){
+      return false;
+    }
+
+    const SIX_HOURS_IN_MILLISECONDS = 6 * 60 * 60 * 1000; // 6 Hours
+    const THIRTY_SECONDS_IN_MILLISECONDS = 30 * 1000; // 30 seconds in milliseconds
+
+    const currentTime = new Date().getTime();
+    const givenTime = new Date(cache.created).getTime();
+    
+    let isExpired = (currentTime - givenTime) > THIRTY_SECONDS_IN_MILLISECONDS;
+    if(isExpired){
+      console.error('cache expired');
+      this.deleteData(cacheKey);
+    }
+
+    return isExpired;
   }
 
 }

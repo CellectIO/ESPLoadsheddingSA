@@ -5,7 +5,7 @@ export const environment = {
     mocking: {
         useMock: true,
         mockDelay: 500,
-        useMockTime: true,
+        useMockTime: false,
         mockTime: 'Sat Jun 01 2024 06:29:00 GMT+0200 (GMT+02:00)'
     },
     api_eskom: '/eskomAPI',

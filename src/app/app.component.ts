@@ -44,13 +44,13 @@ export class AppComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    let getKeySub = this.db.sync()
+    let syncSub = this.db.sync()
       .pipe(
         switchMap(result => {
           return this.db.getUserSettings;
         }),
         exhaustMap(result => {
-          if (result.isLoaded == false || (result.data?.eskomSePushApiKey) ? false : true) {
+          if (result.isLoaded == false || ((result.data?.eskomSePushApiKey) ? true : false) == false) {
             return this._loadSetupPages();
           } else {
             return this._loadUserPages(result.data!);
@@ -58,7 +58,7 @@ export class AppComponent implements OnInit, OnDestroy {
         })
       ).subscribe();
 
-    this.subscriptions.push(getKeySub);
+      this.subscriptions.push(syncSub);
   }
 
   ngOnDestroy(): void {
@@ -89,7 +89,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   _loadSetupPages(): Observable<boolean> {
-    this.logger.warn('Eskom Se Push API Key has not been saved yet. Loading Initial Setup Pages.');
+    this.logger.info('Eskom Se Push API Key has not been saved yet. Loading Initial Setup Pages.');
 
     this.navigation = [
       { path: 'page_setup', icon: 'key' },

@@ -119,7 +119,8 @@ export class DbService {
       'set',
       this._savedAreas,
       areas,
-      StorageServiceKeyConstants.USER_DATA_SAVED_AREAS
+      StorageServiceKeyConstants.USER_DATA_SAVED_AREAS,
+      false
     );
   }
 
@@ -128,7 +129,8 @@ export class DbService {
       'set',
       this._userSettings,
       settings,
-      StorageServiceKeyConstants.USER_DATA_SETTINGS
+      StorageServiceKeyConstants.USER_DATA_SETTINGS,
+      false
     )
   }
 
@@ -152,10 +154,13 @@ export class DbService {
 
         let entityData = this.mapper.toAllowanceEntity(value.data!, allowance);
 
-        return this._addOrUpdateDbSetCacheValue(operation,
+        return this._addOrUpdateDbSetCacheValue(
+          operation,
           this._allowance,
           entityData,
-          StorageServiceKeyConstants.USER_DATA_ALLOWANCE);
+          StorageServiceKeyConstants.USER_DATA_ALLOWANCE,
+          false
+        );
       })
     );
   }
@@ -168,7 +173,7 @@ export class DbService {
     return this.getCacheState
       .pipe(
         switchMap((enabled) => {
-          cacheEnabled = enabled
+          cacheEnabled = enabled;
           if (enabled && skipCache == false) {
             return this.syncStatus();
           }
@@ -195,7 +200,8 @@ export class DbService {
                     dbSetOpperation,
                     this._status,
                     entityData,
-                    StorageServiceKeyConstants.API_RESPONSE_GETSTATUS
+                    StorageServiceKeyConstants.API_RESPONSE_GETSTATUS,
+                    true
                   );
                 } else {
                   return this._setDbSetValue(dbSetOpperation, this._status, entityData);
@@ -244,7 +250,8 @@ export class DbService {
                     dbSetOpperation,
                     this._topicsNearby,
                     entityData,
-                    StorageServiceKeyConstants.API_RESPONSE_GETTOPICNEARBY
+                    StorageServiceKeyConstants.API_RESPONSE_GETTOPICNEARBY,
+                    true
                   );
                 } else {
                   return this._setDbSetValue(dbSetOpperation, this._topicsNearby, entityData);
@@ -294,7 +301,8 @@ export class DbService {
                     dbSetOpperation,
                     this._areasNearby,
                     entityData,
-                    StorageServiceKeyConstants.API_RESPONSE_GETAREASNEARBY
+                    StorageServiceKeyConstants.API_RESPONSE_GETAREASNEARBY,
+                    true
                   );
                 } else {
                   return this._setDbSetValue(dbSetOpperation, this._areasNearby, entityData);
@@ -322,7 +330,7 @@ export class DbService {
     return this.getCacheState
       .pipe(
         switchMap((enabled) => {
-          cacheEnabled = enabled
+          cacheEnabled = enabled;
           if (enabled && skipCache == false) {
             return this.syncAreaInformation();
           }
@@ -349,7 +357,8 @@ export class DbService {
                     dbSetOpperation,
                     this._areasInformation,
                     entityData,
-                    StorageServiceKeyConstants.API_RESPONSE_GETAREAINFO
+                    StorageServiceKeyConstants.API_RESPONSE_GETAREAINFO,
+                    true
                   );
                 } else {
                   return this._setDbSetValue(dbSetOpperation, this._areasInformation, entityData);
@@ -372,7 +381,7 @@ export class DbService {
     return this.getCacheState
       .pipe(
         switchMap((enabled) => {
-          cacheEnabled = enabled
+          cacheEnabled = enabled;
           if (enabled && skipCache == false) {
             return this.syncAreas();
           }
@@ -399,7 +408,8 @@ export class DbService {
                     dbSetOpperation,
                     this._areas,
                     entityData,
-                    StorageServiceKeyConstants.API_RESPONSE_GETAREA
+                    StorageServiceKeyConstants.API_RESPONSE_GETAREA,
+                    true
                   );
                 } else {
                   return this._setDbSetValue(dbSetOpperation, this._areas, entityData);
@@ -447,24 +457,16 @@ export class DbService {
       .pipe(
         switchMap(result => {
           this.logger.info(`getCurrentPosition() has returned a succesfull response: ${result.isSuccess}`);
-
-          if(result.isSuccess){
-            return this.updateAreasNearby(result.data!.coords.latitude, result.data!.coords.longitude, true);
-          }
-          return of(result.isSuccess);
+          return this.updateAreasNearby(result.data!.coords.latitude, result.data!.coords.longitude, true);
         }),
         switchMap(result => {
           this.logger.info(`updateAreasNearby() has returned a succesfull response: ${result}`);
-
-          if(result){
-            return this.updateStatus(true);
-          }
-          return of(result);
+          return this.updateStatus(true);
         }),
         map(result => {
           this.loader.setAppLoading(false);
           this.logger.info(`updateStatus() has returned a succesfull response: ${result}`);
-          return result;
+          return true;
         })
       );
   }
@@ -478,7 +480,7 @@ export class DbService {
         return of(false);
       }
       let error = `Syncing [${funcName}] did not succeeed, stopping all further attempts to sync remaining entities.`;
-      this.logger.error(error);
+      this.logger.warn(error);
       response = new Result<string>(null, [error]);
       return of(false);
     };
@@ -545,7 +547,8 @@ export class DbService {
             {
               areas: []
             },
-            StorageServiceKeyConstants.USER_DATA_SAVED_AREAS
+            StorageServiceKeyConstants.USER_DATA_SAVED_AREAS,
+            false
           )
         }
 
@@ -572,7 +575,8 @@ export class DbService {
               pagesSetup : false,
               pagesAllowance : true
             },
-            StorageServiceKeyConstants.USER_DATA_SETTINGS
+            StorageServiceKeyConstants.USER_DATA_SETTINGS,
+            false
           )
         }
 
@@ -608,7 +612,8 @@ export class DbService {
             {
               topics: []
             },
-            StorageServiceKeyConstants.API_RESPONSE_GETTOPICNEARBY
+            StorageServiceKeyConstants.API_RESPONSE_GETTOPICNEARBY,
+            true
           )
         }
 
@@ -632,7 +637,8 @@ export class DbService {
             {
               areas: []
             },
-            StorageServiceKeyConstants.API_RESPONSE_GETAREASNEARBY
+            StorageServiceKeyConstants.API_RESPONSE_GETAREASNEARBY,
+            true
           )
         }
 
@@ -654,7 +660,8 @@ export class DbService {
             'set',
             this._areasInformation,
             [],
-            StorageServiceKeyConstants.API_RESPONSE_GETAREAINFO
+            StorageServiceKeyConstants.API_RESPONSE_GETAREAINFO,
+            true
           )
         }
 
@@ -676,7 +683,8 @@ export class DbService {
             'set',
             this._areas,
             [],
-            StorageServiceKeyConstants.API_RESPONSE_GETAREA
+            StorageServiceKeyConstants.API_RESPONSE_GETAREA,
+            true
           )
         }
 
@@ -685,16 +693,21 @@ export class DbService {
     );
   }
 
-  public syncIsRegistered(): Observable<boolean> {
+  public isRegistered(): boolean
+  {
     let cacheKey = StorageServiceKeyConstants.USER_DATA_SETTINGS
 
     let settingsExists = this.storageService.keyExists(cacheKey);
     if(!settingsExists.isSuccess){
-      return this._setDbSetValue('set', this._isRegistered, false);
+      return false;
     }
 
     let cacheSettings = this.storageService.getData<EskomSePushConfig>(cacheKey)!;
-    let apiKeyExists = (cacheSettings.data!.eskomSePushApiKey) ? true : false;
+    return (cacheSettings.data!.eskomSePushApiKey) ? true : false;
+  }
+
+  public syncIsRegistered(): Observable<boolean> {
+    let apiKeyExists = this.isRegistered();
     return this._setDbSetValue('set', this._isRegistered, apiKeyExists);
   }
 
@@ -707,10 +720,13 @@ export class DbService {
     if (allowance) {
       allowance!.apiUtilizationBreakdown[property] += 1;
 
-      return this._addOrUpdateDbSetCacheValue('update',
+      return this._addOrUpdateDbSetCacheValue(
+        'update',
         this._allowance,
         allowance,
-        StorageServiceKeyConstants.USER_DATA_ALLOWANCE);
+        StorageServiceKeyConstants.USER_DATA_ALLOWANCE,
+        false
+      );
     }
 
     return of(false);
@@ -830,6 +846,7 @@ export class DbService {
     dbSet: BehaviorSubject<DbSetType>,
     dbSetValue: DbSetValueType,
     cacheKey: string,
+    canCacheExpire: boolean
   ): Observable<boolean> {
     let dbValueExists = this.storageService.keyExists(cacheKey);
 
@@ -840,7 +857,7 @@ export class DbService {
       .pipe(
         map((result) => {
           if (result) {
-            let saveResult = this.storageService.saveData(cacheKey, dbSet.value);
+            let saveResult = this.storageService.saveData(cacheKey, dbSet.value, canCacheExpire);
             if (!saveResult.isSuccess) {
               this.logger.warn(`Something went wrong while trying to save dbSet Value : [${saveResult.errors}]`);
               return false;
