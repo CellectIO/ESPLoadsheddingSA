@@ -1,12 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { DbService } from '../../../services/db/db.service';
-import { Subscription, map, switchMap } from 'rxjs';
+import { Subscription, map } from 'rxjs';
 import { AllowanceEntity } from '../../../core/models/entities/allowance-entity';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { NgStyleService } from '../../../services/ng-style/ng-style.service';
 import { CardComponent } from '../../shared/card/card.component';
 import { LogPanelService } from '../../../services/log-panel/log-panel.service';
+import { DbService } from '../../../services/db/db.service';
 
 @Component({
   selector: 'app-allowance-dashboard',
@@ -34,13 +34,10 @@ export class AllowanceDashboardComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    let getSub = this.db.syncAllowance()
+    let getSub = this.db.getLatestOrDefaultAllowance()
       .pipe(
-        switchMap((result) => {
-          return this.db.getAllowance
-        }),
         map(result => {
-          if (result.isLoaded) {
+          if (result.isSuccess) {
             this.allowance = result.data;
           } else {
             this.logPanel.setErrorLogs(['Failed to sync Allowance']);

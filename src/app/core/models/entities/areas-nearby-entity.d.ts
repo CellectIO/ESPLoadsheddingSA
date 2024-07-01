@@ -1,5 +1,7 @@
 import { EskomAreaNearby } from "../common/areas/eskom-area-nearby"
 
 export interface AreasNearbyEntity {
-  areas: EskomAreaNearby[]
+  areas: EskomAreaNearby[];
+  lat: number;
+  long: number;
 }

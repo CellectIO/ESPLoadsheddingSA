@@ -19,16 +19,16 @@
     </div>
 
     <div class="my-areas-container">
-        <app-card class="area-card" *ngFor="let area of savedAreas?.areas; index as i; first as isFirst">
+        <app-card class="area-card" *ngFor="let area of savedAreas; index as i; first as isFirst">
             <div class="area-card-heading">
-                <h3>{{area.name}}</h3>
+                <h3>{{area.areaName}}</h3>
                 <mat-icon aria-hidden="false" aria-label="close" fontIcon="navigate_next"
-                    (click)="goToAreaInfo(area.id)"></mat-icon>
+                    (click)="goToAreaInfo(area.areaId)"></mat-icon>
             </div>
     
             <p>{{area.region}}</p>
     
-            <app-time-slot-chart [areaDayInfo]="getAreaInfo(area.id)" [areaEvents]="getAreaEvents(area.id)"/>
+            <app-time-slot-chart [areaDayInfo]="area.dayInfo" [areaEvents]="area.events"/>
         </app-card>
     </div>
 </div>

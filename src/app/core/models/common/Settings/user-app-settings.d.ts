@@ -1,6 +1,6 @@
 export interface EskomSePushConfig {
-    eskomSePushApiKey: string
-    apiSyncInterval: number //TODO: not being used yet to invalidate cache?
-    pagesSetup: boolean
-    pagesAllowance: boolean
+    eskomSePushApiKey: string | null;
+    apiSyncInterval: number; //TODO: not being used yet to invalidate cache?
+    pagesSetup: boolean;
+    pagesAllowance: boolean;
 }

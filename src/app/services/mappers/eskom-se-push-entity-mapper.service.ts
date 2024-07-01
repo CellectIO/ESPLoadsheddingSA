@@ -11,6 +11,7 @@ import { ESPAllowanceApiResponse } from '../../core/models/api-responses/eskom-s
 import { AllowanceEntity } from '../../core/models/entities/allowance-entity';
 import { ESPAreaSearchApiResponse } from '../../core/models/api-responses/eskom-se-push/esp-area-search-api-response';
 import { AreaInfoDayEntity, AreaInfoEntity } from '../../core/models/entities/area-info-entity';
+import { ApiUtilizationBreakdown } from '../../core/models/common/allowance/api-utilization-breakdown';
 
 @Injectable({
   providedIn: 'root'
@@ -65,9 +66,11 @@ export class EskomSePushEntityMapperService {
     return response;
   }
 
-  public toAreasNearbyEntity(data: ESPAreasNearbyApiResponse): AreasNearbyEntity {
+  public toAreasNearbyEntity(data: ESPAreasNearbyApiResponse, lat: number, long: number): AreasNearbyEntity {
     let response: AreasNearbyEntity = {
-      areas: data.areas
+      areas: data.areas,
+      lat: lat,
+      long: long
     };
 
     return response;
@@ -89,15 +92,15 @@ export class EskomSePushEntityMapperService {
     return response;
   }
 
-  public toAllowanceEntity(data: ESPAllowanceApiResponse, breakDown: AllowanceEntity | null): AllowanceEntity {
+  public toAllowanceEntity(data: ESPAllowanceApiResponse, breakDown: ApiUtilizationBreakdown | null): AllowanceEntity {
     let response: AllowanceEntity = {
       allowance: data.allowance,
       apiUtilizationBreakdown: {
-        getStatus: breakDown ? breakDown.apiUtilizationBreakdown.getStatus : 0,
-        getAreaInformation: breakDown ? breakDown.apiUtilizationBreakdown.getAreaInformation : 0,
-        getAreasNearby: breakDown ? breakDown.apiUtilizationBreakdown.getAreasNearby : 0,
-        getArea: breakDown ? breakDown.apiUtilizationBreakdown.getArea : 0,
-        getTopicsNearby: breakDown ? breakDown.apiUtilizationBreakdown.getTopicsNearby : 0,
+        getStatus: breakDown ? breakDown.getStatus : 0,
+        getAreaInformation: breakDown ? breakDown.getAreaInformation : 0,
+        getAreasNearby: breakDown ? breakDown.getAreasNearby : 0,
+        getArea: breakDown ? breakDown.getArea : 0,
+        getTopicsNearby: breakDown ? breakDown.getTopicsNearby : 0,
       }
     };
 

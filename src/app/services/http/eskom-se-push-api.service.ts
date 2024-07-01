@@ -15,6 +15,7 @@ import { StorageServiceKeyConstants } from '../../core/constants/storage-service
 import { Result } from '../../core/models/response-types/result';
 import { NGXLogger } from 'ngx-logger';
 import { ESPError } from '../../core/models/api-responses/eskom-se-push/esp-error';
+import { LogPanelService } from '../log-panel/log-panel.service';
 
 @Injectable({
   providedIn: 'root'
@@ -33,7 +34,8 @@ export class EskomSePushApiService implements IEskomSePushApiService {
   constructor(
     private http: HttpClient,
     private storageService: SessionStorageService,
-    private logger: NGXLogger
+    private logger: NGXLogger,
+    private logPanel: LogPanelService
   ) { }
 
   getStatus(): Observable<Result<ESPStatusApiResponse>> {
@@ -89,7 +91,7 @@ export class EskomSePushApiService implements IEskomSePushApiService {
   private handleHttpRequest<T>(url: string): Observable<Result<T>> {
     let _headers = this.headers;
     let configExists = this.storageService.keyExists(StorageServiceKeyConstants.USER_DATA_SETTINGS);
-    if (configExists) {
+    if (configExists.isSuccess) {
       let configResult = this.storageService.getData<EskomSePushConfig>(StorageServiceKeyConstants.USER_DATA_SETTINGS);
       if (configResult.isSuccess) {
         _headers = _headers.set('Token', configResult.data!.eskomSePushApiKey!);
@@ -116,6 +118,12 @@ export class EskomSePushApiService implements IEskomSePushApiService {
         }),
         catchError(error => {
           this.logger.error(`httpRequest with url [${url}] returned a failed response with error [${error.message}]`);
+
+          if((error?.error?.error)){
+            this.logPanel.setErrorLogs([error?.error?.error]);
+            return of(new Result<T>(null, [error?.error?.error]));
+          }
+
           return of(new Result<T>(null, [error.message]));
         })
       );
