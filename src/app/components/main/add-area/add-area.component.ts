@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { DbService } from '../../../services/db/db.service';
-import { Observable, Subscription, map, of, switchMap } from 'rxjs';
+import { Subscription, map, of, switchMap } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
@@ -10,8 +9,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { EskomAreaNearby } from '../../../core/models/common/areas/eskom-area-nearby';
 import { CardComponent } from '../../shared/card/card.component';
 import { LogPanelService } from '../../../services/log-panel/log-panel.service';
-import { AreaInfoEntity } from '../../../core/models/entities/area-info-entity';
 import { UtilityService } from '../../../services/utility/utility.service';
+import { DbService } from '../../../services/db/db.service';
+import { LocationService } from '../../../services/location/location.service';
+import { ResultBase } from '../../../core/models/response-types/result-base';
+import { Result } from '../../../core/models/response-types/result';
+import { AreasNearbyEntity } from '../../../core/models/entities/areas-nearby-entity';
+import { AreaSearchEntity } from '../../../core/models/entities/area-search-entity';
 
 @Component({
   selector: 'app-add-area',
@@ -46,10 +50,6 @@ export class AddAreaComponent implements OnInit, OnDestroy {
    */
   savedAreas: EskomSearchArea[] = [];
   /**
-   * Saved Area Entities for Saved Areas.
-   */
-  savedAreaInfoEntities: AreaInfoEntity[] = [];
-  /**
    * Areas Nearby based on GEO location.
    */
   areasNearbyDataSet: EskomAreaNearby[] = [];
@@ -62,7 +62,8 @@ export class AddAreaComponent implements OnInit, OnDestroy {
   constructor(
     private db: DbService,
     private logPanel: LogPanelService,
-    private utility: UtilityService
+    private utility: UtilityService,
+    private location: LocationService
   ) {
   }
 
@@ -71,21 +72,25 @@ export class AddAreaComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.getDbResults();
-  }
-
-  getDbResults(): void {
-    let getSub = this.getSavedAreasDbResult()
+    //DO THE INTIAL CALL FOR THE COMPONENT TO LOAD SAVED ENTTIES.
+    let initSub = this.syncSavedAreas()
       .pipe(
-        switchMap((result) => {
-          return this.getAreasNearbyDbResult();
-        }),
-        switchMap((result) => {
-          return this.getSavedAreaInformation();
+        switchMap(() => {
+          return this.syncAreasNearby();
+        })
+      )
+      .subscribe();
+
+    //AS SOON AS A SYNC IS EMITTED, RELOAD THE SAVED ENTITIES.
+    let syncSub = this.db.sync$
+      .pipe(
+        switchMap(() => {
+          return this.syncSavedAreas();
         })
       ).subscribe();
 
-    this.subscriptions.push(getSub);
+    this.subscriptions.push(initSub);
+    this.subscriptions.push(syncSub);
   }
 
   getAreaSearchResult(): void {
@@ -93,19 +98,14 @@ export class AddAreaComponent implements OnInit, OnDestroy {
     if (areaNameFormControl == '') {
       this.logPanel.setWarningLogs(['Please Provide a Valid Area Name']);
       this.areaSearchResults = [];
-      return
+      return;
     }
 
-    let syncSub = this.db.addArea(areaNameFormControl, true)
+    let syncSub = this.db.searchArea(areaNameFormControl)
       .pipe(
-        switchMap((result) => {
-          return this.db.getArea;
-        }),
         map((value) => {
-          if (value.isLoaded) {
-            let savedAreas = this.savedAreas.map(_ => _.id);
-            let unSavedAreas = value.data![0].areas.filter(_ => !savedAreas.includes(_.id)); //TODO: don't always use the first result
-            this.areaSearchResults = unSavedAreas;
+          if (value.isSuccess) {
+            this.filterOutAreaResults(value.data!, null, null);
           } else {
             this.logPanel.setErrorLogs(value.errors!);
           }
@@ -113,47 +113,6 @@ export class AddAreaComponent implements OnInit, OnDestroy {
       ).subscribe();
 
     this.subscriptions.push(syncSub);
-  }
-
-  getSavedAreaInformation(): Observable<void> {
-    return this.db.getAreasInformation
-      .pipe(
-        map((result) => {
-          if (result.isLoaded) {
-            this.savedAreaInfoEntities = result.data!;
-          } else {
-            this.logPanel.setErrorLogs(result.errors!);
-          }
-        })
-      );
-  }
-
-  getSavedAreasDbResult(): Observable<void> {
-    return this.db.getSavedAreas
-      .pipe(
-        map((result) => {
-          if (result.isLoaded) {
-            this.savedAreas = result.data!.areas;
-          } else {
-            this.logPanel.setErrorLogs(result.errors!);
-          }
-        })
-      );
-  }
-
-  getAreasNearbyDbResult(): Observable<void> {
-    return this.db.getAreasNearby
-      .pipe(
-        map((value) => {
-          if (value.isLoaded) {
-            let savedAreas = this.savedAreas.map(_ => _.id);
-            let unSavedAreas = value.data!.areas.filter(_ => !savedAreas.includes(_.id));
-            this.areasNearbyDataSet = unSavedAreas;
-          } else {
-            this.logPanel.setErrorLogs(value.errors!);
-          }
-        })
-      );
   }
 
   addArea(area: EskomSearchArea) {
@@ -176,53 +135,77 @@ export class AddAreaComponent implements OnInit, OnDestroy {
     this._updateSavedAreas(area, 'remove');
   }
 
+  private syncSavedAreas() {
+    return this.db.getSavedOrDefaultAreas()
+      .pipe(
+        map((result) => {
+          if (result.isSuccess) {
+            this.filterOutAreaResults(null, result.data!, null);
+          } else {
+            this.logPanel.setErrorLogs(result.errors!);
+          }
+        })
+      );
+  }
+
+  private syncAreasNearby() {
+    return this.location.getCurrentPosition()
+      .pipe(
+        switchMap(result => {
+          if (result.isSuccess) {
+
+            return this.db.getAreasNearby(result.data!.coords.latitude, result.data!.coords.longitude);
+          }
+
+          this.logPanel.setErrorLogs(['Could not determine your location succesfully.']);
+          return of(new Result<AreasNearbyEntity>(null, result.errors));
+        }),
+        map((value) => {
+          if (value.isSuccess) {
+            this.filterOutAreaResults(null, null, value.data!);
+          } else {
+            this.logPanel.setErrorLogs(value.errors!);
+          }
+        })
+      );
+  }
+
   private _updateSavedAreas(area: EskomSearchArea, state: 'add' | 'remove') {
     this.syncingSavedAreas = true;
 
     let currentAreas = this.utility.newArray(this.savedAreas);
-    let currentAreaInfos = this.utility.newArray(this.savedAreaInfoEntities);
 
-    if(state == 'add'){
+    if (state == 'add') {
       currentAreas.push(area);
-    }else{
+    } else {
       currentAreas = currentAreas.filter(_ => _.id != area.id);
     }
 
-    let isNewAreaInfo = !currentAreaInfos.map(_ => _.areaInfoId).includes(area.id);
-
-    let updateSub = of(true)
+    //CALL THE GET AREA INFO TO CACHE THE INFO FOR OTHER COMPONENTS.
+    let saveSub = this.db.getAreaInformation(area.id)
       .pipe(
-        switchMap(() => {
-          if(isNewAreaInfo){
-            return this.db.addAreaInformation(area.id, true)
-              .pipe(
-                map((saveResult) => {
-                  if (!saveResult) {
-                    this.logPanel.setErrorLogs([`failed to save area with name: ${area.name}`]);
-                  }
-
-                  return saveResult;
-                })
-              );
+        switchMap((areaResult) => {
+          if (areaResult.isSuccess == false) {
+            this.logPanel.setErrorLogs([`failed to save area with name: ${area.name}`]);
+            return of(new ResultBase(areaResult.errors));
           }
-          return of(true);
+
+          //IF THE AREA HAS BEEN RETRIEVED AND CACHED, THEN SAVE THE UPDATED LIST.
+          return this.db.updateSavedAreas({
+            areas: currentAreas
+          });
         }),
-        switchMap((areaSaved) => {
-          if(areaSaved){
-            return this.db.updateSavedAreas({
-              areas: currentAreas
-            });
+        switchMap(result => {
+          if (result.isSuccess == false) {
+            return of(new Result<AreaSearchEntity>(null, result.errors));
           }
 
-          return of(areaSaved);
+          //SYNC THE LATEST SAVED AREAS
+          return this.db.getSavedOrDefaultAreas();
         }),
         map(result => {
-          if(result){
-            let savedAreas = currentAreas.map(_ => _.id);
-
-            this.savedAreas = currentAreas;
-            this.areaSearchResults = this.areaSearchResults.filter(_ => !savedAreas.includes(_.id));
-            this.areasNearbyDataSet = this.areasNearbyDataSet.filter(_ => !savedAreas.includes(_.id));
+          if (result.isSuccess) {
+            this.filterOutAreaResults(null, result.data!, null);
             this.logPanel.setSuccessLogs(['Saved Areas have been updated.']);
           }
 
@@ -230,7 +213,39 @@ export class AddAreaComponent implements OnInit, OnDestroy {
         })
       ).subscribe();
 
-    this.subscriptions.push(updateSub);
+    this.subscriptions.push(saveSub);
+  }
+
+  private filterOutAreaResults(search: AreaSearchEntity | null, saved: AreaSearchEntity | null, nearby: AreasNearbyEntity | null) {
+    let excludeAreaIds: string[] = [];
+    
+    //STEP 1: SYNC SAVED AREAS
+    if (saved != null) {
+      this.savedAreas = saved.areas;
+    }
+
+    this.savedAreas.forEach(area => {
+      excludeAreaIds.push(area.id);
+    });
+
+    //STEP 2: SYNC AREAS NEARBY
+    if (search != null) {
+      this.areaSearchResults = search.areas.filter(_ => !excludeAreaIds.includes(_.id));
+    }else{
+      this.areaSearchResults = this.areaSearchResults.filter(_ => !excludeAreaIds.includes(_.id));
+    }
+
+    this.areaSearchResults.forEach(area => {
+      excludeAreaIds.push(area.id);
+    });
+
+    //STEP 3: SYNC SEARCH AREAS
+    if (nearby != null) {
+      this.areasNearbyDataSet = nearby.areas.filter(_ => !excludeAreaIds.includes(_.id));
+    }else{
+      this.areasNearbyDataSet = this.areasNearbyDataSet.filter(_ => !excludeAreaIds.includes(_.id));
+    }
+
   }
 
 }

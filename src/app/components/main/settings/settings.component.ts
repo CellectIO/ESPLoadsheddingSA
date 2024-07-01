@@ -5,16 +5,20 @@ import { FormGroup, FormControl } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { SessionStorageService } from '../../../services/storage/session-storage.service';
 import { EskomSePushConfig } from '../../../core/models/common/Settings/user-app-settings';
-import { DbService } from '../../../services/db/db.service';
-import { Observable, Subscription, map, of, pairwise, switchMap, tap } from 'rxjs';
+import { Observable, Subscription, map, of, pairwise, switchMap } from 'rxjs';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { CardComponent } from '../../shared/card/card.component';
 import { MatIconModule } from '@angular/material/icon';
 import { StorageServiceKeyConstants } from '../../../core/constants/storage-service-key.constants';
 import { LogPanelService } from '../../../services/log-panel/log-panel.service';
 import { CommonModule } from '@angular/common';
+import { DbService } from '../../../services/db/db.service';
+import { ResultBase } from '../../../core/models/response-types/result-base';
+import { LocationService } from '../../../services/location/location.service';
 import { Result } from '../../../core/models/response-types/result';
-import { EskomSePushApiService } from '../../../services/http/eskom-se-push-api.service';
+import { AreasNearbyEntity } from '../../../core/models/entities/areas-nearby-entity';
+import { LoaderService } from '../../../services/loader/loader.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-settings',
@@ -37,10 +41,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   eskomSePushApiForm = new FormGroup({
     apiKey: new FormControl(''),
-    syncInterval: new FormControl({
-      value: 15,
-      disabled: true
-    }),
+    syncInterval: new FormControl(environment.cache.defaultExpiresInMinutes),
     pagesSetup: new FormControl(false),
     pagesAllowance: new FormControl(true),
   });
@@ -52,7 +53,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
     private db: DbService,
     private storageService: SessionStorageService,
     private logPanel: LogPanelService,
-    private apiService: EskomSePushApiService
+    private location: LocationService,
+    private loader: LoaderService
   ) {
   }
 
@@ -68,25 +70,26 @@ export class SettingsComponent implements OnInit, OnDestroy {
         }
       );
 
-    let getSub = this.db.getUserSettings
+    let getSub = this.db.getSavedOrDefaultUserSettings()
       .pipe(
         map((result) => {
-          if (result.isLoaded) {
+          if (result.isSuccess) {
             this.MapResult(result.data);
           }
         })
       ).subscribe();
 
-    let registeredSub = this.db.getIsRegistered
+    let isRegSub = this.db.sync$
       .pipe(
-        map((result) => {
-          this.isRegistered = result;
+        map(result => {
+          let isRegResult = this.db.isRegistered();
+          this.isRegistered = isRegResult.isSuccess;
         })
       ).subscribe();
 
     this.subscriptions.push(keyChangeSub);
     this.subscriptions.push(getSub);
-    this.subscriptions.push(registeredSub);
+    this.subscriptions.push(isRegSub);
   }
 
   onSubmit() {
@@ -97,50 +100,32 @@ export class SettingsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    let saveSub = this.apiService.validateApiKey(updatedData!.eskomSePushApiKey)
-      .pipe(
-        switchMap(result => {
-          if (!result.isSuccess) {
-            this.logPanel.setErrorLogs([result.data?.error!]);
-            return of(false);
-          }
+    let refreshRequired = (this._initialApiKey != updatedData!.eskomSePushApiKey);
 
-          return this._updateSettings(updatedData!);
-        })
-      )
-      .subscribe();
+    const logFunc = (result: ResultBase) => {
+      if (result.isSuccess) {
+        this.logPanel.setSuccessLogs(['Settigns have been saved succesfully']);
+      } else {
+        this.logPanel.setErrorLogs(['Something went wrong while trying to save settings.']);
+      }
+    }
+
+    let saveSub: Subscription;
+    if (refreshRequired) {
+      saveSub = this.updateUserSettingsAndInitializeData(updatedData!)
+        .pipe(
+          map(result => {
+            logFunc(result);
+          })).subscribe();
+    } else {
+      saveSub = this.updateUserSettings(updatedData!)
+        .pipe(
+          map(result => {
+            logFunc(result);
+          })).subscribe();
+    }
 
     this.subscriptions.push(saveSub);
-  }
-
-  _updateSettings(updatedData: EskomSePushConfig) {
-    let refreshRequired = (this._initialApiKey != updatedData!.eskomSePushApiKey);
-    let errorMsg = 'Something went wrong while trying to save settings.';
-
-    return this.db.updateUserSettings(updatedData)
-      .pipe(
-        switchMap(result => {
-          if (result && refreshRequired) {
-            return this.initApp(
-              'EskomSePush Settings have been saved succesfully.',
-              errorMsg
-            );
-          }
-
-          if (result) {
-            return this.db.sync();
-          }
-
-          return of(result);
-        }),
-        tap(result => {
-          if (typeof result == 'boolean' && result == false) {
-            this.logPanel.setErrorLogs([errorMsg])
-          } else if ((result as Result<string>).isSuccess == false) {
-            this.logPanel.setErrorLogs([errorMsg])
-          }
-        })
-      )
   }
 
   /**
@@ -168,17 +153,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     return null;
   }
 
-  clearCache() {
-    let syncSub = this.initApp(
-      'Cache Has been Cleared and Settings Have Succesfully reloaded.',
-      'Something went wrong while trying to reload.'
-    ).subscribe();
-
-    this.subscriptions.push(syncSub);
-  }
-
-  initApp(succesLog: string, errorLog: string): Observable<boolean> {
-    //SINCE WE ARE NOT DOING A HARD RESET, WE ONLY DELETE API DATA.
+  clearCache(logResult: boolean = false) {
     this.storageService.clear([
       StorageServiceKeyConstants.USER_DATA_SAVED_AREAS,
       StorageServiceKeyConstants.API_RESPONSE_GETSTATUS,
@@ -188,27 +163,92 @@ export class SettingsComponent implements OnInit, OnDestroy {
       StorageServiceKeyConstants.API_RESPONSE_GETTOPICNEARBY
     ]);
 
-    this.db.reset();
+    if(logResult){
+      this.logPanel.setSuccessLogs(['Cache has succesfully cleared.']);
+    }
+  }
 
-    return this.db.init()
+  updateUserSettings(config: EskomSePushConfig): Observable<ResultBase> {
+    return this.db.updateUserSettings(config)
+      .pipe(
+        map(updateResult => {
+          if (updateResult.isSuccess == false) {
+            return updateResult;
+          }
+
+          this.db._invokeSync();
+
+          return new ResultBase(null);
+        })
+      )
+  }
+
+  updateUserSettingsAndInitializeData(config: EskomSePushConfig): Observable<ResultBase> {
+    this.loader.setAppLoading(true);
+    return this.db.validateApiKey(config.eskomSePushApiKey!)
       .pipe(
         switchMap(result => {
-          if (result) {
-            return this.db.sync();
+          if (!result.isSuccess) {
+            return of(result);
           }
 
-          return of(result);
+          //INITIALIZE THE ALLOWANCE CACHE
+          return this.db.getLatestOrDefaultAllowance()
+            .pipe(
+              map(result => {
+                return result.isSuccess ? new ResultBase(null) : new ResultBase(result.errors);
+              })
+            );
+        }),
+        switchMap(result => {
+          if (!result.isSuccess) {
+            return of(result);
+          }
+
+          return this.db.updateUserSettings(config);
+        }),
+        switchMap(result => {
+          if (!result.isSuccess) {
+            return of(result);
+          }
+
+          this.clearCache();
+
+          return this.db.getStatus()
+            .pipe(
+              map(result => {
+                return result.isSuccess ? new ResultBase(null) : new ResultBase(result.errors);
+              })
+            );
+        }),
+        switchMap(result => {
+          if (result.isSuccess == false) {
+            return of(result);
+          }
+
+          return this.location.getCurrentPosition()
+            .pipe(
+              switchMap(result => {
+                if (result.isSuccess) {
+                  return this.db.getAreasNearby(result.data!.coords.latitude, result.data!.coords.longitude);
+                }
+
+                return of(new Result<AreasNearbyEntity>(null, result.errors));
+              }),
+              map(result => {
+                return result.isSuccess ? new ResultBase(null) : new ResultBase(result.errors);
+              })
+            );
         }),
         map(result => {
-          if (result) {
-            this.logPanel.setSuccessLogs([succesLog]);
-            return true;
-          } else {
-            this.logPanel.setErrorLogs([errorLog]);
-            return false
+          if (result.isSuccess) {
+            this.db._invokeSync();
           }
+
+          this.loader.setAppLoading(false);
+          return result;
         })
-      );
+      )
   }
 
 }

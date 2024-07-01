@@ -180,4 +180,13 @@ export class ScheduleService {
     return (slotDate >= this.currentDate);
   }
 
+  minutesUntilTomorrow(): number {
+    const now = new Date();
+    const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+    const diffInMilliseconds = tomorrow.getTime() - now.getTime();
+    const diffInMinutes = diffInMilliseconds / (1000 * 60);
+    const roundedDiffInMInutes = Math.round(diffInMinutes);
+    return roundedDiffInMInutes;
+}
+
 }

@@ -6,6 +6,7 @@ import { LogPanelService } from '../../../services/log-panel/log-panel.service';
 import { Subscription, tap } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 import { ScheduleService } from '../../../services/schedule/schedule.service';
+import { environment } from '../../../../environments/environment';
 
 interface LogPanel {
   id: string;
@@ -29,12 +30,9 @@ interface LogPanel {
 })
 export class LogPanelComponent implements OnInit, OnDestroy {
 
-  syncEvery: number = 2000;
-  logStayAlive: number = 4000;
-
   panels: LogPanel[] = [];
   subscriptions: Subscription[] = [];
-  interval = setInterval(() => this.syncLogs(), this.syncEvery);
+  interval = setInterval(() => this.syncLogs(), environment.logging.logPanel.syncEverySeconds);
 
   constructor(private logPanelService: LogPanelService, 
     private scheduleService: ScheduleService) {
@@ -105,7 +103,7 @@ export class LogPanelComponent implements OnInit, OnDestroy {
 
   syncLogs() {
     const now = this.scheduleService.now;
-    this.panels = this.panels.filter(item => now - item.timestamp < this.logStayAlive);
+    this.panels = this.panels.filter(item => now - item.timestamp < environment.logging.logPanel.logLifeSpanSeconds);
   }
 
 }

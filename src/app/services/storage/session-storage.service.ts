@@ -1,8 +1,11 @@
 import { Injectable } from '@angular/core';
 import { ResultBase } from '../../core/models/response-types/result-base';
 import { Result } from '../../core/models/response-types/result';
-import { ScheduleService } from '../schedule/schedule.service';
 import { CacheResult } from '../../core/models/response-types/cache-result';
+import { NGXLogger } from 'ngx-logger';
+import { StorageServiceKeyConstants } from '../../core/constants/storage-service-key.constants';
+import { EskomSePushConfig } from '../../core/models/common/Settings/user-app-settings';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +15,7 @@ export class SessionStorageService {
   private readonly storage: Storage = window.localStorage;
 
   constructor(
-    private scheduleService: ScheduleService
+    private logger: NGXLogger
   ) { }
 
   /**
@@ -21,16 +24,57 @@ export class SessionStorageService {
    * @param value target value to be saved associated with the key.
    * @returns ResultBase with details about the save process.
    */
-  saveData<T>(key: string, value: T, canExpire: boolean): ResultBase {
-    let stringyData = JSON.stringify(value);
-    if(!stringyData){
-      return new ResultBase([`Parsing value for key [${key}] resulted in empty content.`]);
+  saveData<T>(key: string, value: T, canExpire: boolean, overrideExpiresInMinutes: number | null): ResultBase {
+    let validStringyData = this.isStringyDataValid(key, value);
+    if (!validStringyData.isSuccess) {
+      return validStringyData;
     }
 
-    let cacheDate = this.scheduleService.currentDate;
-    let cacheResult = new CacheResult(value, cacheDate, canExpire);
+    //DETERMINE HOW LONG THE CACHE SHOULD BE VALID FOR BASED ON SETTINGS, DEFAULT OR OVERRIDE PARAMETER.
+    let expireInMinutes = environment.cache.defaultExpiresInMinutes;
+    if (overrideExpiresInMinutes == null) {
+      let settingsCacheKey = StorageServiceKeyConstants.USER_DATA_SETTINGS;
+      let cachedResult = this.getData<EskomSePushConfig>(settingsCacheKey);
+      if (cachedResult.isSuccess) {
+        expireInMinutes = cachedResult.data!.apiSyncInterval;
+      }
+    } else {
+      expireInMinutes = overrideExpiresInMinutes;
+    }
+
+    let cacheDate = new Date();
+    let cacheResult = new CacheResult(value, cacheDate, canExpire, expireInMinutes);
     let stringyCacheResult = JSON.stringify(cacheResult);
 
+    this.storage.setItem(key, stringyCacheResult);
+    return new ResultBase(null);
+  }
+
+  updateExistingData<T>(key: string, value: T): ResultBase {
+    let validStringyData = this.isStringyDataValid(key, value);
+    if (!validStringyData.isSuccess) {
+      return validStringyData;
+    }
+
+    let keyExistsResult = this.keyExists(key);
+    if(!keyExistsResult.isSuccess){
+      return new ResultBase(keyExistsResult.errors);
+    }
+
+    const data = this.storage.getItem(key);
+    if (!data) {
+      return new ResultBase([`No data found for specified key [${key}]`]);
+    }
+
+    let cacheResult = JSON.parse(data) as CacheResult<T>;
+    if (this.isEpiredCache(cacheResult, key)) {
+      return new ResultBase([`Cached Data for specified key [${key}] has expired`]);
+    }
+
+    //ONCE ALL THE VALIDATION HAS PASSED UPDATE THE CACHE DATA BUT DO NOT RESET THE EXPIRE TIME.
+    cacheResult.data = value;
+
+    let stringyCacheResult = JSON.stringify(cacheResult);
     this.storage.setItem(key, stringyCacheResult);
     return new ResultBase(null);
   }
@@ -42,12 +86,12 @@ export class SessionStorageService {
    */
   getData<T>(key: string): Result<T> {
     const data = this.storage.getItem(key);
-    if(!data){
+    if (!data) {
       return new Result<T>(null, [`No data found for specified key [${key}]`]);
     }
 
     let cacheResult = JSON.parse(data) as CacheResult<T>;
-    if(this.isEpiredCache(cacheResult, key)){
+    if (this.isEpiredCache(cacheResult, key)) {
       return new Result<T>(null, [`Cached Data for specified key [${key}] has expired`]);
     }
 
@@ -72,8 +116,7 @@ export class SessionStorageService {
 
     for (let i = 0; i < this.storage.length; i++) {
       let result = this.storage.key(i);
-      if(result != null)
-      {
+      if (result != null) {
         keys.push();
       }
     }
@@ -87,12 +130,12 @@ export class SessionStorageService {
    */
   keyExists(key: string): ResultBase {
     const data = this.storage.getItem(key);
-    if(!data){
+    if (!data) {
       return new ResultBase(['Cached Data does not exists']);
     }
 
     let cacheResult = JSON.parse(data) as CacheResult<any>;
-    if(this.isEpiredCache(cacheResult, key)){
+    if (this.isEpiredCache(cacheResult, key)) {
       return new ResultBase([`Cached Data for specified key [${key}] has expired`]);
     }
 
@@ -102,12 +145,11 @@ export class SessionStorageService {
   /**
    * Removes all key/value pairs that are requested by the cacheKeys param
    */
-  clear(cachekeys: string[]): ResultBase
-  {
+  clear(cachekeys: string[]): ResultBase {
     var failedKeys: string[] = [];
     cachekeys.forEach(key => {
       let deleteResult = this.deleteData(key);
-      if(!deleteResult.isSuccess){
+      if (!deleteResult.isSuccess) {
         failedKeys.push(key);
       }
     });
@@ -118,23 +160,33 @@ export class SessionStorageService {
   }
 
   private isEpiredCache<T>(cache: CacheResult<T>, cacheKey: string): boolean {
-    if(cache.validateCache == false){
+    //IF THE CACHE SHOULD NOT BE VALIDATED, JUST ACT LIKE ITS STILL VALID.
+    if (cache.validateCache == false) {
       return false;
     }
 
-    const SIX_HOURS_IN_MILLISECONDS = 6 * 60 * 60 * 1000; // 6 Hours
-    const THIRTY_SECONDS_IN_MILLISECONDS = 30 * 1000; // 30 seconds in milliseconds
+    //BASED ON THE CURRENT TIME AND THE CACHE TIME, DETERMINE IF THE CACHE SHOULD BE DELETED.
+    let currentDate = new Date();
+    let givenDate = new Date(cache.created);
+    const minutesOffset = 1;
+    const utcMinutesDiff = currentDate.getUTCMinutes() - givenDate.getUTCMinutes();
 
-    const currentTime = new Date().getTime();
-    const givenTime = new Date(cache.created).getTime();
-    
-    let isExpired = (currentTime - givenTime) > THIRTY_SECONDS_IN_MILLISECONDS;
-    if(isExpired){
-      console.error('cache expired');
+    let isExpired = utcMinutesDiff > (cache.expiresInMinutes - minutesOffset);
+    if (isExpired) {
+      this.logger.warn(`Cache has expired for Cache Key: ${cacheKey} with current time [${currentDate}] and cache key time [${givenDate}]`);
       this.deleteData(cacheKey);
     }
 
     return isExpired;
+  }
+
+  private isStringyDataValid<T>(key: string, value: T): ResultBase {
+    let stringyData = JSON.stringify(value);
+    if (!stringyData) {
+      return new ResultBase([`Parsing value for key [${key}] resulted in empty content.`]);
+    }
+
+    return new ResultBase(null);
   }
 
 }

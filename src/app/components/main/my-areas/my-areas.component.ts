@@ -1,8 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { LoadSheddingStatusComponent } from '../../shared/load-shedding-status/load-shedding-status.component';
 import { MatIconModule } from '@angular/material/icon';
-import { DbService } from '../../../services/db/db.service';
-import { Subscription, map, switchMap } from 'rxjs';
+import { Subscription, forkJoin, map } from 'rxjs';
 import { AreaSearchEntity } from '../../../core/models/entities/area-search-entity';
 import { EskomStatusLocation } from '../../../core/models/common/status/eskom-status-location';
 import { CommonModule } from '@angular/common';
@@ -14,6 +13,15 @@ import { CardComponent } from '../../shared/card/card.component';
 import { LogPanelService } from '../../../services/log-panel/log-panel.service';
 import { EskomAreaInfoEvent } from '../../../core/models/common/areas/eskom-area-info-event';
 import { ScheduleService } from '../../../services/schedule/schedule.service';
+import { DbService } from '../../../services/db/db.service';
+
+interface MyAreaResult {
+  areaId: string;
+  areaName: string;
+  region: string;
+  dayInfo: AreaInfoDayEntity | null;
+  events: EskomAreaInfoEvent[]
+}
 
 @Component({
   selector: 'app-my-areas',
@@ -32,12 +40,11 @@ import { ScheduleService } from '../../../services/schedule/schedule.service';
 export class MyAreasComponent implements OnInit, OnDestroy {
 
   loadSheddingStatus: EskomStatusLocation[] = [];
-  savedAreas: AreaSearchEntity | null = null;
-  savedAreasInfo: AreaInfoEntity[] = [];
   subscriptions: Subscription[] = [];
+  savedAreas: MyAreaResult[] = [];
 
   constructor(
-    private db: DbService, 
+    private db: DbService,
     private router: Router,
     private logPanel: LogPanelService,
     private scheduleService: ScheduleService
@@ -49,70 +56,63 @@ export class MyAreasComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.syncComponentData();
+    let statusSub = this.db.getStatus()
+      .pipe(
+        map(result => {
+          if (result.isSuccess) {
+            this.loadSheddingStatus = result.data?.status._all!
+          } else {
+            this.logPanel.setErrorLogs(result.errors!);
+          }
+        })
+      ).subscribe();
+
+    let savedAreasSub = this.db.getSavedOrDefaultAreas()
+      .pipe(
+        map(result => {
+          if (result.isSuccess) {
+            this.syncSavedAreasWithAreas(result.data!);
+          } else {
+            this.logPanel.setErrorLogs(result.errors!);
+          }
+        })
+      ).subscribe();
+
+    this.subscriptions.push(statusSub);
+    this.subscriptions.push(savedAreasSub);
   }
 
-  goToManageAreas(){
+  goToManageAreas() {
     this.router.navigate(['areas/add']);
   }
 
-  syncComponentData(){
-    let syncSub = this.db.getStatus
-    .pipe(
-      map((value) => {
-        if (value.isLoaded) {
-          this.loadSheddingStatus = value.data?.status._all!
-        } else {
-          this.logPanel.setErrorLogs(value.errors!);
-        }
-      }),
-      switchMap((response) => {
-        return this.db.getSavedAreas;
-      }),
-      map((value) => {
-        if (value.isLoaded) {
-          this.savedAreas = value.data;
-        } else {
-          this.logPanel.setErrorLogs(value.errors!);
-        }
-      }),
-      switchMap(() => {
-        return this.db.getAreasInformation;
-      }),
-      map((areaResult) => {
-        if(areaResult.isLoaded){
-          this.savedAreasInfo = areaResult.data;
-        }
+  syncSavedAreasWithAreas(area: AreaSearchEntity) {
+    let forkSub = forkJoin(area.areas.map(area => this.db.getAreaInformation(area.id)))
+      .subscribe((areaInfos) => {
+        areaInfos.forEach(info => {
+          if (info.isSuccess) {
+            let targetArea = area.areas.filter(_ => _.id == info.data?.areaInfoId)[0];
+            let targetAreaInfo = info.data!;
+            var localDate = this.scheduleService.localeDateString;
+            var currentDateAreaDetails = targetAreaInfo.schedule.days.filter(_ => _.name == localDate);
+
+            this.savedAreas.push({
+              areaId: targetArea.id,
+              areaName: targetArea.name,
+              region: targetArea.region,
+              dayInfo: (currentDateAreaDetails.length <= 0) ? null : currentDateAreaDetails[0],
+              events: targetAreaInfo.events.length > 0 ? targetAreaInfo.events : []
+            });
+          }else{
+            this.logPanel.setErrorLogs([`Failed to Get Area Information`]);
+          }
+        });
       })
-    ).subscribe();
 
-    this.subscriptions.push(syncSub);
+    this.subscriptions.push(forkSub);
   }
 
-  getAreaInfo(areaId: string): AreaInfoDayEntity | null
-  {
-    var targetArea = this.savedAreasInfo.filter(_ => _.areaInfoId == areaId);
-    if(targetArea.length <= 0){
-      return null;
-    }
-
-    var localDate = this.scheduleService.localeDateString;
-    var currentDateAreaDetails = targetArea[0].schedule.days.filter(_ => _.name == localDate);
-
-    if(currentDateAreaDetails.length <= 0){
-      return null;
-    }
-
-    return currentDateAreaDetails[0];
-  }
-
-  getAreaEvents(areaId: string): EskomAreaInfoEvent[]
-  {
-    var targetArea = this.savedAreasInfo.filter(_ => _.areaInfoId == areaId);
-    return targetArea.length > 0 ? targetArea[0].events : [];
-  }
-
-  goToAreaInfo(areaId: string){
+  goToAreaInfo(areaId: string) {
     this.router.navigate([`areas/${areaId}`]);
   }
 

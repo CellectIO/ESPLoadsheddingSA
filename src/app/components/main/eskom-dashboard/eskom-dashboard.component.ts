@@ -4,13 +4,13 @@ import { TimeSlotChartComponent } from "../../shared/time-slot-chart/time-slot-c
 import { AreaScheduleComponent } from "../../shared/area-schedule/area-schedule.component";
 import { LoadSheddingStatusComponent } from "../../shared/load-shedding-status/load-shedding-status.component";
 import { UpcommingScheduleComponent } from "../../shared/upcomming-schedule/upcomming-schedule.component";
-import { DbService } from "../../../services/db/db.service";
 import { Subscription, map, switchMap } from "rxjs";
 import { AreaInfoEntity } from "../../../core/models/entities/area-info-entity";
 import { EskomStatusLocation } from "../../../core/models/common/status/eskom-status-location";
 import { ActivatedRoute } from "@angular/router";
 import { LogPanelService } from "../../../services/log-panel/log-panel.service";
 import { CommonModule } from "@angular/common";
+import { DbService } from "../../../services/db/db.service";
 
 @Component({
   selector: 'app-eskom-dashboard',
@@ -46,10 +46,6 @@ export class EskomDashboardComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.useEskomComponent();
-  }
-
-  useEskomComponent() {
     let routeSub = this.activatedRoute.paramMap.pipe(
       map((params) => {
         let routeId = params.get('id');
@@ -66,25 +62,20 @@ export class EskomDashboardComponent implements OnInit, OnDestroy {
   }
 
   loadEskomDataSets() {
-    let loadSub = this.db.getAreasInformation
+    let loadSub = this.db.getAreaInformation(this.areaId)
       .pipe(
         map((value) => {
-          if (value.isLoaded) {
-            let targetArea = value.data.filter(_ => _.areaInfoId == this.areaId);
-            if(targetArea.length > 0){
-              this.areaInfoDataSet = targetArea[0];
-            }else{
-              this.logPanel.setErrorLogs(['Area Information has not been loaded for this target area.']);
-            }
+          if (value.isSuccess) {
+            this.areaInfoDataSet = value.data!;
           } else {
             this.logPanel.setErrorLogs(value.errors!);
           }
         }),
         switchMap((value) => {
-          return this.db.getStatus;
+          return this.db.getStatus();
         }),
         map((value) => {
-          if (value.isLoaded) {
+          if (value.isSuccess) {
             this.loadSheddingStatus = value.data?.status._all!
           } else {
             this.logPanel.setErrorLogs(value.errors!);
