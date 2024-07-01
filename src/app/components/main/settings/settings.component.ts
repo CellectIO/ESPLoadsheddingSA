@@ -192,6 +192,13 @@ export class SettingsComponent implements OnInit, OnDestroy {
             return of(result);
           }
 
+          return this.db.updateUserSettings(config);
+        }),
+        switchMap(result => {
+          if (!result.isSuccess) {
+            return of(result);
+          }
+
           //INITIALIZE THE ALLOWANCE CACHE
           return this.db.getLatestOrDefaultAllowance()
             .pipe(
@@ -199,13 +206,6 @@ export class SettingsComponent implements OnInit, OnDestroy {
                 return result.isSuccess ? new ResultBase(null) : new ResultBase(result.errors);
               })
             );
-        }),
-        switchMap(result => {
-          if (!result.isSuccess) {
-            return of(result);
-          }
-
-          return this.db.updateUserSettings(config);
         }),
         switchMap(result => {
           if (!result.isSuccess) {
