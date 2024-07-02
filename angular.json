@@ -28,7 +28,9 @@
             "assets": [
               "src/manifest.json",
               "src/favicon.ico",
-              "src/assets"
+              "src/assets/api-mock-data",
+              "src/assets/images/guide",
+              "src/assets/images/logos"
             ],
             "styles": [
               "src/custom-theme.scss",
@@ -113,7 +115,9 @@
             "inlineStyleLanguage": "sass",
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets/api-mock-data",
+              "src/assets/images/guide",
+              "src/assets/images/logos"
             ],
             "styles": [
               "@angular/material/prebuilt-themes/deeppurple-amber.css",
