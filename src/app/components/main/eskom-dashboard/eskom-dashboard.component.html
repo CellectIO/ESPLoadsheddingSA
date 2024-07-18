@@ -9,8 +9,15 @@
         <mat-icon aria-hidden="false" aria-label="location_on" fontIcon="location_on"></mat-icon>
         Area
     </h1>
-    <p>{{areaInfoDataSet?.info?.region}} | {{areaInfoDataSet?.info?.name}}</p>
-
+    <app-card>
+        <h3>
+            {{areaInfoDataSet?.info?.name}}
+        </h3>
+        <p>
+            {{areaInfoDataSet?.info?.region}}
+        </p>
+    </app-card>
+    
     <h1>
         <mat-icon aria-hidden="false" aria-label="event_upcomming" fontIcon="event_upcomming"></mat-icon>
         Upcomming

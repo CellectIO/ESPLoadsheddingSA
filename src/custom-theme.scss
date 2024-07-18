@@ -9,104 +9,104 @@
 // Be sure that you only ever include this mixin once!
 @include mat.core();
 
-$eskom-primary: (
- 50: $eskom-stage-1-color,
- 100: $eskom-stage-1-color,
- 200: $eskom-stage-1-color,
- 300: $eskom-stage-1-color,
- 400: $eskom-stage-1-color,
- 500: $eskom-stage-1-color,
- 600: $eskom-stage-1-color,
- 700: $eskom-stage-1-color,
- 800: $eskom-stage-1-color,
- 900: $eskom-stage-1-color,
- contrast: (
-   50: $eskom-card-bg-color,
-   100: $eskom-card-bg-color,
-   200: $eskom-card-bg-color,
-   300: $eskom-card-bg-color,
-   400: $eskom-card-bg-color,
-   500: $eskom-card-bg-color,
-   600: $eskom-card-bg-color,
-   700: $eskom-card-bg-color,
-   800: $eskom-card-bg-color,
-   900: $eskom-card-bg-color,
- )
+$primary-palette-themes: (
+  50: $background-secondary,
+  100: $background-secondary,
+  200: $background-secondary,
+  300: $background-secondary,
+  400: $background-secondary,
+  500: $background-secondary,
+  600: $background-secondary,
+  700: $background-secondary,
+  800: $background-secondary,
+  900: $background-secondary,
+  contrast: (50: $font-primary-color,
+    100: $font-primary-color,
+    200: $font-primary-color,
+    300: $font-primary-color,
+    400: $font-primary-color,
+    500: $font-primary-color,
+    600: $font-primary-color,
+    700: $font-primary-color,
+    800: $font-primary-color,
+    900: $font-primary-color,
+  )
 );
 
-$eskom-accent: (
- 50: $eskom-stage-2-color,
- 100: $eskom-stage-2-color,
- 200: $eskom-stage-2-color,
- 300: $eskom-stage-2-color,
- 400: $eskom-stage-2-color,
- 500: $eskom-stage-2-color,
- 600: $eskom-stage-2-color,
- 700: $eskom-stage-2-color,
- 800: $eskom-stage-2-color,
- 900: $eskom-stage-2-color,
- contrast: (
-   50: $eskom-card-bg-color,
-   100: $eskom-card-bg-color,
-   200: $eskom-card-bg-color,
-   300: $eskom-card-bg-color,
-   400: $eskom-card-bg-color,
-   500: $eskom-card-bg-color,
-   600: $eskom-card-bg-color,
-   700: $eskom-card-bg-color,
-   800: $eskom-card-bg-color,
-   900: $eskom-card-bg-color,
- )
-);
-
-$eskom-warn: (
- 50: $eskom-stage-3-color,
- 100: $eskom-stage-3-color,
- 200: $eskom-stage-3-color,
- 300: $eskom-stage-3-color,
- 400: $eskom-stage-3-color,
- 500: $eskom-stage-3-color,
- 600: $eskom-stage-3-color,
- 700: $eskom-stage-3-color,
- 800: $eskom-stage-3-color,
- 900: $eskom-stage-3-color,
- contrast: (
-   50: $eskom-card-bg-color,
-   100: $eskom-card-bg-color,
-   200: $eskom-card-bg-color,
-   300: $eskom-card-bg-color,
-   400: $eskom-card-bg-color,
-   500: $eskom-card-bg-color,
-   600: $eskom-card-bg-color,
-   700: $eskom-card-bg-color,
-   800: $eskom-card-bg-color,
-   900: $eskom-card-bg-color,
- )
+$secondary-palette-themes: (
+  50: $background-primary,
+  100: $background-primary,
+  200: $background-primary,
+  300: $background-primary,
+  400: $background-primary,
+  500: $background-primary,
+  600: $background-primary,
+  700: $background-primary,
+  800: $background-primary,
+  900: $background-primary,
+  contrast: (50: $font-primary-color,
+    100: $font-primary-color,
+    200: $font-primary-color,
+    300: $font-primary-color,
+    400: $font-primary-color,
+    500: $font-primary-color,
+    600: $font-primary-color,
+    700: $font-primary-color,
+    800: $font-primary-color,
+    900: $font-primary-color,
+  )
 );
 
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
-$eskom-primary-palette: mat.define-palette($eskom-primary);
-$eskom-accent-palette: mat.define-palette($eskom-accent);
-$eskom-warn-palette: mat.define-palette($eskom-warn);
+$primary-palette: mat.define-palette($primary-palette-themes);
+$secondary-palette: mat.define-palette($secondary-palette-themes);
 
 // Define a dark theme
-$eskom-dark-theme: mat.define-dark-theme((
- color: (
-   primary: $eskom-primary-palette,
-   accent: $eskom-accent-palette,
-   warn: $eskom-warn-palette,
- ),
-  // Only include `typography` and `density` in the default dark theme.
-  typography: mat.define-typography-config(),
-  density: 0,
+$dark-theme: mat.define-dark-theme((
+  color: (
+    primary: $primary-palette,
+    accent: $secondary-palette,
+    secondary: $secondary-palette,
+    tertiary: $secondary-palette,
+    ),
+    // Only include `typography` and `density` in the default dark theme.
+    typography: mat.define-typography-config(),
+    density: -1,
 ));
 
-// Apply the dark theme by default
-@include mat.core-theme($eskom-dark-theme);
-@include mat.button-theme($eskom-dark-theme);
+@include mat.core-theme($dark-theme);
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
-@include mat.all-component-themes($eskom-dark-theme);
+@include mat.all-component-themes($dark-theme);
+
+//DISCLAIMER
+//I AM TO LAZY TO FIGURE OUT WHY THE MAT INPUTS DON'T WORK WITH THE BUILT IN ANGULAR THEMING.
+//SO I CHANGE THE THEMING THE "Intelligent" WAY BY DOING THE EXACT OPISITE OF WHAT YOU ARE ACTUALLY SUPPOSE TO DO :)
+
+.mat-form-field-input-primary {
+  --mdc-filled-text-field-container-color: $background-primary;
+}
+
+.mat-mdc-form-field-type-mat-select{
+  .mat-mdc-text-field-wrapper{
+    --mdc-filled-text-field-container-color: $background-primary !important;
+  }
+}
+
+.mat-mdc-select-panel{
+  --mat-full-pseudo-checkbox-selected-checkmark-color: $font-primary-color !important;
+
+  background-color: $background-primary !important;
+
+  .mdc-list-item--selected{
+    color: $font-primary-color !important;
+  }
+  
+  .mdc-list-item__primary-text{
+    color: $font-primary-color !important;
+  }
+}
+

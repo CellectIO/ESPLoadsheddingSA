@@ -11,7 +11,7 @@
         <div class="settings-card-header">
             <h1>Eskom Se Push</h1>
         </div>
-        <mat-form-field>
+        <mat-form-field class="mat-form-field-input-primary">
             <mat-label>API Key</mat-label>
             <input matInput formControlName="apiKey">
         </mat-form-field>
@@ -20,12 +20,12 @@
     <app-card class="settings-card" *ngIf="isRegistered">
         <div class="settings-card-header">
             <h1>Caching</h1>
-            <button mat-raised-button (click)="clearCache(true)" color="primary" class="btn-md" type="button">
+            <button mat-raised-button (click)="clearCache(true)" color="accent" class="btn-md" type="button">
                 <mat-icon aria-hidden="false" aria-label="delete" fontIcon="delete"></mat-icon> 
                 Clear Cache
             </button>
         </div>
-        <mat-form-field>
+        <mat-form-field class="mat-form-field-input-primary">
             <mat-label>Sync interval in minutes</mat-label>
             <input matInput formControlName="syncInterval">
         </mat-form-field>
@@ -36,11 +36,11 @@
             <h1>Pages</h1>
         </div>
        <div class="pages-container">
-        <mat-slide-toggle formControlName="pagesSetup" class="example-margin">
+        <mat-slide-toggle formControlName="pagesSetup" color="accent">
             Setup
         </mat-slide-toggle>
 
-        <mat-slide-toggle formControlName="pagesAllowance" class="example-margin">
+        <mat-slide-toggle formControlName="pagesAllowance" color="accent">
             Allowance
         </mat-slide-toggle>
        </div>

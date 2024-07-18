@@ -1,21 +1,20 @@
 /*#region COLORS*/
 
-$eskom-bg-fade-color: linear-gradient(180deg, #444, #292828)
-$eskom-bg-color: #444444
+$eskom-stage-0-color: #7ac500c4
+$eskom-stage-1-color: #ffba08
+$eskom-stage-2-color: #faa307
+$eskom-stage-3-color: #f48c06
+$eskom-stage-4-color: #e85d04
+$eskom-stage-5-color: #ff6600
+$eskom-stage-6-color: #d00000
 
-$eskom-card-bg-color: #3b3b3b
-$eskom-title-color: white
-$eskom-card-content-text-color: white
+$font-primary-color: #edf2f4
+$font-primary-light-color: #cbd1d3
 
-$eskom-stage-0-color: #3e8141
-$eskom-stage-1-color: #dbb23f
-$eskom-stage-2-color: #e37f39
-$eskom-stage-3-color: #e96237
-$eskom-stage-4-color: #f14133
-$eskom-stage-5-color: #e56d64
-$eskom-stage-6-color: #f29d98
+$background-primary: #534b52
+$background-secondary: #2d232e
 
-$box-shadow-dark: 5px 5px 10px #00000073
+$box-shadow-dark: 5px 5px 10px #000000be
 
 /*#endregion COLORS*/
 
@@ -84,34 +83,26 @@ $font-weight-m: 500
 body
   margin: 0
   font-family: Roboto, "Helvetica Neue", sans-serif
-  color: $eskom-title-color
-
-h1
-    color: $eskom-card-content-text-color
-
-h3
-    color: $eskom-card-content-text-color
-
-p
-    color: $eskom-card-content-text-color
+  color: $font-primary-color
 
 ::-webkit-scrollbar
-  width: 3px
+  width: 8px
 
 ::-webkit-scrollbar-track
-  background: $eskom-bg-color 
+  background: $background-primary
 
 ::-webkit-scrollbar-thumb
-  background: $eskom-stage-1-color
+  background-clip: padding-box
+  background: $background-secondary
 
 ::-webkit-scrollbar-thumb:hover
-  background: $eskom-bg-color
+  background: $background-secondary
 
 .mat-mdc-tab-header
-  background-color: $eskom-bg-color 
+  background-color: $background-primary
 
 .eskom-bg-color
-    background-color: $eskom-bg-color !important
+    background-color: $background-secondary !important
 
 .stage0-bg-color
     background-color: $eskom-stage-0-color !important
