@@ -4,6 +4,9 @@
     display: flex
     flex-direction: column
 
+    h1
+        color: $font-primary-color
+
     .my-areas-container-heading
         display: flex
         flex-direction: row
@@ -28,6 +31,10 @@
         width: $spacer-perc-100
         height: fit-content
 
+        p
+            margin-top: $spacer-none
+            color: $font-primary-light-color
+
         .area-card-heading
             display: flex
             flex-direction: row
@@ -40,3 +47,4 @@
             .mat-icon
                 width: $spacer-perc-10
                 margin-top: $spacers-05
+                cursor: pointer

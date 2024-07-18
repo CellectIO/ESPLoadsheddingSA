@@ -11,6 +11,7 @@ import { ActivatedRoute } from "@angular/router";
 import { LogPanelService } from "../../../services/log-panel/log-panel.service";
 import { CommonModule } from "@angular/common";
 import { DbService } from "../../../services/db/db.service";
+import { CardComponent } from "../../shared/card/card.component";
 
 @Component({
   selector: 'app-eskom-dashboard',
@@ -21,7 +22,8 @@ import { DbService } from "../../../services/db/db.service";
     AreaScheduleComponent,
     LoadSheddingStatusComponent,
     UpcommingScheduleComponent,
-    CommonModule
+    CommonModule,
+    CardComponent
   ],
   templateUrl: './eskom-dashboard.component.html',
   styleUrl: './eskom-dashboard.component.sass'
