@@ -1,24 +1,24 @@
 {
   "manifest_version": 3,
-  "name": "ShedWise",
-  "description": "A chrome extension that utilizes the ESP (EskomSePush) Loadshedding API's",
-  "version": "1.0.3",
+  "name": "ZparkWise SA Loadshedding",
+  "description": "Designed to keep you informed about load shedding schedules and updates in South Africa. By leveraging the powerful EskomSePush (ESP) API, this extension provides essential information directly in your browser, ensuring you never miss an update. Disclaimer: This Chrome extension is not affiliated with or endorsed by the creators of EskomSePush (ESP). Use at your own discretion.",
+  "version": "1.0.4",
   "permissions": [
     "geolocation"
   ],
   "action": {
     "default_popup": "index.html",
-    "default_icon": "assets/images/logos/esp-logo-3.png",
+    "default_icon": "assets/images/logos/logo-circle.png",
     "content_security_policy": [
       "script-src 'self' https://fonts.googleapis.com; object-src 'self'",
       "script-src 'self' https://developer.sepush.co.za; object-src 'self'"
     ]
   },
   "icons": {
-    "16": "assets/images/logos/esp-logo-3.png",
-    "32": "assets/images/logos/esp-logo-3.png",
-    "48": "assets/images/logos/esp-logo-3.png",
-    "128": "assets/images/logos/esp-logo-3.png"
+    "16": "assets/images/logos/logo-circle.png",
+    "32": "assets/images/logos/logo-circle.png",
+    "48": "assets/images/logos/logo-circle.png",
+    "128": "assets/images/logos/logo-circle.png"
   },
   "host_permissions": [
     "https://developer.sepush.co.za/business/2.0/*"
