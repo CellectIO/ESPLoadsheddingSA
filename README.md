@@ -1,11 +1,11 @@
-# ShedWise Chrome Extension
+# ZparkWise SA Loadshedding Chrome Extension
 A Reactive Chrome Extension built on top of the ESP API
 
 ## Disclaimer:
 This Chrome extension is not affiliated with or endorsed by the creators of EskomSePush (ESP). Use at your own discretion.
 
 ## Project Overview
-The ShedWise Chrome Extension is designed to visualize the publicly available Eskom Se Push (ESP) API. This extension provides users with a convenient way to access and interpret data regarding electricity load shedding schedules in South Africa. Built using Angular, this extension offers a seamless and reactive user experience.
+The ZparkWise SA Loadshedding Chrome Extension is designed to visualize the publicly available Eskom Se Push (ESP) API. This extension provides users with a convenient way to access and interpret data regarding electricity load shedding schedules in South Africa. Built using Angular, this extension offers a seamless and reactive user experience.
 
 ## Features
 - Access the latest information on load shedding schedules.
@@ -72,7 +72,7 @@ Then we should be ready to load the unpacked extension. Click the Load unpacked 
 Once all the steps above are complete you should be able to find the unpacked extension in your installed chrome extensions shortcut in the top right corner of Chrome.
 
 ## Contributing
-We welcome contributions to improve the ShedWise Chrome Extension! 
+We welcome contributions to improve the ZparkWise SA Loadshedding Chrome Extension! 
 If you have suggestions for new features or improvements, feel free to create a pull request or open an issue.
 
 ### Steps to Contribute
