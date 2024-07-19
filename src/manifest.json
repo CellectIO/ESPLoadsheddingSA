@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "ZparkWise SA Loadshedding",
-  "description": "Designed to keep you informed about load shedding schedules and updates in South Africa. By leveraging the powerful EskomSePush (ESP) API, this extension provides essential information directly in your browser, ensuring you never miss an update. Disclaimer: This Chrome extension is not affiliated with or endorsed by the creators of EskomSePush (ESP). Use at your own discretion.",
-  "version": "1.0.4",
+  "description": "A chrome extension that utilizes the Eskom Se Push Loadshedding API's. Stay informed about load shedding schedules in South Africa.",
+  "version": "1.0.3",
   "permissions": [
     "geolocation"
   ],
