@@ -1,57 +1,51 @@
 <div class="container">
     <mat-form-field class="area-filter-input mat-form-field-input-primary" (keyup.enter)="getAreaSearchResult()">
-        <mat-label>Area Name</mat-label>
+        <mat-label>{{ 'PAGES.ADD_AREA.LABELS.AREA_NAME' | translate }}</mat-label>
         <input matInput [formControl]="areaNameFormControl">
     </mat-form-field>
-
     <div class="area-segment">
         <h1 *ngIf="areaSearchResults.length > 0">
             <mat-icon aria-hidden="false" aria-label="search" fontIcon="search"></mat-icon>
-            Searched Areas
+            {{ 'PAGES.ADD_AREA.LABELS.SEARCHED_AREAS' | translate }}
         </h1>
-    
         <app-card class="area-card" *ngFor="let area of areaSearchResults; index as i; first as isFirst">
             <div class="area-card-heading">
                 <h3>{{area.name}}</h3>
                 <button mat-raised-button color="accent" type="button" (click)="addArea(area)" class="btn-md" [disabled]="syncingSavedAreas">
                     <mat-icon aria-hidden="false" aria-label="add" fontIcon="add"></mat-icon>
-                    Add Area
+                    {{ 'PAGES.ADD_AREA.ACTIONS.ADD_AREA' | translate }}
                 </button>
             </div>
             <p>{{area.region}}</p>
         </app-card>
     </div>
-
     <div class="area-segment">
         <h1>
             <mat-icon aria-hidden="false" aria-label="explore_nearby" fontIcon="explore_nearby"></mat-icon>
-            Recommended Nearby
+            {{ 'PAGES.ADD_AREA.LABELS.RECOMMENDED_NEARBY' | translate }}
         </h1>
-    
         <app-card class="area-card" *ngFor="let area of areasNearbyDataSet; index as i; first as isFirst">
             <div class="area-card-heading">
                 <h3>{{area.name}}</h3>
                 <button mat-raised-button color="accent" type="button" (click)="addArea(area)" class="btn-md" [disabled]="syncingSavedAreas">
                     <mat-icon aria-hidden="false" aria-label="add" fontIcon="add"></mat-icon>
-                    Add Area
+                    {{ 'PAGES.ADD_AREA.ACTIONS.ADD_AREA' | translate }}
                 </button>
             </div>
             <p>{{area.region}}</p>
         </app-card>
     </div>
-
     <div class="area-segment">
         <h1>
             <mat-icon aria-hidden="false" aria-label="bookmarks" fontIcon="bookmarks"></mat-icon>
-            Saved Areas
+            {{ 'PAGES.ADD_AREA.LABELS.SAVED_AREAS' | translate }}
         </h1>
-    
         <app-card class="area-card" *ngFor="let area of savedAreas; index as i; first as isFirst">
             <div class="area-card-heading">
                 <h3>{{area.name}}</h3>
                 <button mat-raised-button color="accent" type="button" (click)="removeArea(area)" class="btn-md" [disabled]="syncingSavedAreas">
                     <mat-icon aria-hidden="false" aria-label="remove" fontIcon="remove"></mat-icon>
-                    Remove Area
+                    {{ 'PAGES.ADD_AREA.ACTIONS.REMOVE_AREA' | translate }}
                 </button>
             </div>
             <p>{{area.region}}</p>

@@ -7,6 +7,7 @@ import { Subscription, tap } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 import { ScheduleService } from '../../../services/schedule/schedule.service';
 import { environment } from '../../../../environments/environment';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 interface LogPanel {
   id: string;
@@ -23,7 +24,8 @@ interface LogPanel {
   imports: [
     CommonModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    TranslateModule
   ],
   templateUrl: './log-panel.component.html',
   styleUrl: './log-panel.component.sass'
@@ -34,8 +36,11 @@ export class LogPanelComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
   interval = setInterval(() => this.syncLogs(), environment.logging.logPanel.syncEverySeconds);
 
-  constructor(private logPanelService: LogPanelService, 
-    private scheduleService: ScheduleService) {
+  constructor(
+    private logPanelService: LogPanelService, 
+    private scheduleService: ScheduleService,
+    private translate: TranslateService
+  ) {
   }
 
   ngOnDestroy(): void {
@@ -50,7 +55,7 @@ export class LogPanelComponent implements OnInit, OnDestroy {
           if (logs.length > 0) {
             this.panels.push({
               id: uuidv4(),
-              title: 'Success',
+              title: this.translate.instant('LABELS.SUCCESS'),
               logs: logs,
               cssClass: 'success-bar',
               titleIcon: 'check',
@@ -66,7 +71,7 @@ export class LogPanelComponent implements OnInit, OnDestroy {
           if (logs.length > 0) {
             this.panels.push({
               id: uuidv4(),
-              title: 'Warning',
+              title: this.translate.instant('LABELS.WARNING'),
               logs: logs,
               cssClass: 'warning-bar',
               titleIcon: 'warning',
@@ -82,7 +87,7 @@ export class LogPanelComponent implements OnInit, OnDestroy {
           if (logs.length > 0) {
             this.panels.push({
               id: uuidv4(),
-              title: 'Error',
+              title: this.translate.instant('LABELS.ERROR'),
               logs: logs,
               cssClass: 'error-bar',
               titleIcon: 'error',

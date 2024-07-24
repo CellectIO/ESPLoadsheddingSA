@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { AreaInfoDayEntity, AreaInfoEntity } from '../../../core/models/entities/area-info-entity';
 import { CardComponent } from '../card/card.component';
 import { ScheduleService } from '../../../services/schedule/schedule.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-upcomming-schedule',
@@ -12,7 +13,8 @@ import { ScheduleService } from '../../../services/schedule/schedule.service';
   imports: [
     TimeSlotChartComponent,
     CommonModule,
-    CardComponent
+    CardComponent,
+    TranslateModule
   ],
   templateUrl: './upcomming-schedule.component.html',
   styleUrl: './upcomming-schedule.component.sass'

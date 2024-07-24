@@ -1,13 +1,12 @@
 <div>
     <h1>
         <mat-icon aria-hidden="false" aria-label="bolt" fontIcon="bolt"></mat-icon>
-        Loadshedding Status
+            {{ 'PAGES.ESKOM_DASHBOARD.LABELS.LOADSHEDDING_STATUS' | translate }}
     </h1>
     <app-load-shedding-status [loadSheddingStatus]="loadSheddingStatus" />
-
     <h1>
         <mat-icon aria-hidden="false" aria-label="location_on" fontIcon="location_on"></mat-icon>
-        Area
+        {{ 'PAGES.ESKOM_DASHBOARD.LABELS.AREA' | translate }}
     </h1>
     <app-card>
         <h3>
@@ -17,13 +16,13 @@
             {{areaInfoDataSet?.info?.region}}
         </p>
     </app-card>
-    
     <h1>
         <mat-icon aria-hidden="false" aria-label="event_upcomming" fontIcon="event_upcomming"></mat-icon>
-        Upcomming
+        {{ 'PAGES.ESKOM_DASHBOARD.LABELS.UPCOMMING' | translate }}
     </h1>
     <app-upcomming-schedule [areaInfoDataSet]="areaInfoDataSet" />
-
-    <h1>Area Schedule</h1>
+    <h1>
+        {{ 'PAGES.ESKOM_DASHBOARD.LABELS.AREA_SCHEDULE' | translate }}
+    </h1>
     <app-area-schedule [areaInfoDataSet]="areaInfoDataSet" />
 </div>

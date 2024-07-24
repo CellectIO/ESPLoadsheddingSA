@@ -1,110 +1,83 @@
 <div class="section-container">
     <h1>
-        Welcome to ZparkWise SA Loadshedding
+        {{ 'PAGES.SETUP.PARAGRAPH_1' | translate }}
     </h1>
-
     <p>
-        We're thrilled to have you on board.
+        {{ 'PAGES.SETUP.PARAGRAPH_2' | translate }}
     </p>
-
     <p>
-        This guide is designed to assist you in navigating through the initial setup process necessary for the
-        functionality of this extension. Whether you're a seasoned user or just getting started, we're here to ensure your experience
-        is as smooth as possible.
+        {{ 'PAGES.SETUP.PARAGRAPH_3' | translate }}
     </p>
-
     <p>
-        Let's embark on this journey together and unlock the full potential of the ZparkWise SA Loadshedding extension!
+        {{ 'PAGES.SETUP.PARAGRAPH_4' | translate }}
     </p>
 </div>
-
 <div class="section-container">
     <h1>
-        Step 1: Sign up for an "EskomSePush" API key
+        {{ 'PAGES.SETUP.PARAGRAPH_5' | translate }}
     </h1>
-
     <p>
-        Go to the Gumroad Dashboard with the link below to sign up for an "EskomSePush" API key. 
-        <br/><br/>
-        Note: You can copy the link with the copy button on the right and then paste the link in a new browser tab.
+        {{ 'PAGES.SETUP.PARAGRAPH_6' | translate }}
     </p>
-
+    <p>
+        {{ 'PAGES.SETUP.PARAGRAPH_7' | translate }}
+    </p>
     <div class="copy-input-container">
         <mat-form-field appearance="outline">
-            <mat-label>Copy Gumroad API Link</mat-label>
+            <mat-label>{{ 'PAGES.SETUP.INPUT_LABEL' | translate }}</mat-label>
             <input matInput [(ngModel)]="gumroadLink" disabled>
-            <button mat-icon-button matSuffix (click)="copyText()" aria-label="Copy Gumroad API Link">
-                <mat-icon aria-hidden="false" aria-label="edit" fontIcon="content_copy"></mat-icon>
+            <button mat-icon-button matSuffix (click)="copyText()">
+                <app-info-icon text="ACTIONS.COPY" icon="content_copy"></app-info-icon>
             </button>
         </mat-form-field>
     </div>
-
     <p>
-        Once you are on the page you can click on the "Subscribe" button on the right that will navigate you to the next page.
+        {{ 'PAGES.SETUP.PARAGRAPH_8' | translate }}
     </p>
-
     <img src="assets/images/guide/STEP1.png">
-
     <p>
-        Once the Sign Up form has loaded, you will need to enter your email address and full name on the right and then you can click the "Get" Button.
+        {{ 'PAGES.SETUP.PARAGRAPH_9' | translate }}
     </p>
-
     <img src="assets/images/guide/STEP2.png">
 </div>
-
 <div class="section-container">
     <h1>
-        Step 2: Getting your ESP API key
+        {{ 'PAGES.SETUP.PARAGRAPH_10' | translate }}
     </h1>
-
     <p>
-        Once you have succesfully registered you will be navigated to your subscription page where you will find a section with a label "License key".
+        {{ 'PAGES.SETUP.PARAGRAPH_11' | translate }}
     </p>
-
     <p>
-        Click on the "Copy" button to get your API key ready for the next step.
+        {{ 'PAGES.SETUP.PARAGRAPH_12' | translate }}
     </p>
-
     <img src="assets/images/guide/STEP3.png">
-
     <p>
-        Optionally you will also recieve an email with your API key which you can copy. 
+        {{ 'PAGES.SETUP.PARAGRAPH_13' | translate }}
     </p>
-
     <img src="assets/images/guide/STEP4.png">
 </div>
-
 <div class="section-container">
     <h1>
-        Step 3: Saving ESP API key in the settings tab
+        {{ 'PAGES.SETUP.PARAGRAPH_14' | translate }}
     </h1>
-
     <p>
-        With the copied API key, come back to the ZparkWise SA Loadshedding extension and navigate to the settings Tab by clicking on the Gear icon in the top right.
+        {{ 'PAGES.SETUP.PARAGRAPH_15' | translate }}
     </p>
-
     <P>
-        Once you are on the settings page paste your API key in the "API Key" input field and click on the Save button.
+        {{ 'PAGES.SETUP.PARAGRAPH_16' | translate }}
     </P>
-
     <img src="assets/images/guide/STEP5.png">
 </div>
-
 <div class="section-container">
     <h1>
-        Congratulations you are all set :)
+        {{ 'PAGES.SETUP.PARAGRAPH_17' | translate }}
     </h1>
 </div>
-
 <div class="section-container">
     <h1>
-        An Important Note:
+        {{ 'PAGES.SETUP.PARAGRAPH_18' | translate }}
     </h1>
-
     <P>
-        You are limited to only one API key. So make sure you save it. 
-        If you attempt to register again for a new API key, your account will be blocked for 24 hours. 
-        Only after 24 hours will your account be reset where you can try again with a single API key.
-        So make sure you save your API key somewhere safe.
+        {{ 'PAGES.SETUP.PARAGRAPH_19' | translate }}
     </P>
 </div>

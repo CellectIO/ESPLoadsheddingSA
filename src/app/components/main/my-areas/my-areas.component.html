@@ -1,23 +1,21 @@
 <div class="container">
     <h1>
         <mat-icon aria-hidden="false" aria-label="bolt" fontIcon="bolt"></mat-icon>
-        Loadshedding Status
+        {{ 'PAGES.MY_AREAS.LABELS.LOADSHEDDING_STATUS' | translate }}
     </h1>
     <app-load-shedding-status [loadSheddingStatus]="loadSheddingStatus" />
-
     <div class="my-areas-container-heading">
         <h1>
             <mat-icon aria-hidden="false" aria-label="bookmarks" fontIcon="bookmarks"></mat-icon>
-            My Areas
+            {{ 'PAGES.MY_AREAS.LABELS.MY_AREAS' | translate }}
         </h1>
         <div class="my-areas-container-heading-btn">
             <button mat-raised-button (click)="goToManageAreas()" color="primary" class="btn-md">
                 <mat-icon aria-hidden="false" aria-label="edit" fontIcon="edit"></mat-icon>
-                Manage Areas
+                {{ 'PAGES.MY_AREAS.ACTIONS.MANAGE_AREAS' | translate }}
             </button>
         </div>
     </div>
-
     <div class="my-areas-container">
         <app-card class="area-card" *ngFor="let area of savedAreas; index as i; first as isFirst">
             <div class="area-card-heading">
@@ -25,9 +23,7 @@
                 <mat-icon aria-hidden="false" aria-label="close" fontIcon="navigate_next"
                     (click)="goToAreaInfo(area.areaId)"></mat-icon>
             </div>
-    
             <p>{{area.region}}</p>
-    
             <app-time-slot-chart [areaDayInfo]="area.dayInfo" [areaEvents]="area.events"/>
         </app-card>
     </div>

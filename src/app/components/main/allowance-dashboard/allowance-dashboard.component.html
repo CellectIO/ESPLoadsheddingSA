@@ -5,80 +5,78 @@
         <ng-container 
             [ngTemplateOutlet]="allowanceItem" 
             [ngTemplateOutletContext]="{
-                name: 'Area API', 
+                name: 'PAGES.ALLOWANCE.LABEL.AREA_API', 
                 count: allowance?.apiUtilizationBreakdown?.getArea,
-                desc: 'Used by the eara search feature to get areas based on the area phrase you provide.'
+                desc: 'PAGES.ALLOWANCE.DESCRIPTION.AREA_API'
                 }">
         </ng-container>
         <ng-container 
             [ngTemplateOutlet]="allowanceItem" 
             [ngTemplateOutletContext]="{
-                name: 'Area Information API',
+                name: 'PAGES.ALLOWANCE.LABEL.AREA_INFO_API', 
                  count: allowance?.apiUtilizationBreakdown?.getAreaInformation,
-                 desc: 'Used when a area is saved to get loadshedding schedule details.'
+                 desc: 'PAGES.ALLOWANCE.DESCRIPTION.AREA_INFO_API'
                  }">
         </ng-container>
         <ng-container 
             [ngTemplateOutlet]="allowanceItem" 
             [ngTemplateOutletContext]="{
-                name: 'Areas Nearby API', 
+                name: 'PAGES.ALLOWANCE.LABEL.AREA_NEARBY_API', 
                 count: allowance?.apiUtilizationBreakdown?.getAreasNearby,
-                desc: 'Discovers Areas near your current location in the manage areas page.'
+                desc: 'PAGES.ALLOWANCE.DESCRIPTION.AREA_NEARBY_API'
                 }">
         </ng-container>
         <ng-container 
             [ngTemplateOutlet]="allowanceItem" 
             [ngTemplateOutletContext]="{
-                name: 'Status API', count:
-                 allowance?.apiUtilizationBreakdown?.getStatus,
-                 desc: 'Used to get the current load shedding status found on several pages.'
-                 }">
+                name: 'PAGES.ALLOWANCE.LABEL.STATUS_API', 
+                count: allowance?.apiUtilizationBreakdown?.getStatus,
+                desc: 'PAGES.ALLOWANCE.DESCRIPTION.STATUS_API'
+                }">
         </ng-container>
         <ng-container 
             [ngTemplateOutlet]="allowanceItem" 
             [ngTemplateOutletContext]="{
-                name: 'Topics Nearby API', 
+                name: 'PAGES.ALLOWANCE.LABEL.TOPICS_NEARBY_API',
                 count: allowance?.apiUtilizationBreakdown?.getTopicsNearby,
-                desc: 'Used to get topics near your current location. (Comming Soon)'
+                desc: 'PAGES.ALLOWANCE.DESCRIPTION.TOPICS_NEARBY_API'
                 }">
         </ng-container>
     </div>
 </div>
-
 <ng-template #allowanceItem let-name='name' let-count="count" let-desc="desc">
     <app-card class="allowance-item-card">
         <div class="card-heading-container">
             <h1>
-                {{name}}
+                {{name | translate }}
             </h1>
         </div>
         <p>
-            {{desc}}
+            {{desc | translate }}
         </p>
         <div class="card-count-container">
             <h3>
-                Current Count : {{count}}
+                {{'PAGES.ALLOWANCE.LABEL.CURRENT_COUNT' | translate }} : {{count}}
             </h3>
         </div>
     </app-card>
 </ng-template>
-
 <ng-template #allowanceDetails>
     <app-card class="allowance-item-card">
         <div class="card-heading-container">
             <h1>
-                Eskom Se Push Allowance Details
+                {{'PAGES.ALLOWANCE.LABEL.ESP_ALLOWANCE_DETAILS' | translate }}
             </h1>
         </div>
         <div class="allowance-details-section">
-            <h3>
-                Current Call Count : {{allowance?.allowance?.count}}
+            <h3 [matTooltip]="'PAGES.ALLOWANCE.INFO.CURRENT_CALL_COUNT' | translate" [matTooltipClass]="'tooltip-primary'">
+                {{'PAGES.ALLOWANCE.LABEL.CURRENT_CALL_COUNT' | translate }} : {{allowance?.allowance?.count}}
             </h3>
-            <h3>
-                Call Count Limit : {{allowance?.allowance?.limit}}
+            <h3 [matTooltip]="'PAGES.ALLOWANCE.INFO.CALL_COUNT_LIMIT' | translate" [matTooltipClass]="'tooltip-primary'">
+                {{'PAGES.ALLOWANCE.LABEL.CALL_COUNT_LIMIT' | translate }} : {{allowance?.allowance?.limit}}
             </h3>
-            <h3>
-                Allowance Type : {{allowance?.allowance?.type}}
+            <h3 [matTooltip]="'PAGES.ALLOWANCE.INFO.ALLOWANCE_TYPE' | translate" [matTooltipClass]="'tooltip-primary'">
+                {{'PAGES.ALLOWANCE.LABEL.ALLOWANCE_TYPE' | translate }} : {{allowance?.allowance?.type}}
             </h3>
         </div>
     </app-card>

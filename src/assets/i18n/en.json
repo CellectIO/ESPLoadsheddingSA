@@ -1,0 +1,160 @@
+{
+    "ACTIONS": {
+        "SAVE": "Save",
+        "DISMISS": "Dismiss",
+        "COPY": "Copy"
+    },
+    "LABELS": {
+        "ESKOM_SE_PUSH": "Eskom Se Push",
+        "PAGES": "Pages",
+        "SETUP": "Setup",
+        "ALLOWANCE": "Allowance",
+        "SUCCESS": "Success",
+        "WARNING": "Warning",
+        "ERROR": "Error",
+        "NO_LOADSHEDDING": "No Loadshedding",
+        "LOADING": "Loading"
+    },
+    "PAGES": {
+        "APP": {
+            "INFO": {
+                "HOME": "Home",
+                "MANAGE_AREAS": "Manage Areas",
+                "ALLOWANCE": "Allowance Dashboard",
+                "SETUP": "Setup",
+                "SETTINGS": "Settings"
+            }
+        },
+        "SETTINGS": {
+            "LABELS": {
+                "API_KEY": "API Key",
+                "CACHING": "Caching",
+                "SYNC_INTERVAL": "Sync interval in minutes"
+            },
+            "ACTIONS": {
+                "CLEAR_CACHE": "Clear Cache"
+            },
+            "INFO": {
+                "WHAT_IS_CACHE": "The Sync Interval is messured in minutes to determine when all the your saved data should refresh. This Allows some users with a low allowance to not be rate limited as quickly as they would wouthout relying on cache. The lower your sync interval value the sooner your data will be refreshed.",
+                "WHERE_TO_FIND_API_KEY": "If you are unsure where to find your Eskom Se Push API key, please follow the guide on the Setup Page.",
+                "WHAT_DOES_PAGES_DO": "Use these Toggles to disable specific pages that you don't want to see in the navigation bar. ",
+                "CLEAR_CACHE_WARNING": "Clearing Cache will delete all your saved data which will result in some API's being called again that will count towards your allowance."
+            }
+        },
+        "SETUP": {
+            "INPUT_LABEL": "Copy Gumroad API Link",
+            "PARAGRAPH_1": "Welcome to ZparkWise SA Loadshedding",
+            "PARAGRAPH_2": "We're thrilled to have you on board.",
+            "PARAGRAPH_3": "This guide is designed to assist you in navigating through the initial setup process necessary for the functionality of this extension. Whether you're a seasoned user or just getting started, we're here to ensure your experience is as smooth as possible.",
+            "PARAGRAPH_4": "Let's embark on this journey together and unlock the full potential of the ZparkWise SA Loadshedding extension!",
+            "PARAGRAPH_5": "Step 1: Sign up for an 'EskomSePush' API key",
+            "PARAGRAPH_6": "Go to the Gumroad Dashboard with the link below to sign up for an 'EskomSePush' API key.",
+            "PARAGRAPH_7": "Note: You can copy the link with the copy button on the right and then paste the link in a new browser tab.",
+            "PARAGRAPH_8": "Once you are on the page you can click on the 'Subscribe' button on the right that will navigate you to the next page.",
+            "PARAGRAPH_9": "Once the Sign Up form has loaded, you will need to enter your email address and full name on the right and then you can click the 'Get' Button.",
+            "PARAGRAPH_10": "Step 2: Getting your ESP API key",
+            "PARAGRAPH_11": "Once you have succesfully registered you will be navigated to your subscription page where you will find a section with a label 'License key'.",
+            "PARAGRAPH_12": "Click on the 'Copy' button to get your API key ready for the next step.",
+            "PARAGRAPH_13": "Optionally you will also recieve an email with your API key which you can copy.",
+            "PARAGRAPH_14": "Step 3: Saving ESP API key in the settings tab",
+            "PARAGRAPH_15": "With the copied API key, come back to the ZparkWise SA Loadshedding extension and navigate to the settings Tab by clicking on the Gear icon in the top right.",
+            "PARAGRAPH_16": "Once you are on the settings page paste your API key in the 'API Key' input field and click on the Save button.",
+            "PARAGRAPH_17": "Congratulations you are all set :)",
+            "PARAGRAPH_18": "An Important Note:",
+            "PARAGRAPH_19": "You are limited to only one API key. So make sure you save it. If you attempt to register again for a new API key, your account will be blocked for 24 hours. Only after 24 hours will your account be reset where you can try again with a single API key. So make sure you save your API key somewhere safe."
+        },
+        "ALLOWANCE": {
+            "LABEL": {
+                "CURRENT_COUNT": "Current Count",
+                "ESP_ALLOWANCE_DETAILS": "Eskom Se Push Allowance Details",
+                "CURRENT_CALL_COUNT": "Current Call Count",
+                "CALL_COUNT_LIMIT": "Call Count Limit",
+                "ALLOWANCE_TYPE": "Allowance Type",
+                "AREA_API": "Area API",
+                "AREA_INFO_API": "Area Information API",
+                "AREA_NEARBY_API": "Areas Nearby API",
+                "STATUS_API": "Status API",
+                "TOPICS_NEARBY_API": "Topics Nearby API"
+            },
+            "DESCRIPTION": {
+                "AREA_API": "Used by the eara search feature to get areas based on the area phrase you provide.",
+                "AREA_INFO_API": "Used when a area is saved to get loadshedding schedule details.",
+                "AREA_NEARBY_API": "Discovers Areas near your current location in the manage areas page.",
+                "STATUS_API": "Used to get the current load shedding status found on several pages.",
+                "TOPICS_NEARBY_API": "Used to get topics near your current location. (Comming Soon)"
+            },
+            "INFO": {
+                "CURRENT_CALL_COUNT": "The total amount of API calls currently used by your account",
+                "CALL_COUNT_LIMIT": "The total amount of API calls you are allowed to make for the period of your Allowance Type",
+                "ALLOWANCE_TYPE": "Refers to the period you Call Count Limit is valid for before it resets. For example if your Allowance Type is Daily and your Call Count Limit is 50, your are allowed to make 50 API calls each and every single day"
+            }
+        },
+        "ADD_AREA": {
+            "LABELS": {
+                "AREA_NAME": "Area Name",
+                "SEARCHED_AREAS": "Searched Areas",
+                "SAVED_AREAS": "Saved Areas",
+                "RECOMMENDED_NEARBY": "Recommended Nearby"
+            },
+            "ACTIONS": {
+                "ADD_AREA": "Add Area",
+                "REMOVE_AREA": "Remove Area"
+            }
+        },
+        "MY_AREAS": {
+            "LABELS": {
+                "LOADSHEDDING_STATUS": "Loadshedding Status",
+                "MY_AREAS": "My Areas"
+            },
+            "ACTIONS": {
+                "MANAGE_AREAS": "Manage Areas"
+            }
+        },
+        "ESKOM_DASHBOARD": {
+            "LABELS": {
+                "LOADSHEDDING_STATUS": "Loadshedding Status",
+                "AREA": "Area",
+                "UPCOMMING": "Upcomming",
+                "AREA_SCHEDULE": "Area Schedule"
+            }
+        },
+        "AREA_SCHEDULE": {
+            "LABELS": {
+                "SCHEDULE_DATE_FILTER": "Schedule Date Filter",
+                "STAGE_FILTER": "Stage Filter"
+            },
+            "FORM_CONTROLS": {
+                "OTHER": "other",
+                "OTHERS": "others"
+            }
+        },
+        "LOAD_SHEDDING_STATUS": {
+            "LABELS": {
+                "STAGE": "Stage",
+                "LAST_UPDATED": "Last Updated",
+                "UP_NEXT_AT": "up next at",
+                "NO_UPCOMMING": "No upcomming loadshedding"
+            }
+        }
+    },
+    "LOGS": {
+        "PROVIDE_VALID_AREA": "Please provide a valid area name.",
+        "AREA_ALREADY_SAVED": "Area is already saved.",
+        "AREA_IS_NOT_SAVED": "Area does not exists in saved areas.",
+        "COULD_NOT_DETERMINE_LOCATION": "Could not determine your location succesfully.",
+        "FAILED_TO_SAVE_AREA_WITH_NAME": "failed to save area with name: {{name}}",
+        "SAVED_AREAS_UPDATED": "Saved areas have been updated.",
+        "LINK_COPIED": "Gumroad API link has been copied to your clipboard.",
+        "FAILED_TO_SYNC_ALLOWANCE": "Failed to sync allowance",
+        "NO_SETINGS_SAVED_YET": "no settings have been saved yet.",
+        "FAILED_TO_GET_AREA_INFO": "Failed to Get Area Information",
+        "SETTINGS_SAVED_LOADING_DEFAULT": "Eskom Se Push API Key has been saved. Loading Default Pages based on user settings.",
+        "SETTINGS_NOT_SAVED_LOADING_INIT": "Eskom Se Push API Key has not been saved yet. Loading Initial Setup Pages.",
+        "DB_SYNC_COMPLETED": "DB Service has synced succesfully.",
+        "TRANSLATIONS_HAVE_LOADED": "Translations have been loaded Succesfully",
+        "PROVIDE_A_VALID_ESP_API_KEY": "Please provide a valid Eskom Se Push API Key.",
+        "SETTINGS_SAVED_SUCCESFULLY": "Settigns have been saved succesfully",
+        "SETTINGS_SAVED_UNSUCCESFULLY": "Something went wrong while trying to save settings.",
+        "CACHE_CLEARED_SUCCESFULLY": "Cache has succesfully cleared."
+    }
+}

@@ -12,6 +12,7 @@ import { LogPanelService } from "../../../services/log-panel/log-panel.service";
 import { CommonModule } from "@angular/common";
 import { DbService } from "../../../services/db/db.service";
 import { CardComponent } from "../../shared/card/card.component";
+import { TranslateModule, TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: 'app-eskom-dashboard',
@@ -23,7 +24,8 @@ import { CardComponent } from "../../shared/card/card.component";
     LoadSheddingStatusComponent,
     UpcommingScheduleComponent,
     CommonModule,
-    CardComponent
+    CardComponent,
+    TranslateModule
   ],
   templateUrl: './eskom-dashboard.component.html',
   styleUrl: './eskom-dashboard.component.sass'
@@ -38,7 +40,8 @@ export class EskomDashboardComponent implements OnInit, OnDestroy {
   constructor(
     private db: DbService,
     private activatedRoute: ActivatedRoute,
-    private logPanel: LogPanelService
+    private logPanel: LogPanelService,
+    private translate: TranslateService
   ) {
 
   }
@@ -55,7 +58,7 @@ export class EskomDashboardComponent implements OnInit, OnDestroy {
           this.areaId = routeId;
           this.loadEskomDataSets();
         }else{
-          this.logPanel.setErrorLogs(['no settings have been saved yet.']);
+          this.logPanel.setErrorLogs([this.translate.instant('LOGS.NO_SETINGS_SAVED_YET')]);
         }
       })
     ).subscribe();

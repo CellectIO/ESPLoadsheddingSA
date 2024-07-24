@@ -16,6 +16,7 @@ import { ResultBase } from '../../../core/models/response-types/result-base';
 import { Result } from '../../../core/models/response-types/result';
 import { AreasNearbyEntity } from '../../../core/models/entities/areas-nearby-entity';
 import { AreaSearchEntity } from '../../../core/models/entities/area-search-entity';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-add-area',
@@ -26,7 +27,8 @@ import { AreaSearchEntity } from '../../../core/models/entities/area-search-enti
     MatInputModule,
     MatButtonModule,
     MatIconModule,
-    CardComponent
+    CardComponent,
+    TranslateModule
   ],
   templateUrl: './add-area.component.html',
   styleUrl: './add-area.component.sass'
@@ -63,7 +65,8 @@ export class AddAreaComponent implements OnInit, OnDestroy {
     private db: DbService,
     private logPanel: LogPanelService,
     private utility: UtilityService,
-    private location: LocationService
+    private location: LocationService,
+    private translate: TranslateService
   ) {
   }
 
@@ -96,7 +99,7 @@ export class AddAreaComponent implements OnInit, OnDestroy {
   getAreaSearchResult(): void {
     let areaNameFormControl = this.areaNameFormControl.value!;
     if (areaNameFormControl == '') {
-      this.logPanel.setWarningLogs(['Please Provide a Valid Area Name']);
+      this.logPanel.setWarningLogs([this.translate.instant('LOGS.PROVIDE_VALID_AREA')]);
       this.areaSearchResults = [];
       return;
     }
@@ -118,7 +121,7 @@ export class AddAreaComponent implements OnInit, OnDestroy {
   addArea(area: EskomSearchArea) {
     let exsists = this.savedAreas.includes(area);
     if (exsists) {
-      this.logPanel.setWarningLogs(['Area is already saved.']);
+      this.logPanel.setWarningLogs([this.translate.instant('LOGS.AREA_ALREADY_SAVED')]);
       return
     }
 
@@ -128,7 +131,7 @@ export class AddAreaComponent implements OnInit, OnDestroy {
   removeArea(area: EskomSearchArea) {
     let exsists = this.savedAreas.includes(area);
     if (!exsists) {
-      this.logPanel.setWarningLogs(['Area Does not exists in saved Areas.']);
+      this.logPanel.setWarningLogs([this.translate.instant('LOGS.AREA_IS_NOT_SAVED')]);
       return
     }
 
@@ -157,7 +160,7 @@ export class AddAreaComponent implements OnInit, OnDestroy {
             return this.db.getAreasNearby(result.data!.coords.latitude, result.data!.coords.longitude);
           }
 
-          this.logPanel.setErrorLogs(['Could not determine your location succesfully.']);
+          this.logPanel.setErrorLogs([this.translate.instant('LOGS.COULD_NOT_DETERMINE_LOCATION')]);
           return of(new Result<AreasNearbyEntity>(null, result.errors));
         }),
         map((value) => {
@@ -186,7 +189,9 @@ export class AddAreaComponent implements OnInit, OnDestroy {
       .pipe(
         switchMap((areaResult) => {
           if (areaResult.isSuccess == false) {
-            this.logPanel.setErrorLogs([`failed to save area with name: ${area.name}`]);
+            this.logPanel.setErrorLogs([this.translate.instant('LOGS.FAILED_TO_SAVE_AREA_WITH_NAME', {
+              name: area.name
+            })]);
             return of(new ResultBase(areaResult.errors));
           }
 
@@ -206,7 +211,7 @@ export class AddAreaComponent implements OnInit, OnDestroy {
         map(result => {
           if (result.isSuccess) {
             this.filterOutAreaResults(null, result.data!, null);
-            this.logPanel.setSuccessLogs(['Saved Areas have been updated.']);
+            this.logPanel.setSuccessLogs([this.translate.instant('LOGS.SAVED_AREAS_UPDATED')]);
           }
 
           this.syncingSavedAreas = false;
