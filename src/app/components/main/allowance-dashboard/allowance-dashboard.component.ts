@@ -7,6 +7,8 @@ import { NgStyleService } from '../../../services/ng-style/ng-style.service';
 import { CardComponent } from '../../shared/card/card.component';
 import { LogPanelService } from '../../../services/log-panel/log-panel.service';
 import { DbService } from '../../../services/db/db.service';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-allowance-dashboard',
@@ -14,7 +16,9 @@ import { DbService } from '../../../services/db/db.service';
   imports: [
     CommonModule,
     MatIconModule,
-    CardComponent
+    CardComponent,
+    TranslateModule,
+    MatTooltipModule
   ],
   templateUrl: './allowance-dashboard.component.html',
   styleUrl: './allowance-dashboard.component.sass'
@@ -24,9 +28,12 @@ export class AllowanceDashboardComponent implements OnInit, OnDestroy {
   allowance: AllowanceEntity | null = null;
   subscriptions: Subscription[] = [];
 
-  constructor(private db: DbService,
+  constructor(
+    private db: DbService,
     public ngStyleService: NgStyleService,
-    private logPanel: LogPanelService) {
+    private logPanel: LogPanelService,
+    private translate: TranslateService
+  ) {
   }
 
   ngOnDestroy(): void {
@@ -40,7 +47,7 @@ export class AllowanceDashboardComponent implements OnInit, OnDestroy {
           if (result.isSuccess) {
             this.allowance = result.data;
           } else {
-            this.logPanel.setErrorLogs(['Failed to sync Allowance']);
+            this.logPanel.setErrorLogs([this.translate.instant('LOGS.FAILED_TO_SYNC_ALLOWANCE')]);
           }
         })
       ).subscribe();

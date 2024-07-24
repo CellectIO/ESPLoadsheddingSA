@@ -2,17 +2,17 @@
     <app-card class="loadshedding-status-card" [cssClass]="ngStyleService.getStageBgColor(entity.stage)"
     *ngFor="let entity of loadSheddingStatus; index as i; first as isFirst">
         <div >
-            <p class="">{{entity.name}}</p>
-            <p>Stage {{entity.stage}}</p>
-            <p>Last Updated : {{entity.stage_updated | date : 'yyyy/MM/dd hh:mm a'}}</p>
+            <p>{{entity.name}}</p>
+            <p>{{ 'PAGES.LOAD_SHEDDING_STATUS.LABELS.STAGE' | translate }} {{entity.stage}}</p>
+            <p>{{ 'PAGES.LOAD_SHEDDING_STATUS.LABELS.LAST_UPDATED' | translate }} : {{entity.stage_updated | date : 'yyyy/MM/dd hh:mm a'}}</p>
             @if ((entity?.next_stages?.length || 0) >= 1) {
                 <div class="ld-status-up-next-container">
                     <div>
                         <mat-icon aria-hidden="false" aria-label="warning" fontIcon="warning"></mat-icon>
                     </div>
                     <div>
-                        <span>Stage {{entity.next_stages[0].stage}}</span>
-                        <span>up next at {{entity.next_stages[0].stage_start_timestamp | date : 'yyyy/MM/dd hh:mm a'}}</span>
+                        <span>{{ 'PAGES.LOAD_SHEDDING_STATUS.LABELS.STAGE' | translate }} {{entity.next_stages[0].stage}}</span>
+                        <span>{{ 'PAGES.LOAD_SHEDDING_STATUS.LABELS.UP_NEXT_AT' | translate }} {{entity.next_stages[0].stage_start_timestamp | date : 'yyyy/MM/dd hh:mm a'}}</span>
                     </div>
                 </div>
             }@else{
@@ -21,7 +21,7 @@
                         <mat-icon aria-hidden="false" aria-label="celebration" fontIcon="celebration"></mat-icon>
                     </div>
                     <div>
-                        <span>No upcomming loadshedding</span>
+                        <span>{{ 'PAGES.LOAD_SHEDDING_STATUS.LABELS.NO_UPCOMMING' | translate }}</span>
                     </div>
                 </div>
             }

@@ -5,6 +5,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { environment } from '../../../../environments/environment';
+import { InfoIconComponent } from '../info-icon/info-icon.component';
+import { LogPanelService } from '../../../services/log-panel/log-panel.service';
 
 @Component({
   selector: 'app-setup',
@@ -16,16 +20,21 @@ import { MatInputModule } from '@angular/material/input';
     FormsModule,
     ReactiveFormsModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    TranslateModule,
+    InfoIconComponent
   ],
   templateUrl: './setup.component.html',
   styleUrl: './setup.component.sass'
 })
 export class SetupComponent {
 
-  gumroadLink: string = 'https://eskomsepush.gumroad.com/l/api';
+  gumroadLink: string = environment.sign_up_link;
 
-  constructor() {
+  constructor(
+    private logPanel: LogPanelService,
+    private translate: TranslateService
+  ) {
     
   }
 
@@ -36,6 +45,8 @@ export class SetupComponent {
     inputElement.select();
     document.execCommand('copy');
     document.body.removeChild(inputElement);
+
+    this.logPanel.setSuccessLogs([this.translate.instant('LOGS.LINK_COPIED')]);
   }
 
 }

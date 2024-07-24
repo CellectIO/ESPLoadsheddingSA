@@ -2,7 +2,7 @@
   <div class="loading-container" *ngIf="loader.appLoading | async">
     <div class="loader-content">
       <app-loader [loader]="'hourglass'"></app-loader>
-      <h1>Loading</h1>
+      <h1> {{ 'LABELS.LOADING' | translate }}</h1>
     </div>
   </div>
   <div>
@@ -15,7 +15,7 @@
         #rla="routerLinkActive"
         [active]="rla.isActive"
       >
-        <mat-icon>{{ link.icon }}</mat-icon>
+        <mat-icon [matTooltip]="link.tooltip | translate" [matTooltipClass]="'tooltip-secondary'">{{ link.icon }}</mat-icon>
       </a>
     </nav>
     <mat-tab-nav-panel #tabPanel class="tab-content">

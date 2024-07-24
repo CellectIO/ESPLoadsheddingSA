@@ -7,6 +7,7 @@ import { AreaInfoDayEntity, AreaInfoEntity } from '../../../core/models/entities
 import { CardComponent } from '../card/card.component';
 import { ScheduleService } from '../../../services/schedule/schedule.service';
 import { UtilityService } from '../../../services/utility/utility.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-area-schedule',
@@ -15,7 +16,8 @@ import { UtilityService } from '../../../services/utility/utility.service';
     MatSelectModule,
     ReactiveFormsModule,
     CommonModule,
-    CardComponent
+    CardComponent,
+    TranslateModule
   ],
   templateUrl: './area-schedule.component.html',
   styleUrl: './area-schedule.component.sass'

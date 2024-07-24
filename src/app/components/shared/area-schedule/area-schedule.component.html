@@ -1,13 +1,15 @@
 <div class="area-schedule-filter-container">
     <mat-form-field class="area-schedule-filter">
-        <mat-label>Schedule Date Filter</mat-label>
+        <mat-label>
+            {{ 'PAGES.AREA_SCHEDULE.LABELS.SCHEDULE_DATE_FILTER' | translate }}
+        </mat-label>
         <mat-select [formControl]="scheduleDateFilterControl" multiple (selectionChange)="applyAreaScheduleFilters()">
             <mat-select-trigger>
                 {{scheduleDateFilterControl.value?.[0] || ''}}
                 @if ((scheduleDateFilterControl.value?.length || 0) > 1) {
                 <span class="example-additional-selection">
                     (+{{(scheduleDateFilterControl.value?.length || 0) - 1}} {{scheduleDateFilterControl.value?.length
-                    === 2 ? 'other' : 'others'}})
+                    === 2 ? ('PAGES.AREA_SCHEDULE.FORM_CONTROLS.OTHER' | translate) : ('PAGES.AREA_SCHEDULE.FORM_CONTROLS.OTHERS' | translate)}})
                 </span>
                 }
             </mat-select-trigger>
@@ -15,14 +17,16 @@
         </mat-select>
     </mat-form-field>
     <mat-form-field class="area-schedule-filter">
-        <mat-label>Stage Filter</mat-label>
+        <mat-label>
+            {{ 'PAGES.AREA_SCHEDULE.LABELS.STAGE_FILTER' | translate }}
+        </mat-label>
         <mat-select [formControl]="scheduleStageFilterControl" multiple (selectionChange)="applyAreaScheduleFilters()">
             <mat-select-trigger>
                 {{scheduleStageFilterControl.value?.[0] || ''}}
                 @if ((scheduleStageFilterControl.value?.length || 0) > 1) {
                 <span class="example-additional-selection">
                     (+{{(scheduleStageFilterControl.value?.length || 0) - 1}} {{scheduleStageFilterControl.value?.length
-                    === 2 ? 'other' : 'others'}})
+                    === 2 ? ('PAGES.AREA_SCHEDULE.FORM_CONTROLS.OTHER' | translate) : ('PAGES.AREA_SCHEDULE.FORM_CONTROLS.OTHERS' | translate)}})
                 </span>
                 }
             </mat-select-trigger>
@@ -30,7 +34,6 @@
         </mat-select>
     </mat-form-field>
 </div>
-
 <div *ngFor="let schedule of areaSchedules; index as i; first as isFirst" class="area-schedules-container">
     <h1>{{schedule.name}} - {{schedule.date}}</h1>
     <div class="area-schedule-card-container">

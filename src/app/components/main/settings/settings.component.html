@@ -1,49 +1,52 @@
 <div class="save-btn-container">
     <button mat-raised-button color="primary" type="button" class="btn-sm" (click)="onSubmit()">
         <mat-icon aria-hidden="false" aria-label="save" fontIcon="save"></mat-icon> 
-        Save
+        {{ 'ACTIONS.SAVE' | translate }}
     </button>
 </div>
-
 <form [formGroup]="eskomSePushApiForm" class="eskomForm">
-
     <app-card class="settings-card">
         <div class="settings-card-header">
-            <h1>Eskom Se Push</h1>
+            <h1>
+                {{ 'LABELS.ESKOM_SE_PUSH' | translate }}
+                <app-info-icon text="PAGES.SETTINGS.INFO.WHERE_TO_FIND_API_KEY" icon="info"></app-info-icon>
+            </h1>
         </div>
         <mat-form-field class="mat-form-field-input-primary">
-            <mat-label>API Key</mat-label>
+            <mat-label>{{ 'PAGES.SETTINGS.LABELS.API_KEY' | translate }}</mat-label>
             <input matInput formControlName="apiKey">
         </mat-form-field>
     </app-card>
-
     <app-card class="settings-card" *ngIf="isRegistered">
         <div class="settings-card-header">
-            <h1>Caching</h1>
-            <button mat-raised-button (click)="clearCache(true)" color="accent" class="btn-md" type="button">
+            <h1>
+                {{ 'PAGES.SETTINGS.LABELS.CACHING' | translate }} 
+                <app-info-icon text="PAGES.SETTINGS.INFO.WHAT_IS_CACHE" icon="info"></app-info-icon>
+            </h1>
+            <button mat-raised-button (click)="clearCache(true)" color="accent" class="btn-md" type="button" [matTooltip]="'PAGES.SETTINGS.INFO.CLEAR_CACHE_WARNING' | translate" [matTooltipClass]="'tooltip-primary'">
                 <mat-icon aria-hidden="false" aria-label="delete" fontIcon="delete"></mat-icon> 
-                Clear Cache
+                {{ 'PAGES.SETTINGS.ACTIONS.CLEAR_CACHE' | translate }}
             </button>
         </div>
         <mat-form-field class="mat-form-field-input-primary">
-            <mat-label>Sync interval in minutes</mat-label>
+            <mat-label>{{ 'PAGES.SETTINGS.LABELS.SYNC_INTERVAL' | translate }}</mat-label>
             <input matInput formControlName="syncInterval">
         </mat-form-field>
     </app-card>
-
     <app-card class="settings-card" *ngIf="isRegistered">
         <div class="settings-card-header">
-            <h1>Pages</h1>
+            <h1>
+                {{ 'LABELS.PAGES' | translate }}
+                <app-info-icon text="PAGES.SETTINGS.INFO.WHAT_DOES_PAGES_DO" icon="info"></app-info-icon>
+            </h1>
         </div>
        <div class="pages-container">
         <mat-slide-toggle formControlName="pagesSetup" color="accent">
-            Setup
+            {{ 'LABELS.SETUP' | translate }}
         </mat-slide-toggle>
-
         <mat-slide-toggle formControlName="pagesAllowance" color="accent">
-            Allowance
+            {{ 'LABELS.ALLOWANCE' | translate }}
         </mat-slide-toggle>
        </div>
     </app-card>
-
 </form>

@@ -19,6 +19,9 @@ import { Result } from '../../../core/models/response-types/result';
 import { AreasNearbyEntity } from '../../../core/models/entities/areas-nearby-entity';
 import { LoaderService } from '../../../services/loader/loader.service';
 import { environment } from '../../../../environments/environment';
+import { InfoIconComponent } from '../../shared/info-icon/info-icon.component';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-settings',
@@ -30,7 +33,10 @@ import { environment } from '../../../../environments/environment';
     ReactiveFormsModule,
     MatSlideToggleModule,
     MatIconModule,
-    CardComponent
+    CardComponent,
+    InfoIconComponent,
+    TranslateModule,
+    MatTooltipModule
   ],
   templateUrl: './settings.component.html',
   styleUrl: './settings.component.sass'
@@ -54,7 +60,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
     private storageService: SessionStorageService,
     private logPanel: LogPanelService,
     private location: LocationService,
-    private loader: LoaderService
+    private loader: LoaderService,
+    private translate: TranslateService
   ) {
   }
 
@@ -96,7 +103,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     var updatedData = this.MapResult(null);
 
     if (!updatedData!.eskomSePushApiKey && !(this._initialApiKey)) {
-      this.logPanel.setWarningLogs(['Please provide a valid Eskom Se Push API Key']);
+      this.logPanel.setWarningLogs([this.translate.instant('LOGS.PROVIDE_A_VALID_ESP_API_KEY')]);
       return;
     }
 
@@ -104,9 +111,9 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
     const logFunc = (result: ResultBase) => {
       if (result.isSuccess) {
-        this.logPanel.setSuccessLogs(['Settigns have been saved succesfully']);
+        this.logPanel.setSuccessLogs([this.translate.instant('LOGS.SETTINGS_SAVED_SUCCESFULLY')]);
       } else {
-        this.logPanel.setErrorLogs(['Something went wrong while trying to save settings.']);
+        this.logPanel.setErrorLogs([this.translate.instant('LOGS.SETTINGS_SAVED_UNSUCCESFULLY')]);
       }
     }
 
@@ -164,7 +171,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     ]);
 
     if(logResult){
-      this.logPanel.setSuccessLogs(['Cache has succesfully cleared.']);
+      this.logPanel.setSuccessLogs([this.translate.instant('LOGS.CACHE_CLEARED_SUCCESFULLY')]);
     }
   }
 

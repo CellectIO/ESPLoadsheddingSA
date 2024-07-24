@@ -110,3 +110,16 @@ $dark-theme: mat.define-dark-theme((
   }
 }
 
+.tooltip-primary {
+  .mdc-tooltip__surface{
+    color: $font-primary-color !important;
+    background-color: $background-primary !important;
+  }
+}
+
+.tooltip-secondary{
+  .mdc-tooltip__surface{
+    color: $font-primary-light-color !important;
+    background-color: $background-secondary !important;
+  }
+}

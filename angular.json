@@ -28,6 +28,7 @@
             "assets": [
               "src/manifest.json",
               "src/favicon.ico",
+              "src/assets/i18n/",
               "src/assets/api-mock-data",
               "src/assets/images/guide/STEP1.png",
               "src/assets/images/guide/STEP2.png",
@@ -119,6 +120,7 @@
             "inlineStyleLanguage": "sass",
             "assets": [
               "src/favicon.ico",
+              "src/assets/i18n/",
               "src/assets/api-mock-data",
               "src/assets/images/guide/STEP1.png",
               "src/assets/images/guide/STEP2.png",

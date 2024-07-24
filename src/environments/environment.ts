@@ -9,6 +9,7 @@ export const environment = {
         mockTime: 'Sat Jun 01 2024 06:29:24 GMT+0200 (GMT+02:00)'
     },
     api_eskom: '/eskomAPI',
+    sign_up_link: 'https://eskomsepush.gumroad.com/l/api',
     logging: {
         level: NgxLoggerLevel.INFO,
         serverLogLevel: NgxLoggerLevel.INFO,

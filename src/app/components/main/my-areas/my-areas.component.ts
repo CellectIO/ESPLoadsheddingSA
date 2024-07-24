@@ -14,6 +14,7 @@ import { LogPanelService } from '../../../services/log-panel/log-panel.service';
 import { EskomAreaInfoEvent } from '../../../core/models/common/areas/eskom-area-info-event';
 import { ScheduleService } from '../../../services/schedule/schedule.service';
 import { DbService } from '../../../services/db/db.service';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 interface MyAreaResult {
   areaId: string;
@@ -32,7 +33,8 @@ interface MyAreaResult {
     CommonModule,
     MatButtonModule,
     TimeSlotChartComponent,
-    CardComponent
+    CardComponent,
+    TranslateModule
   ],
   templateUrl: './my-areas.component.html',
   styleUrl: './my-areas.component.sass'
@@ -47,7 +49,8 @@ export class MyAreasComponent implements OnInit, OnDestroy {
     private db: DbService,
     private router: Router,
     private logPanel: LogPanelService,
-    private scheduleService: ScheduleService
+    private scheduleService: ScheduleService,
+    private translate: TranslateService
   ) {
   }
 
@@ -104,7 +107,7 @@ export class MyAreasComponent implements OnInit, OnDestroy {
               events: targetAreaInfo.events.length > 0 ? targetAreaInfo.events : []
             });
           }else{
-            this.logPanel.setErrorLogs([`Failed to Get Area Information`]);
+            this.logPanel.setErrorLogs([this.translate.instant('LOGS.FAILED_TO_GET_AREA_INFO')]);
           }
         });
       })
