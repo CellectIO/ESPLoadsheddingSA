@@ -35,7 +35,7 @@
                 "CLEAR_CACHE": "Clear Cache"
             },
             "INFO": {
-                "WHAT_IS_CACHE": "The Sync Interval is messured in minutes to determine when all the your saved data should refresh. This Allows some users with a low allowance to not be rate limited as quickly as they would wouthout relying on cache. The lower your sync interval value the sooner your data will be refreshed.",
+                "WHAT_IS_CACHE": "The Sync Interval is measured in minutes to determine when all the your saved data should refresh. This Allows some users with a low allowance to not be rate limited as quickly as they would without relying on cache. The lower your sync interval value the sooner your data will be refreshed.",
                 "WHERE_TO_FIND_API_KEY": "If you are unsure where to find your Eskom Se Push API key, please follow the guide on the Setup Page.",
                 "WHAT_DOES_PAGES_DO": "Use these Toggles to disable specific pages that you don't want to see in the navigation bar. ",
                 "CLEAR_CACHE_WARNING": "Clearing Cache will delete all your saved data which will result in some API's being called again that will count towards your allowance."
@@ -77,11 +77,11 @@
                 "TOPICS_NEARBY_API": "Topics Nearby API"
             },
             "DESCRIPTION": {
-                "AREA_API": "Used by the eara search feature to get areas based on the area phrase you provide.",
+                "AREA_API": "Used by the area search feature to get areas based on the area phrase you provide.",
                 "AREA_INFO_API": "Used when a area is saved to get loadshedding schedule details.",
                 "AREA_NEARBY_API": "Discovers Areas near your current location in the manage areas page.",
                 "STATUS_API": "Used to get the current load shedding status found on several pages.",
-                "TOPICS_NEARBY_API": "Used to get topics near your current location. (Comming Soon)"
+                "TOPICS_NEARBY_API": "Used to get topics near your current location. (Coming Soon)"
             },
             "INFO": {
                 "CURRENT_CALL_COUNT": "The total amount of API calls currently used by your account",
@@ -114,7 +114,7 @@
             "LABELS": {
                 "LOADSHEDDING_STATUS": "Loadshedding Status",
                 "AREA": "Area",
-                "UPCOMMING": "Upcomming",
+                "UPCOMMING": "Upcoming",
                 "AREA_SCHEDULE": "Area Schedule"
             }
         },
@@ -133,7 +133,7 @@
                 "STAGE": "Stage",
                 "LAST_UPDATED": "Last Updated",
                 "UP_NEXT_AT": "up next at",
-                "NO_UPCOMMING": "No upcomming loadshedding"
+                "NO_UPCOMMING": "No upcoming loadshedding"
             }
         }
     },
@@ -141,7 +141,7 @@
         "PROVIDE_VALID_AREA": "Please provide a valid area name.",
         "AREA_ALREADY_SAVED": "Area is already saved.",
         "AREA_IS_NOT_SAVED": "Area does not exists in saved areas.",
-        "COULD_NOT_DETERMINE_LOCATION": "Could not determine your location succesfully.",
+        "COULD_NOT_DETERMINE_LOCATION": "Could not determine your location successfully.",
         "FAILED_TO_SAVE_AREA_WITH_NAME": "failed to save area with name: {{name}}",
         "SAVED_AREAS_UPDATED": "Saved areas have been updated.",
         "LINK_COPIED": "Gumroad API link has been copied to your clipboard.",
@@ -150,11 +150,11 @@
         "FAILED_TO_GET_AREA_INFO": "Failed to Get Area Information",
         "SETTINGS_SAVED_LOADING_DEFAULT": "Eskom Se Push API Key has been saved. Loading Default Pages based on user settings.",
         "SETTINGS_NOT_SAVED_LOADING_INIT": "Eskom Se Push API Key has not been saved yet. Loading Initial Setup Pages.",
-        "DB_SYNC_COMPLETED": "DB Service has synced succesfully.",
-        "TRANSLATIONS_HAVE_LOADED": "Translations have been loaded Succesfully",
+        "DB_SYNC_COMPLETED": "DB Service has synced successfully.",
+        "TRANSLATIONS_HAVE_LOADED": "Translations have been loaded successfully",
         "PROVIDE_A_VALID_ESP_API_KEY": "Please provide a valid Eskom Se Push API Key.",
-        "SETTINGS_SAVED_SUCCESFULLY": "Settigns have been saved succesfully",
+        "SETTINGS_SAVED_SUCCESFULLY": "Settings have been saved successfully",
         "SETTINGS_SAVED_UNSUCCESFULLY": "Something went wrong while trying to save settings.",
-        "CACHE_CLEARED_SUCCESFULLY": "Cache has succesfully cleared."
+        "CACHE_CLEARED_SUCCESFULLY": "Cache has successfully cleared."
     }
 }
