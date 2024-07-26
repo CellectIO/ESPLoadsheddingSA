@@ -2,23 +2,23 @@
   "manifest_version": 3,
   "name": "ZparkWise SA Loadshedding",
   "description": "A chrome extension that utilizes the Eskom Se Push Loadshedding API's. Stay informed about load shedding schedules in South Africa.",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "permissions": [
     "geolocation"
   ],
   "action": {
     "default_popup": "index.html",
-    "default_icon": "assets/images/logos/logo-circle.png",
+    "default_icon": "assets/images/logos/icon-small.png",
     "content_security_policy": [
       "script-src 'self' https://fonts.googleapis.com; object-src 'self'",
       "script-src 'self' https://developer.sepush.co.za; object-src 'self'"
     ]
   },
   "icons": {
-    "16": "assets/images/logos/logo-circle.png",
-    "32": "assets/images/logos/logo-circle.png",
-    "48": "assets/images/logos/logo-circle.png",
-    "128": "assets/images/logos/logo-circle.png"
+    "16": "assets/images/logos/icon-small.png",
+    "32": "assets/images/logos/icon-small.png",
+    "48": "assets/images/logos/icon-small.png",
+    "128": "assets/images/logos/icon-small.png"
   },
   "host_permissions": [
     "https://developer.sepush.co.za/business/2.0/*"

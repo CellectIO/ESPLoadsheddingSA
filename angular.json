@@ -35,7 +35,7 @@
               "src/assets/images/guide/STEP3.png",
               "src/assets/images/guide/STEP4.png",
               "src/assets/images/guide/STEP5.png",
-              "src/assets/images/logos/logo-circle.png"
+              "src/assets/images/logos/icon-small.png"
             ],
             "styles": [
               "src/custom-theme.scss",
@@ -127,7 +127,7 @@
               "src/assets/images/guide/STEP3.png",
               "src/assets/images/guide/STEP4.png",
               "src/assets/images/guide/STEP5.png",
-              "src/assets/images/logos/logo-circle.png"
+              "src/assets/images/logos/icon-small.png"
             ],
             "styles": [
               "@angular/material/prebuilt-themes/deeppurple-amber.css",
