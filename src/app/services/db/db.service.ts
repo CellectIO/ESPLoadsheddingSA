@@ -186,8 +186,7 @@ export class DbService {
             getStatus: 0,
             getAreaInformation: 0,
             getAreasNearby: 0,
-            getArea: 0,
-            getTopicsNearby: 0,
+            getArea: 0
           };
         }
 
@@ -422,7 +421,7 @@ export class DbService {
     return cachedResponse;
   }
 
-  private _updateAllowanceEntity(property: 'getStatus' | 'getAreaInformation' | 'getAreasNearby' | 'getArea' | 'getTopicsNearby'): Observable<ResultBase> {
+  private _updateAllowanceEntity(property: 'getStatus' | 'getAreaInformation' | 'getAreasNearby' | 'getArea'): Observable<ResultBase> {
     let cacheKey = StorageServiceKeyConstants.USER_DATA_ALLOWANCE;
     let cachedResult = this._getFromCache<AllowanceEntity>(cacheKey);
     if (!cachedResult.isSuccess) {

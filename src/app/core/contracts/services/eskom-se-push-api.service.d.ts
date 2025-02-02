@@ -4,7 +4,6 @@ import { ESPStatusApiResponse } from "../../models/api-responses/eskom-se-push/e
 import { ESPAreaInfoApiResponse } from "../../models/api-responses/eskom-se-push/esp-area-info-api-response";
 import { ESPAreasNearbyApiResponse } from "../../models/api-responses/eskom-se-push/esp-areas-nearby-api-response";
 import { ESPAreaSearchApiResponse } from "../../models/api-responses/eskom-se-push/esp-area-search-api-response";
-import { ESPTopicsNearbyApiResponse } from "../../models/api-responses/eskom-se-push/esp-topics-nearby-api-response";
 import { ESPAllowanceApiResponse } from "../../models/api-responses/eskom-se-push/esp-allowance-api-response";
 
 export interface IEskomSePushApiService{
@@ -34,13 +33,6 @@ export interface IEskomSePushApiService{
   getArea(areaName: string): Observable<Result<ESPAreaSearchApiResponse>>;
 
   /**
-   * Gets Topics for the serounding geographic location provided in the parameters.
-   * @param lat user latetude.
-   * @param long user longetude.
-   */
-  getTopicsNearby(lat: number, long:number): Observable<Result<ESPTopicsNearbyApiResponse>>
-
-  /**
    * Gets the users current allowance, this determines how many API calls has been made and how many are remaining depending on the users api subscription.
    */
   getAllowance(): Observable<Result<ESPAllowanceApiResponse>>;
@@ -48,7 +40,7 @@ export interface IEskomSePushApiService{
   /**
    * Since the Allowance API does not count towards your Allowance Count, we are using it to determine if the API Key is valid.
    * This same API can be used to determine if users are abusing the free acounts policy
-   * @param apiKey 
+   * @param apiKey
    */
   validateApiKey(apiKey: string): Observable<Result<ESPError>>;
 

@@ -4,12 +4,10 @@ import { ESPAllowanceApiResponse } from '../../core/models/api-responses/eskom-s
 import { ESPAreaInfoApiResponse } from '../../core/models/api-responses/eskom-se-push/esp-area-info-api-response';
 import { ESPAreasNearbyApiResponse } from '../../core/models/api-responses/eskom-se-push/esp-areas-nearby-api-response';
 import { ESPStatusApiResponse } from '../../core/models/api-responses/eskom-se-push/esp-status-api-response';
-import { ESPTopicsNearbyApiResponse } from '../../core/models/api-responses/eskom-se-push/esp-topics-nearby-api-response';
 import getStatus from '../../../assets/api-mock-data/getStatus.json';
 import getAreaInformation from '../../../assets/api-mock-data/getAreaInformation.json';
 import getAreasNearby from '../../../assets/api-mock-data/getAreasNearby.json';
 import getArea from '../../../assets/api-mock-data/getArea.json';
-import getTopicsNearby from '../../../assets/api-mock-data/getTopicsNearby.json';
 import getAllowance from '../../../assets/api-mock-data/getAllowance.json';
 import { IEskomSePushApiService } from '../../core/contracts/services/eskom-se-push-api.service';
 import { ESPAreaSearchApiResponse } from '../../core/models/api-responses/eskom-se-push/esp-area-search-api-response';
@@ -47,12 +45,6 @@ export class EskomSePushMockApiService implements IEskomSePushApiService {
     this._log('getArea', [areaName]);
     let rawData = getArea as ESPAreaSearchApiResponse;
     return this.returnJson<ESPAreaSearchApiResponse>(rawData);
-  }
-
-  getTopicsNearby(lat?: number, long?: number): Observable<Result<ESPTopicsNearbyApiResponse>> {
-    this._log('getTopicsNearby', [lat, long]);
-    let rawData = getTopicsNearby as ESPTopicsNearbyApiResponse;
-    return this.returnJson<ESPTopicsNearbyApiResponse>(rawData);
   }
 
   getAllowance(): Observable<Result<ESPAllowanceApiResponse>> {

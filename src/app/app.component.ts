@@ -52,7 +52,7 @@ export class AppComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     // IMPORTANT:
     // The application might try to get a translations while the translation service
-    // might not have succesfully loaded yet, So listening on the translation service to determine
+    // might not have successfully loaded yet, So listening on the translation service to determine
     // when pages can load.
     let translationSub = this.translate.store.onDefaultLangChange
       .pipe(
@@ -62,7 +62,7 @@ export class AppComponent implements OnInit, OnDestroy {
           this._init();
         })
       ).subscribe();
-    
+
     this.subscriptions.push(translationSub);
   }
 
@@ -119,6 +119,9 @@ export class AppComponent implements OnInit, OnDestroy {
     navItems.push({ path: 'settings', icon: 'settings', tooltip: 'PAGES.APP.INFO.SETTINGS' });
 
     this.navigation = navItems;
+
+    //IF THE USER HAS ALREADY REGISTERED PREVIOUSLY LOAD THE HOME PAGE INITIALLY
+    this.router.navigate(['areas/my']);
 
     return of(true);
   }

@@ -86,6 +86,29 @@ $dark-theme: mat.define-dark-theme((
 //I AM TO LAZY TO FIGURE OUT WHY THE MAT INPUTS DON'T WORK WITH THE BUILT IN ANGULAR THEMING.
 //SO I CHANGE THE THEMING THE "Intelligent" WAY BY DOING THE EXACT OPISITE OF WHAT YOU ARE ACTUALLY SUPPOSE TO DO :)
 
+.mat-mdc-tab-nav-bar {
+  --mdc-tab-indicator-active-indicator-color: $background-primary;
+  --mat-tab-header-active-label-text-color: $background-primary;
+  --mat-tab-header-active-ripple-color: $background-primary;
+  --mat-tab-header-inactive-ripple-color: $background-primary;
+  --mat-tab-header-active-focus-label-text-color: $background-primary;
+  --mat-tab-header-active-hover-label-text-color: $background-primary;
+  --mat-tab-header-active-focus-indicator-color: $background-primary;
+  --mat-tab-header-active-hover-indicator-color: $background-primary;
+
+  background-color: $background-secondary !important;
+  box-shadow: -5px 5px 10px #2d232ecf
+}
+
+.mat-mdc-tab-link {
+  color: $background-primary !important;
+  font-weight: 500;
+}
+
+.mat-mdc-tab-link.mat-tab-label-active {
+  border-bottom: 3px solid $background-primary !important;
+}
+
 .mat-form-field-input-primary {
   --mdc-filled-text-field-container-color: $background-primary;
 }
@@ -104,13 +127,15 @@ $dark-theme: mat.define-dark-theme((
   .mdc-list-item--selected{
     color: $font-primary-color !important;
   }
-  
+
   .mdc-list-item__primary-text{
     color: $font-primary-color !important;
   }
 }
 
 .tooltip-primary {
+  white-space: pre-line !important;
+
   .mdc-tooltip__surface{
     color: $font-primary-color !important;
     background-color: $background-primary !important;
@@ -118,6 +143,8 @@ $dark-theme: mat.define-dark-theme((
 }
 
 .tooltip-secondary{
+  white-space: pre-line !important;
+
   .mdc-tooltip__surface{
     color: $font-primary-light-color !important;
     background-color: $background-secondary !important;
