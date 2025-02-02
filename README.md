@@ -1,39 +1,42 @@
 ![ZparkWise Logo Image](https://github.com/CellectIO/ZparkWise/blob/develop/src/assets/images/logos/icon-small.png?raw=true)
 
 # ZparkWise SA Loadshedding Chrome Extension
-A Reactive Chrome Extension built on top of the public facing API's from **wellwellwell investments (Pty) Ltd (“ESP”)**
 
 ![ZparkWise Promo Image](https://github.com/CellectIO/ZparkWise/blob/develop/src/assets/images/promo/promo-1.png?raw=true)
 
 ---
 
-## Disclaimer:
-This Chrome extension is not affiliated with or endorsed by **wellwellwell investments (Pty) Ltd (“ESP”)**. 
+# ⚠️ Disclaimer
+This project is completely independent and has no affiliation, endorsement, or partnership with **WellWellWell Investments (Pty) Ltd ("ESP")**.
 
-#### USE AT YOUR OWN DISCRETION.
+## 🚨 Important Notice
+- This extension does **NOT** provide or control services provided from **WellWellWell Investments (Pty) Ltd ("ESP")**.
+- ESP may have its own **terms, policies, and restrictions**.
+- Users should carefully review ESP’s rules, API terms, and privacy policies before registering.
 
----
-
-## Important links from ESP
+## 🔗 Important Links from ESP
 - https://esp.info/
 - https://esp.info/privacy
 
-## License
-This project is licensed under the **GNU GENERAL PUBLIC LICENSE**
-see the LICENSE file for more details.
+## 📝 License
+This project is licensed under the **MIT** license.
+
+See the LICENSE file for full details.
+
+---
+
+## Installation Guide
+
+![ZparkWise Installation gif](./src/assets/images/promo/installation.gif)
 
 ---
 
 ## Project Overview
-The ZparkWise SA Loadshedding Chrome Extension is designed to visualize the publicly available Eskom Se Push (ESP) API. 
-
-This extension provides users with a convenient way to access and interpret data regarding electricity load shedding schedules in South Africa. 
-
-Built using Angular, this extension offers a seamless and reactive user experience.
+The ZparkWise SA Loadshedding Chrome Extension is designed to visualize data from the publicly available Eskom Se Push (ESP) API.
 
 ## Features
 - Access the latest information on load shedding schedules.
-- A simplistic design similar to the mobile application for easy navigation and data interpretation.
+- A simplistic design for easy navigation and data interpretation.
 - Cache configuration to save on API call count (if you are using a free account)
 
 ![ZparkWise Promo Image](https://github.com/CellectIO/ZparkWise/blob/develop/src/assets/images/promo/promo-2.png?raw=true)
@@ -58,9 +61,9 @@ Ensure you have the following installed:
 ---
 
 ### Installation
-1. Clone the repository and install the necessary dependencies:
+1. Clone the repository
 
-2. Open command prompt and navigate the the cloned repository
+2. Open command prompt and navigate to the cloned repository
 
 ```bash
 cd ZparkWise
@@ -104,7 +107,7 @@ Use the following flag for a production build.
 
 > **--configuration production**
 
-(When using this flag the environment variables will be set to production to simulate what the application run in for end users)
+(When using this flag the environment variables will be set to production to simulate what the application will run like for end users)
 
 **The build artifacts will be stored in the dist/ directory.**
 
@@ -130,12 +133,5 @@ Once all the steps above are complete you should be able to find the unpacked ex
 We welcome contributions to improve the ZparkWise SA Loadshedding Chrome Extension!
 
 If you have suggestions for new features or improvements, feel free to create a pull request or open an issue.
-
-### Steps to Contribute
-- Fork the repository.
-- Create a new branch (git checkout -b feature/YourFeature develop -t).
-- Commit your changes (git commit -m 'Add some feature').
-- Push to the branch (git push origin feature/YourFeature).
-- Open a pull request :)
 
 ---
