@@ -5,8 +5,6 @@ import { ESPAreaInfoApiResponse } from '../../core/models/api-responses/eskom-se
 import { ESPAreasNearbyApiResponse } from '../../core/models/api-responses/eskom-se-push/esp-areas-nearby-api-response';
 import { AreasNearbyEntity } from '../../core/models/entities/areas-nearby-entity';
 import { AreaSearchEntity } from '../../core/models/entities/area-search-entity';
-import { ESPTopicsNearbyApiResponse } from '../../core/models/api-responses/eskom-se-push/esp-topics-nearby-api-response';
-import { TopicsNearbyEntity } from '../../core/models/entities/topics-nearby-entity';
 import { ESPAllowanceApiResponse } from '../../core/models/api-responses/eskom-se-push/esp-allowance-api-response';
 import { AllowanceEntity } from '../../core/models/entities/allowance-entity';
 import { ESPAreaSearchApiResponse } from '../../core/models/api-responses/eskom-se-push/esp-area-search-api-response';
@@ -84,14 +82,6 @@ export class EskomSePushEntityMapperService {
     return response;
   }
 
-  public toTopicsNearbyEntity(data: ESPTopicsNearbyApiResponse): TopicsNearbyEntity {
-    let response: TopicsNearbyEntity = {
-      topics: data.topics
-    };
-
-    return response;
-  }
-
   public toAllowanceEntity(data: ESPAllowanceApiResponse, breakDown: ApiUtilizationBreakdown | null): AllowanceEntity {
     let response: AllowanceEntity = {
       allowance: data.allowance,
@@ -99,8 +89,7 @@ export class EskomSePushEntityMapperService {
         getStatus: breakDown ? breakDown.getStatus : 0,
         getAreaInformation: breakDown ? breakDown.getAreaInformation : 0,
         getAreasNearby: breakDown ? breakDown.getAreasNearby : 0,
-        getArea: breakDown ? breakDown.getArea : 0,
-        getTopicsNearby: breakDown ? breakDown.getTopicsNearby : 0,
+        getArea: breakDown ? breakDown.getArea : 0
       }
     };
 

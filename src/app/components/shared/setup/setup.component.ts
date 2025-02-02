@@ -9,21 +9,23 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { environment } from '../../../../environments/environment';
 import { InfoIconComponent } from '../info-icon/info-icon.component';
 import { LogPanelService } from '../../../services/log-panel/log-panel.service';
+import {CardComponent} from "../card/card.component";
 
 @Component({
   selector: 'app-setup',
   standalone: true,
-  imports: [
-    CommonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatButtonModule,
-    MatIconModule,
-    TranslateModule,
-    InfoIconComponent
-  ],
+    imports: [
+        CommonModule,
+        MatFormFieldModule,
+        MatInputModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatButtonModule,
+        MatIconModule,
+        TranslateModule,
+        InfoIconComponent,
+        CardComponent
+    ],
   templateUrl: './setup.component.html',
   styleUrl: './setup.component.sass'
 })
@@ -35,7 +37,7 @@ export class SetupComponent {
     private logPanel: LogPanelService,
     private translate: TranslateService
   ) {
-    
+
   }
 
   copyText() {

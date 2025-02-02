@@ -4,5 +4,4 @@ export interface ApiUtilizationBreakdown
     getAreaInformation: number;
     getAreasNearby: number;
     getArea: number;
-    getTopicsNearby: number;
 }

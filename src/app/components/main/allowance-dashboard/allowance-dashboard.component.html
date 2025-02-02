@@ -2,49 +2,46 @@
     <ng-container [ngTemplateOutlet]="allowanceDetails">
     </ng-container>
     <div class="allowance-details-container">
-        <ng-container 
-            [ngTemplateOutlet]="allowanceItem" 
+        <ng-container
+            [ngTemplateOutlet]="allowanceItem"
             [ngTemplateOutletContext]="{
-                name: 'PAGES.ALLOWANCE.LABEL.AREA_API', 
+                name: 'PAGES.ALLOWANCE.LABEL.AREA_API',
                 count: allowance?.apiUtilizationBreakdown?.getArea,
-                desc: 'PAGES.ALLOWANCE.DESCRIPTION.AREA_API'
+                desc: 'PAGES.ALLOWANCE.DESCRIPTION.AREA_API',
+                callCountDesc: 'PAGES.ALLOWANCE.INFO.ALLOWANCE_MULTI_CALL'
                 }">
         </ng-container>
-        <ng-container 
-            [ngTemplateOutlet]="allowanceItem" 
+        <ng-container
+            [ngTemplateOutlet]="allowanceItem"
             [ngTemplateOutletContext]="{
-                name: 'PAGES.ALLOWANCE.LABEL.AREA_INFO_API', 
+                name: 'PAGES.ALLOWANCE.LABEL.AREA_INFO_API',
                  count: allowance?.apiUtilizationBreakdown?.getAreaInformation,
-                 desc: 'PAGES.ALLOWANCE.DESCRIPTION.AREA_INFO_API'
+                 desc: 'PAGES.ALLOWANCE.DESCRIPTION.AREA_INFO_API',
+                 callCountDesc: 'PAGES.ALLOWANCE.INFO.ALLOWANCE_SINGLE_CALL'
                  }">
         </ng-container>
-        <ng-container 
-            [ngTemplateOutlet]="allowanceItem" 
+        <ng-container
+            [ngTemplateOutlet]="allowanceItem"
             [ngTemplateOutletContext]="{
-                name: 'PAGES.ALLOWANCE.LABEL.AREA_NEARBY_API', 
+                name: 'PAGES.ALLOWANCE.LABEL.AREA_NEARBY_API',
                 count: allowance?.apiUtilizationBreakdown?.getAreasNearby,
-                desc: 'PAGES.ALLOWANCE.DESCRIPTION.AREA_NEARBY_API'
+                desc: 'PAGES.ALLOWANCE.DESCRIPTION.AREA_NEARBY_API',
+                callCountDesc: 'PAGES.ALLOWANCE.INFO.ALLOWANCE_MULTI_CALL'
                 }">
         </ng-container>
-        <ng-container 
-            [ngTemplateOutlet]="allowanceItem" 
+        <ng-container
+            [ngTemplateOutlet]="allowanceItem"
             [ngTemplateOutletContext]="{
-                name: 'PAGES.ALLOWANCE.LABEL.STATUS_API', 
+                name: 'PAGES.ALLOWANCE.LABEL.STATUS_API',
                 count: allowance?.apiUtilizationBreakdown?.getStatus,
-                desc: 'PAGES.ALLOWANCE.DESCRIPTION.STATUS_API'
-                }">
-        </ng-container>
-        <ng-container 
-            [ngTemplateOutlet]="allowanceItem" 
-            [ngTemplateOutletContext]="{
-                name: 'PAGES.ALLOWANCE.LABEL.TOPICS_NEARBY_API',
-                count: allowance?.apiUtilizationBreakdown?.getTopicsNearby,
-                desc: 'PAGES.ALLOWANCE.DESCRIPTION.TOPICS_NEARBY_API'
+                desc: 'PAGES.ALLOWANCE.DESCRIPTION.STATUS_API',
+                callCountDesc: 'PAGES.ALLOWANCE.INFO.ALLOWANCE_SINGLE_CALL'
                 }">
         </ng-container>
     </div>
 </div>
-<ng-template #allowanceItem let-name='name' let-count="count" let-desc="desc">
+
+<ng-template #allowanceItem let-name='name' let-count="count" let-desc="desc" let-callCountDesc="callCountDesc">
     <app-card class="allowance-item-card">
         <div class="card-heading-container">
             <h1>
@@ -55,12 +52,13 @@
             {{desc | translate }}
         </p>
         <div class="card-count-container">
-            <h3>
+            <h3 [matTooltip]="callCountDesc | translate" [matTooltipClass]="'tooltip-primary'">
                 {{'PAGES.ALLOWANCE.LABEL.CURRENT_COUNT' | translate }} : {{count}}
             </h3>
         </div>
     </app-card>
 </ng-template>
+
 <ng-template #allowanceDetails>
     <app-card class="allowance-item-card">
         <div class="card-heading-container">
@@ -68,6 +66,9 @@
                 {{'PAGES.ALLOWANCE.LABEL.ESP_ALLOWANCE_DETAILS' | translate }}
             </h1>
         </div>
+      <p>
+        {{'PAGES.ALLOWANCE.DESCRIPTION.API_QUOTA' | translate }}
+      </p>
         <div class="allowance-details-section">
             <h3 [matTooltip]="'PAGES.ALLOWANCE.INFO.CURRENT_CALL_COUNT' | translate" [matTooltipClass]="'tooltip-primary'">
                 {{'PAGES.ALLOWANCE.LABEL.CURRENT_CALL_COUNT' | translate }} : {{allowance?.allowance?.count}}

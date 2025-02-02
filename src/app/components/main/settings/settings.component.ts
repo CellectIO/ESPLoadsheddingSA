@@ -137,8 +137,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   /**
    * If No Config is provided this function will return current form values, else it will set the form values.
-   * @param config 
-   * @returns 
+   * @param config
+   * @returns
    */
   MapResult(config: EskomSePushConfig | null): EskomSePushConfig | null {
     if (config == null) {
@@ -166,8 +166,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
       StorageServiceKeyConstants.API_RESPONSE_GETSTATUS,
       StorageServiceKeyConstants.API_RESPONSE_GETAREAINFO,
       StorageServiceKeyConstants.API_RESPONSE_GETAREASNEARBY,
-      StorageServiceKeyConstants.API_RESPONSE_GETAREA,
-      StorageServiceKeyConstants.API_RESPONSE_GETTOPICNEARBY
+      StorageServiceKeyConstants.API_RESPONSE_GETAREA
     ]);
 
     if(logResult){

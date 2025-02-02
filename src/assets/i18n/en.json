@@ -12,7 +12,7 @@
         "SUCCESS": "Success",
         "WARNING": "Warning",
         "ERROR": "Error",
-        "NO_LOADSHEDDING": "No Loadshedding",
+        "NO_LOADSHEDDING": "No LoadShedding",
         "LOADING": "Loading"
     },
     "PAGES": {
@@ -35,33 +35,34 @@
                 "CLEAR_CACHE": "Clear Cache"
             },
             "INFO": {
-                "WHAT_IS_CACHE": "The Sync Interval is measured in minutes to determine when all the your saved data should refresh. This Allows some users with a low allowance to not be rate limited as quickly as they would without relying on cache. The lower your sync interval value the sooner your data will be refreshed.",
-                "WHERE_TO_FIND_API_KEY": "If you are unsure where to find your Eskom Se Push API key, please follow the guide on the Setup Page.",
-                "WHAT_DOES_PAGES_DO": "Use these Toggles to disable specific pages that you don't want to see in the navigation bar. ",
-                "CLEAR_CACHE_WARNING": "Clearing Cache will delete all your saved data which will result in some API's being called again that will count towards your allowance."
+                "WHAT_IS_CACHE": "The Sync Interval is measured in minutes to determine when all the your saved data should refresh. \n\n This Allows some users with a low allowance to not be rate limited as quickly as they would without relying on cache. \n\n The lower your sync interval value the sooner your data will be refreshed.",
+                "WHERE_TO_FIND_API_KEY": "Unsure where to find your Eskom Se Push API key? \n\n please follow the guide on the Setup Page.",
+                "WHAT_DOES_PAGES_DO": "Use these Toggles to disable specific pages that you don't want to see in the navigation bar.",
+                "CLEAR_CACHE_WARNING": "Clearing Cache will delete all your saved data which will result in some APIs being called again that will count towards your allowance."
             }
         },
         "SETUP": {
             "INPUT_LABEL": "Copy Gumroad API Link",
-            "PARAGRAPH_1": "Welcome to ZparkWise SA Loadshedding",
+            "PARAGRAPH_1": "Welcome to ZparkWise SA LoadShedding",
             "PARAGRAPH_2": "We're thrilled to have you on board.",
             "PARAGRAPH_3": "This guide is designed to assist you in navigating through the initial setup process necessary for the functionality of this extension. Whether you're a seasoned user or just getting started, we're here to ensure your experience is as smooth as possible.",
-            "PARAGRAPH_4": "Let's embark on this journey together and unlock the full potential of the ZparkWise SA Loadshedding extension!",
+            "PARAGRAPH_4": "Let's embark on this journey together and unlock the full potential of the ZparkWise SA LoadShedding extension!",
             "PARAGRAPH_5": "Step 1: Sign up for an 'EskomSePush' API key",
             "PARAGRAPH_6": "Go to the Gumroad Dashboard with the link below to sign up for an 'EskomSePush' API key.",
             "PARAGRAPH_7": "Note: You can copy the link with the copy button on the right and then paste the link in a new browser tab.",
-            "PARAGRAPH_8": "Once you are on the page you can click on the 'Subscribe' button on the right that will navigate you to the next page.",
-            "PARAGRAPH_9": "Once the Sign Up form has loaded, you will need to enter your email address and full name on the right and then you can click the 'Get' Button.",
-            "PARAGRAPH_10": "Step 2: Getting your ESP API key",
-            "PARAGRAPH_11": "Once you have succesfully registered you will be navigated to your subscription page where you will find a section with a label 'License key'.",
-            "PARAGRAPH_12": "Click on the 'Copy' button to get your API key ready for the next step.",
-            "PARAGRAPH_13": "Optionally you will also recieve an email with your API key which you can copy.",
-            "PARAGRAPH_14": "Step 3: Saving ESP API key in the settings tab",
-            "PARAGRAPH_15": "With the copied API key, come back to the ZparkWise SA Loadshedding extension and navigate to the settings Tab by clicking on the Gear icon in the top right.",
-            "PARAGRAPH_16": "Once you are on the settings page paste your API key in the 'API Key' input field and click on the Save button.",
-            "PARAGRAPH_17": "Congratulations you are all set :)",
-            "PARAGRAPH_18": "An Important Note:",
-            "PARAGRAPH_19": "You are limited to only one API key. So make sure you save it. If you attempt to register again for a new API key, your account will be blocked for 24 hours. Only after 24 hours will your account be reset where you can try again with a single API key. So make sure you save your API key somewhere safe."
+            "PARAGRAPH_8": "Once you are on the page Select 'Monthly' and '0' for fair price. Now you can click on the 'Subscribe' button on the right that will navigate you to the next page.",
+            "PARAGRAPH_9": "Step 2: Getting your ESP API key",
+            "PARAGRAPH_10": "Once the Sign Up form has loaded, you will need to enter your email address and full name on the right and then you can click the 'Get' Button.",
+            "PARAGRAPH_11": "Step 3: Checkout",
+            "PARAGRAPH_12": "Once you have successfully registered you will be navigated to your subscription page where you will find a section with a label 'License key'.",
+            "PARAGRAPH_13": "Click on the 'Copy' button to get your API key ready for the next step.",
+            "PARAGRAPH_14": "Optionally",
+            "PARAGRAPH_15": "You will also receive an email with your API key which you can copy.",
+            "PARAGRAPH_16": "Step 4: Saving ESP API key in the settings tab",
+            "PARAGRAPH_17": "With the copied API key, come back to the ZparkWise SA LoadShedding extension and navigate to the settings Tab by clicking on the Gear icon in the top right.",
+            "PARAGRAPH_18": "Once you are on the settings page paste your API key in the 'API Key' input field and click on the Save button.",
+            "PARAGRAPH_19": "An Important Note:",
+            "PARAGRAPH_20": "You are limited to only one API key. So make sure you save it. If you attempt to register again for a new API key, your account will be blocked for 24 hours. Only after 24 hours will your account be reset where you can try again with a single API key. So make sure you save your API key somewhere safe."
         },
         "ALLOWANCE": {
             "LABEL": {
@@ -73,20 +74,21 @@
                 "AREA_API": "Area API",
                 "AREA_INFO_API": "Area Information API",
                 "AREA_NEARBY_API": "Areas Nearby API",
-                "STATUS_API": "Status API",
-                "TOPICS_NEARBY_API": "Topics Nearby API"
+                "STATUS_API": "Status API"
             },
             "DESCRIPTION": {
+                "API_QUOTA": "API users have a quota, and once this quota is used up in a period (typically daily), requests will be blocked until quota is available again",
                 "AREA_API": "Used by the area search feature to get areas based on the area phrase you provide.",
-                "AREA_INFO_API": "Used when a area is saved to get loadshedding schedule details.",
+                "AREA_INFO_API": "Used when a area is saved to get load-shedding schedule details.",
                 "AREA_NEARBY_API": "Discovers Areas near your current location in the manage areas page.",
-                "STATUS_API": "Used to get the current load shedding status found on several pages.",
-                "TOPICS_NEARBY_API": "Used to get topics near your current location. (Coming Soon)"
+                "STATUS_API": "Used to get the current load shedding status found on several pages."
             },
             "INFO": {
                 "CURRENT_CALL_COUNT": "The total amount of API calls currently used by your account",
                 "CALL_COUNT_LIMIT": "The total amount of API calls you are allowed to make for the period of your Allowance Type",
-                "ALLOWANCE_TYPE": "Refers to the period you Call Count Limit is valid for before it resets. For example if your Allowance Type is Daily and your Call Count Limit is 50, your are allowed to make 50 API calls each and every single day"
+                "ALLOWANCE_TYPE": "Refers to the period your Call Count Limit is valid for before it resets.\n\n For example if your Allowance Type is Daily and your Call Count Limit is 50, your are allowed to make 50 API calls each and every single day",
+                "ALLOWANCE_SINGLE_CALL": "Each usage of this request counts towards 1 call count",
+                "ALLOWANCE_MULTI_CALL": "Each usage of this request counts towards 5 call counts. \n\n This feature does not need to be called often so use it sparingly"
             }
         },
         "ADD_AREA": {
@@ -103,7 +105,7 @@
         },
         "MY_AREAS": {
             "LABELS": {
-                "LOADSHEDDING_STATUS": "Loadshedding Status",
+                "LOADSHEDDING_STATUS": "LoadShedding Status",
                 "MY_AREAS": "My Areas"
             },
             "ACTIONS": {
@@ -112,7 +114,7 @@
         },
         "ESKOM_DASHBOARD": {
             "LABELS": {
-                "LOADSHEDDING_STATUS": "Loadshedding Status",
+                "LOADSHEDDING_STATUS": "LoadShedding Status",
                 "AREA": "Area",
                 "UPCOMMING": "Upcoming",
                 "AREA_SCHEDULE": "Area Schedule"
@@ -133,7 +135,7 @@
                 "STAGE": "Stage",
                 "LAST_UPDATED": "Last Updated",
                 "UP_NEXT_AT": "up next at",
-                "NO_UPCOMMING": "No upcoming loadshedding"
+                "NO_UPCOMMING": "No upcoming LoadShedding"
             }
         }
     },

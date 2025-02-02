@@ -1,6 +1,6 @@
 <div class="save-btn-container">
     <button mat-raised-button color="primary" type="button" class="btn-sm" (click)="onSubmit()">
-        <mat-icon aria-hidden="false" aria-label="save" fontIcon="save"></mat-icon> 
+        <mat-icon aria-hidden="false" aria-label="save" fontIcon="save"></mat-icon>
         {{ 'ACTIONS.SAVE' | translate }}
     </button>
 </div>
@@ -14,17 +14,17 @@
         </div>
         <mat-form-field class="mat-form-field-input-primary">
             <mat-label>{{ 'PAGES.SETTINGS.LABELS.API_KEY' | translate }}</mat-label>
-            <input matInput formControlName="apiKey">
+            <input matInput formControlName="apiKey" type="password">
         </mat-form-field>
     </app-card>
     <app-card class="settings-card" *ngIf="isRegistered">
         <div class="settings-card-header">
             <h1>
-                {{ 'PAGES.SETTINGS.LABELS.CACHING' | translate }} 
+                {{ 'PAGES.SETTINGS.LABELS.CACHING' | translate }}
                 <app-info-icon text="PAGES.SETTINGS.INFO.WHAT_IS_CACHE" icon="info"></app-info-icon>
             </h1>
             <button mat-raised-button (click)="clearCache(true)" color="accent" class="btn-md" type="button" [matTooltip]="'PAGES.SETTINGS.INFO.CLEAR_CACHE_WARNING' | translate" [matTooltipClass]="'tooltip-primary'">
-                <mat-icon aria-hidden="false" aria-label="delete" fontIcon="delete"></mat-icon> 
+                <mat-icon aria-hidden="false" aria-label="delete" fontIcon="delete"></mat-icon>
                 {{ 'PAGES.SETTINGS.ACTIONS.CLEAR_CACHE' | translate }}
             </button>
         </div>

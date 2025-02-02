@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "ZparkWise SA Loadshedding",
-  "description": "A chrome extension that utilizes the Eskom Se Push Loadshedding API's. Stay informed about load shedding schedules in South Africa.",
-  "version": "1.0.4",
+  "name": "ZparkWise SA LoadShedding",
+  "description": "A chrome extension that utilizes the Eskom Se Push Loadshedding APIs. Stay informed about load shedding schedules in South Africa.",
+  "version": "1.0.5",
   "permissions": [
     "geolocation"
   ],

@@ -4,7 +4,6 @@ import { Observable, catchError, map, of } from 'rxjs';
 import { ESPStatusApiResponse } from '../../core/models/api-responses/eskom-se-push/esp-status-api-response';
 import { ESPAreaInfoApiResponse } from '../../core/models/api-responses/eskom-se-push/esp-area-info-api-response';
 import { ESPAreasNearbyApiResponse } from '../../core/models/api-responses/eskom-se-push/esp-areas-nearby-api-response';
-import { ESPTopicsNearbyApiResponse } from '../../core/models/api-responses/eskom-se-push/esp-topics-nearby-api-response';
 import { ESPAllowanceApiResponse } from '../../core/models/api-responses/eskom-se-push/esp-allowance-api-response';
 import { SessionStorageService } from '../storage/session-storage.service';
 import { EskomSePushConfig } from '../../core/models/common/Settings/user-app-settings';
@@ -56,11 +55,6 @@ export class EskomSePushApiService implements IEskomSePushApiService {
   getArea(areaName: string): Observable<Result<ESPAreaSearchApiResponse>> {
     this._log('getArea', [areaName]);
     return this.handleHttpRequest<ESPAreaSearchApiResponse>(`${environment.api_eskom}/areas_search?text=${areaName}`);
-  }
-
-  getTopicsNearby(lat: number, long: number): Observable<Result<ESPTopicsNearbyApiResponse>> {
-    this._log('getTopicsNearby', [lat, long]);
-    return this.handleHttpRequest<ESPTopicsNearbyApiResponse>(`${environment.api_eskom}/topics_nearby?lat=${lat}8&lon=${long}`);
   }
 
   getAllowance(): Observable<Result<ESPAllowanceApiResponse>> {
